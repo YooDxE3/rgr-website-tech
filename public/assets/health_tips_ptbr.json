@@ -1,0 +1,237 @@
+[
+  {
+    "k": "Saúde mental",
+    "t": "Pausa ativa de 2 minutos",
+    "b": "A cada 90 minutos, levante e respire fundo. Pequenas pausas reduzem estresse e melhoram foco."
+  },
+  {
+    "k": "Sono",
+    "t": "Rotina consistente",
+    "b": "Manter horários regulares ajuda a qualidade do sono e melhora disposição no trabalho."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Tela na altura dos olhos",
+    "b": "Posicione a parte superior do monitor na linha dos olhos para reduzir tensão cervical."
+  },
+  {
+    "k": "Hidratação",
+    "t": "Água ao alcance",
+    "b": "Deixe uma garrafa por perto. Desidratação leve já piora atenção e desempenho."
+  },
+  {
+    "k": "Cardiometabólico",
+    "t": "10 minutos contam",
+    "b": "Caminhadas curtas após refeições ajudam glicemia e reduzem sonolência."
+  },
+  {
+    "k": "Alimentação",
+    "t": "Prato mais simples",
+    "b": "Priorize alimentos in natura e reduza ultraprocessados para diminuir inflamação e fadiga."
+  },
+  {
+    "k": "Saúde mental",
+    "t": "Higiene digital",
+    "b": "Evite telas 30–60 min antes de dormir. Ajuda a desacelerar e dormir melhor."
+  },
+  {
+    "k": "Prevenção",
+    "t": "Check-ups direcionados",
+    "b": "Avaliações periódicas orientadas por risco (idade, histórico) trazem mais resultado que exames aleatórios."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Pés bem apoiados",
+    "b": "Use apoio para pés se necessário. Postura estável reduz lombalgia em trabalho sentado."
+  },
+  {
+    "k": "Respiração",
+    "t": "4-6 por 1 minuto",
+    "b": "Inspire 4s e expire 6s por 1 minuto. Diminui ansiedade e melhora clareza mental."
+  },
+  {
+    "k": "Movimento",
+    "t": "Microalongamentos",
+    "b": "Alongue pescoço/ombros 2–3x ao dia para reduzir dor e rigidez."
+  },
+  {
+    "k": "Cardiovascular",
+    "t": "Suba escadas quando der",
+    "b": "Trocar elevador por escadas em 1–2 lances já aumenta gasto energético e condicionamento."
+  },
+  {
+    "k": "Alimentação",
+    "t": "Proteína no café",
+    "b": "Adicionar proteína (ovos, iogurte, queijo) aumenta saciedade e reduz beliscos."
+  },
+  {
+    "k": "Saúde mental",
+    "t": "Planeje 3 prioridades",
+    "b": "Defina 3 tarefas-chave por dia. Reduz sobrecarga e melhora produtividade."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Regra 20-20-20",
+    "b": "A cada 20 min, olhe 20s para algo a 20 pés (~6m). Ajuda a fadiga ocular."
+  },
+  {
+    "k": "Imunidade",
+    "t": "Sono + movimento",
+    "b": "Dormir bem e manter atividade física regular são pilares para reduzir adoecimentos."
+  },
+  {
+    "k": "Gestão de saúde",
+    "t": "Indicadores simples",
+    "b": "Acompanhe absenteísmo, sinistralidade e NPS. O básico bem feito orienta decisões."
+  },
+  {
+    "k": "Prevenção",
+    "t": "Vacinas em dia",
+    "b": "Atualizar vacinação reduz afastamentos por doenças respiratórias e complicações."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Teclado e mouse próximos",
+    "b": "Mantenha cotovelos perto do corpo para reduzir tensão nos ombros."
+  },
+  {
+    "k": "Bem-estar",
+    "t": "Luz natural",
+    "b": "Se possível, trabalhe perto de luz natural. Melhora humor e ritmo circadiano."
+  },
+  {
+    "k": "Cardiometabólico",
+    "t": "Cuidado com bebidas doces",
+    "b": "Reduzir refrigerantes/sucos açucarados diminui picos de glicose e cansaço."
+  },
+  {
+    "k": "Saúde mental",
+    "t": "Conexão social",
+    "b": "Breves conversas e apoio entre colegas reduzem estresse e aumentam engajamento."
+  },
+  {
+    "k": "Movimento",
+    "t": "Agenda de caminhada",
+    "b": "Marque no calendário 2 blocos curtos de caminhada na semana para criar consistência."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Apoio lombar",
+    "b": "Use suporte lombar ou ajuste a cadeira para manter a curvatura natural da coluna."
+  },
+  {
+    "k": "Alimentação",
+    "t": "Lanche inteligente",
+    "b": "Prefira frutas, castanhas ou iogurte. Evite picos de energia seguidos de queda."
+  },
+  {
+    "k": "Sono",
+    "t": "Cafeína com regra",
+    "b": "Evite cafeína após 14–16h para não prejudicar o sono."
+  },
+  {
+    "k": "Prevenção",
+    "t": "Sinais de alerta",
+    "b": "Dor no peito, falta de ar intensa, desmaios: procure atendimento imediato."
+  },
+  {
+    "k": "Saúde mental",
+    "t": "Janelas sem reunião",
+    "b": "Reserve 1–2 períodos sem reuniões por semana para trabalho profundo e menos estresse."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Altura da cadeira",
+    "b": "Quadris ligeiramente acima dos joelhos melhora postura e conforto."
+  },
+  {
+    "k": "Gestão",
+    "t": "Rito semanal de indicadores",
+    "b": "Revisão semanal de KPI + plano de ação curto mantém a operação previsível."
+  },
+  {
+    "k": "Imunidade",
+    "t": "Lavagem de mãos",
+    "b": "Hábito simples e eficaz para reduzir infecções e afastamentos."
+  },
+  {
+    "k": "Cardiovascular",
+    "t": "Pressão arterial",
+    "b": "Se você tem risco, medir pressão periodicamente ajuda a prevenir complicações."
+  },
+  {
+    "k": "Saúde mental",
+    "t": "Anote e descarregue",
+    "b": "Escreva preocupações no papel por 2 minutos. Reduz ruminação e ansiedade."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Headset ajuda",
+    "b": "Evite segurar o telefone entre ombro e cabeça. Use headset para reduzir dor cervical."
+  },
+  {
+    "k": "Movimento",
+    "t": "Levantou? Aproveitou",
+    "b": "Sempre que levantar, faça 10 agachamentos ou alongue panturrilhas."
+  },
+  {
+    "k": "Alimentação",
+    "t": "Metade do prato em vegetais",
+    "b": "Aumenta fibras e micronutrientes, melhora saciedade e energia."
+  },
+  {
+    "k": "Sono",
+    "t": "Ambiente escuro e fresco",
+    "b": "Quarto mais escuro e ligeiramente fresco melhora a qualidade do sono."
+  },
+  {
+    "k": "Prevenção",
+    "t": "Pele ao sol com cuidado",
+    "b": "Use protetor e evite exposição prolongada em horários de pico."
+  },
+  {
+    "k": "Gestão",
+    "t": "SLA claro salva tempo",
+    "b": "SLA bem definido reduz retrabalho e melhora previsibilidade do serviço."
+  },
+  {
+    "k": "Saúde mental",
+    "t": "Intervalo real",
+    "b": "Na pausa, saia da mesa e do celular por alguns minutos para recuperar energia."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Punhos neutros",
+    "b": "Mantenha punhos alinhados ao teclado para reduzir risco de lesões por esforço repetitivo."
+  },
+  {
+    "k": "Cardiometabólico",
+    "t": "Sono e fome",
+    "b": "Pouco sono aumenta fome e vontade de doces. Priorize descanso para regular apetite."
+  },
+  {
+    "k": "Bem-estar",
+    "t": "Respire antes de responder",
+    "b": "Em situações tensas, 1 respiração lenta ajuda a responder com mais calma."
+  },
+  {
+    "k": "Prevenção",
+    "t": "Use EPIs quando necessário",
+    "b": "Conformidade com EPI reduz incidentes e protege a equipe."
+  },
+  {
+    "k": "Movimento",
+    "t": "Alongue o peito",
+    "b": "Abra o peito e retraia as escápulas por 20s para aliviar postura de computador."
+  },
+  {
+    "k": "Alimentação",
+    "t": "Coma com atenção",
+    "b": "Evite comer em frente à tela. Melhora saciedade e reduz excesso."
+  },
+  {
+    "k": "Ergonomia",
+    "t": "Cotovelo ~90°",
+    "b": "Ajuste cadeira/mesa para cotovelos em torno de 90°. Menos tensão em ombro e punho."
+  }
+]
