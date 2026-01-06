@@ -4,80 +4,88 @@ import Tips from "./Tips";
 
 type Lang = "pt" | "en" | "es";
 
-const COPY: Record<Lang, any> = {
-  pt: {
-    nav: { about: "Sobre", services: "Governança", scope: "Escopo Assistencial", innov: "Inovação", roadmap: "Roadmap" },
-    heroTitle: "Gestão com excelência em saúde corporativa",
-    heroText:
-      "Operação, padrões e indicadores para entregar performance assistencial com segurança, previsibilidade e rastreabilidade.",
-    ctas: { contact: "Contato", instagram: "Instagram" },
-    aboutTitle: "Sobre a RGR",
-    aboutText:
-      "Atuamos na gestão e operação de serviços médicos com governança, qualidade e inteligência de dados. B2B corporativo, sem agendamento de consultas.",
-    servicesTitle: "Serviços",
-    servicesText: "Escolha módulos conforme sua maturidade e momento.",
-    services: [
-      { t: "Governança Médica", s: "Fluxos, padronização e coordenação multiprofissional." },
-      { t: "Gestão MSO", s: "Operação ponta a ponta com SLA e rituais executivos." },
-      { t: "Inteligência & KPI", s: "Painéis, auditoria e rastreabilidade para decisão rápida." }
-    ],
-    scopeTitle: "Escopo assistencial de ponta a ponta",
-    scopeText: "Cobertura modular por linhas de cuidado e criticidade.",
-    innovTitle: "Inovação e benchmark internacional",
-    innovText: "Práticas modernas para elevar qualidade e eficiência.",
-    roadmapTitle: "Roadmap de implantação (piloto)",
-    roadmapText: "Implantação por fases para ganho rápido e sustentado."
+const PT = {
+  nav: {
+    about: "Sobre",
+    services: "Serviços",
+    scope: "Escopo",
+    governance: "Governança",
+    innovation: "Inovação",
+    roadmap: "Roadmap",
+    campaigns: "Campanhas"
   },
-  en: {
-    nav: { about: "About", services: "Governance", scope: "Clinical Scope", innov: "Innovation", roadmap: "Roadmap" },
-    heroTitle: "Operational excellence for corporate healthcare",
-    heroText:
-      "Operations, standards and KPIs to deliver safe, predictable and traceable clinical performance.",
-    ctas: { contact: "Contact", instagram: "Instagram" },
-    aboutTitle: "About RGR",
-    aboutText:
-      "We run medical operations with governance, quality and data intelligence. Corporate B2B, no appointment scheduling.",
-    servicesTitle: "Services",
-    servicesText: "Choose modules based on your maturity and priorities.",
-    services: [
-      { t: "Medical Governance", s: "Clinical flows, standardization and coordination." },
-      { t: "MSO Management", s: "End-to-end operations with SLA and executive rituals." },
-      { t: "Intelligence & KPI", s: "Dashboards, audit and traceability for fast decisions." }
-    ],
-    scopeTitle: "End-to-end clinical scope",
-    scopeText: "Modular coverage by care lines and acuity.",
-    innovTitle: "Innovation & global benchmarks",
-    innovText: "Modern practices to raise quality and efficiency.",
-    roadmapTitle: "Pilot roadmap",
-    roadmapText: "Phased rollout for fast and sustainable gains."
-  },
-  es: {
-    nav: { about: "Sobre", services: "Gobernanza", scope: "Alcance Asistencial", innov: "Innovación", roadmap: "Roadmap" },
-    heroTitle: "Excelencia operativa en salud corporativa",
-    heroText:
-      "Operación, estándares y KPI para entregar desempeño asistencial con seguridad y trazabilidad.",
-    ctas: { contact: "Contacto", instagram: "Instagram" },
-    aboutTitle: "Sobre RGR",
-    aboutText:
-      "Gestionamos operaciones médicas con gobernanza, calidad e inteligencia de datos. B2B corporativo, sin agendamiento.",
-    servicesTitle: "Servicios",
-    servicesText: "Elija módulos según su madurez y prioridades.",
-    services: [
-      { t: "Gobernanza Médica", s: "Flujos clínicos, estandarización y coordinación." },
-      { t: "Gestión MSO", s: "Operación integral con SLA y rituales ejecutivos." },
-      { t: "Inteligencia & KPI", s: "Paneles, auditoría y trazabilidad para decisiones rápidas." }
-    ],
-    scopeTitle: "Alcance asistencial de punta a punta",
-    scopeText: "Cobertura modular por líneas de cuidado y criticidad.",
-    innovTitle: "Innovación y benchmark internacional",
-    innovText: "Prácticas modernas para elevar calidad y eficiencia.",
-    roadmapTitle: "Roadmap (piloto)",
-    roadmapText: "Implementación por fases para resultados rápidos y sostenibles."
-  }
+  kicker: "RGR • MSO • Governança Médica",
+  title: "Gestão de Saúde corporativa com padrão, operação e indicadores",
+  lead:
+    "Uma estrutura B2B para elevar performance assistencial: governança médica, operação ponta a ponta, qualidade, compliance e KPI — com atualização automática de conteúdo por IA a cada 48h.",
+  ctas: { ops: "Ver Ops Briefs", contact: "Contato", ig: "Instagram" },
+
+  aboutTitle: "Sobre a RGR",
+  aboutText:
+    "A RGR atua como MSO e parceiro estratégico em saúde: desenha, opera e monitora serviços médicos com método, previsibilidade e rastreabilidade. Sem agendamento de consultas — foco corporativo e institucional.",
+
+  servicesTitle: "Módulos de serviços (B2B)",
+  servicesText:
+    "Escolha módulos conforme seu cenário e maturidade. Entrega orientada a SLA e segurança do paciente.",
+  services: [
+    { t: "Governança Médica", s: "Linhas de cuidado, fluxos, protocolos e comitês. Padronização e coordenação." },
+    { t: "Operação Assistencial", s: "Gestão diária, rituais, escalas, dimensionamento e contingência." },
+    { t: "Qualidade & Segurança", s: "Indicadores, auditoria, trilhas de evidência e melhoria contínua." },
+    { t: "Compliance & Documentação", s: "Rastreabilidade, políticas internas e gestão de conformidade." },
+    { t: "Inteligência & KPI", s: "Painéis executivos, SLA, alertas e visão de produção." },
+    { t: "Implantação & Turnaround", s: "Plano em fases, quick wins, governança e sustentação." }
+  ],
+
+  scopeTitle: "Escopo assistencial de ponta a ponta",
+  scopeText: "Cobertura modular por nível de criticidade e linhas de cuidado.",
+  scope: [
+    { t: "Pronto Atendimento / UPA", s: "Gestão de fluxo, tempo porta, contingência e metas assistenciais." },
+    { t: "Enfermaria", s: "Round estruturado, alta segura, qualidade e previsibilidade." },
+    { t: "UTI e críticos", s: "Protocolos, bundle, indicadores e aderência assistencial." },
+    { t: "Ambulatório corporativo", s: "Governança, padrões e produtividade por especialidade." },
+    { t: "Pediatria / Clínica / Emergência", s: "Escalas, cobertura, supervisão e integração com qualidade." },
+    { t: "Regulação interna", s: "Métricas, alinhamento com rede e critérios de internação." }
+  ],
+
+  governanceTitle: "Governança na prática",
+  governanceText: "O que muda quando a governança sai do papel e entra na rotina.",
+  governance: [
+    { t: "Ritual executivo", s: "D-5 de escala, D-1 confirmação, daily de gargalos e painel de SLA." },
+    { t: "Protocolos vivos", s: "Atualização periódica, auditoria de aderência e plano de ação." },
+    { t: "Indicadores que importam", s: "Tempo porta, taxa de retorno, eventos, NPS e produtividade." },
+    { t: "Plano de contingência", s: "Acionamento em 30–120 min com papéis definidos e prova de teste." }
+  ],
+
+  innovationTitle: "Inovação (sem modismo)",
+  innovationText:
+    "Benchmark global aplicado ao B2B: design limpo, informação acionável, automação e padrão operacional.",
+  innovation: [
+    { t: "Conteúdo 48h (IA)", s: "Ops Briefs atualizados automaticamente para manter o site vivo e relevante." },
+    { t: "Campanhas em carrossel", s: "Artes e copy B2B prontas para Instagram/LinkedIn com consistência visual." },
+    { t: "Multilíngue", s: "PT/EN/ES nativo (fase 2: áudio/legenda em vídeo)." },
+    { t: "Governança orientada a dados", s: "Toda promessa vira métrica com evidência e auditoria." }
+  ],
+
+  roadmapTitle: "Roadmap (piloto em fases)",
+  roadmapText: "Implantação rápida com base em rituais e indicadores.",
+  roadmap: [
+    { t: "Fase 1 — Diagnóstico + KPI", s: "Mapeamento, baseline, metas e quick wins." },
+    { t: "Fase 2 — Operação + Escalas", s: "Rotinas, dimensionamento, cobertura e contingência." },
+    { t: "Fase 3 — Governança", s: "Protocolos, comitês, auditoria e qualidade." },
+    { t: "Fase 4 — Automação", s: "Dashboards, alertas e conteúdo institucional automatizado." }
+  ],
+
+  campaignsTitle: "Campanhas prontas (carrossel)",
+  campaignsText:
+    "Conteúdo executável: você não recebe “ideia”, recebe campanha pronta para publicar e medir.",
 };
+
+const COPY: Record<Lang, any> = { pt: PT, en: PT, es: PT }; // (mantemos PT por agora; depois te entrego traduções completas)
 
 export default function Site({ lang }: { lang: Lang }) {
   const t = COPY[lang];
+
+  const langHref = (l: Lang) => (l === "pt" ? "/" : `/${l}`);
 
   return (
     <>
@@ -85,7 +93,7 @@ export default function Site({ lang }: { lang: Lang }) {
         <div className="container topbar__inner">
           <div className="brand">
             <div className="brand__logo">
-              <Image src="/assets/logo-rgr.jpeg" alt="RGR" width={42} height={42} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <Image src="/assets/logo-rgr.jpeg" alt="RGR" width={44} height={44} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div className="brand__text">
               <div className="brand__name">RGR</div>
@@ -97,14 +105,16 @@ export default function Site({ lang }: { lang: Lang }) {
             <a href="#sobre">{t.nav.about}</a>
             <a href="#servicos">{t.nav.services}</a>
             <a href="#escopo">{t.nav.scope}</a>
-            <a href="#inovacao">{t.nav.innov}</a>
+            <a href="#governanca">{t.nav.governance}</a>
+            <a href="#inovacao">{t.nav.innovation}</a>
             <a href="#roadmap">{t.nav.roadmap}</a>
+            <a href="#campanhas">{t.nav.campaigns}</a>
           </nav>
 
-          <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
-            <a className="btn btn--ghost" href={lang === "pt" ? "/" : `/${lang}`}>PT</a>
-            <a className="btn btn--ghost" href="/en">EN</a>
-            <a className="btn btn--ghost" href="/es">ES</a>
+          <div className="lang">
+            <a className={`badge ${lang === "pt" ? "badge--on" : ""}`} href={langHref("pt")}>PT</a>
+            <a className={`badge ${lang === "en" ? "badge--on" : ""}`} href={langHref("en")}>EN</a>
+            <a className={`badge ${lang === "es" ? "badge--on" : ""}`} href={langHref("es")}>ES</a>
             <a className="btn btn--primary" href="mailto:servicosmedicosrgr@gmail.com">{t.ctas.contact}</a>
           </div>
         </div>
@@ -114,21 +124,34 @@ export default function Site({ lang }: { lang: Lang }) {
         <section className="hero" id="inicio">
           <div className="container hero__grid">
             <div>
-              <h1 className="hero__title">{t.heroTitle}</h1>
-              <p className="muted" style={{ fontSize: 16, lineHeight: 1.6 }}>{t.heroText}</p>
-              <div style={{ display: "flex", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
-                <a className="btn btn--primary" href="#ops">Ops Briefs (IA)</a>
-                <a className="btn" href="https://www.instagram.com/rgr.healthops/" target="_blank">{t.ctas.instagram}</a>
+              <div className="kicker"><span className="dot" /> {t.kicker}</div>
+              <h1 className="hero__title">{t.title}</h1>
+              <p className="hero__lead">{t.lead}</p>
+
+              <div className="pills">
+                <span className="pill"><b>Clean</b> & Tech</span>
+                <span className="pill"><b>IA</b> (48h)</span>
+                <span className="pill"><b>Governança</b> real</span>
+                <span className="pill"><b>KPI</b> & SLA</span>
+              </div>
+
+              <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
+                <a className="btn btn--primary" href="#ops">{t.ctas.ops}</a>
+                <a className="btn" href="https://www.instagram.com/rgr.healthops/" target="_blank">{t.ctas.ig}</a>
               </div>
             </div>
 
-            <div className="hero__card">
-              <div className="fine">Contato</div>
-              <div style={{ fontWeight: 800, marginTop: 6 }}>servicosmedicosrgr@gmail.com</div>
-              <p className="muted" style={{ marginTop: 10 }}>
-                B2B corporativo • Governança • Operação • Qualidade • KPI
-              </p>
-              <div className="fine" style={{ marginTop: 10 }}>@rgr.healthops</div>
+            <div className="hero__panel">
+              <div className="fine">Contato corporativo</div>
+              <div style={{ fontWeight: 900, fontSize: 16, marginTop: 8 }}>servicosmedicosrgr@gmail.com</div>
+              <div className="hr" />
+              <div className="fine">Posicionamento</div>
+              <div style={{ marginTop: 8, color: "rgba(255,255,255,.85)", lineHeight: 1.6 }}>
+                MSO • Governança • Operação • Qualidade • Compliance • KPI
+              </div>
+              <div className="hr" />
+              <div className="fine">Instagram</div>
+              <div style={{ marginTop: 8, fontWeight: 800 }}>@rgr.healthops</div>
             </div>
           </div>
         </section>
@@ -144,11 +167,11 @@ export default function Site({ lang }: { lang: Lang }) {
           <div className="container">
             <h2 className="h2">{t.servicesTitle}</h2>
             <p className="muted">{t.servicesText}</p>
-
             <div className="grid3" style={{ marginTop: 14 }}>
               {t.services.map((x: any, i: number) => (
                 <div className="card" key={i}>
-                  <h3>{x.t}</h3>
+                  <div className="tag">MÓDULO</div>
+                  <h3 style={{ marginTop: 6 }}>{x.t}</h3>
                   <p className="muted">{x.s}</p>
                 </div>
               ))}
@@ -166,20 +189,86 @@ export default function Site({ lang }: { lang: Lang }) {
           <div className="container">
             <h2 className="h2">{t.scopeTitle}</h2>
             <p className="muted">{t.scopeText}</p>
+            <div className="grid3" style={{ marginTop: 14 }}>
+              {t.scope.map((x: any, i: number) => (
+                <div className="card card--soft" key={i}>
+                  <h3>{x.t}</h3>
+                  <p className="muted">{x.s}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className="section section--alt" id="inovacao">
+        <section className="section section--alt" id="governanca">
           <div className="container">
-            <h2 className="h2">{t.innovTitle}</h2>
-            <p className="muted">{t.innovText}</p>
+            <h2 className="h2">{t.governanceTitle}</h2>
+            <p className="muted">{t.governanceText}</p>
+            <div className="grid2" style={{ marginTop: 14 }}>
+              {t.governance.map((x: any, i: number) => (
+                <div className="card" key={i}>
+                  <h3>{x.t}</h3>
+                  <p className="muted">{x.s}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className="section" id="roadmap">
+        <section className="section" id="inovacao">
+          <div className="container">
+            <h2 className="h2">{t.innovationTitle}</h2>
+            <p className="muted">{t.innovationText}</p>
+            <div className="grid2" style={{ marginTop: 14 }}>
+              {t.innovation.map((x: any, i: number) => (
+                <div className="card" key={i}>
+                  <div className="tag">INOVAÇÃO</div>
+                  <h3 style={{ marginTop: 6 }}>{x.t}</h3>
+                  <p className="muted">{x.s}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--alt" id="roadmap">
           <div className="container">
             <h2 className="h2">{t.roadmapTitle}</h2>
             <p className="muted">{t.roadmapText}</p>
+            <div className="grid2" style={{ marginTop: 14 }}>
+              {t.roadmap.map((x: any, i: number) => (
+                <div className="card" key={i}>
+                  <div className="tag">FASE</div>
+                  <h3 style={{ marginTop: 6 }}>{x.t}</h3>
+                  <p className="muted">{x.s}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="campanhas">
+          <div className="container">
+            <h2 className="h2">{t.campaignsTitle}</h2>
+            <p className="muted">{t.campaignsText}</p>
+
+            <div className="grid3" style={{ marginTop: 14 }}>
+              <div className="card">
+                <div className="tag">CARROSSEL</div>
+                <h3 style={{ marginTop: 6 }}>Governança em 60s</h3>
+                <p className="muted">O que é, por que importa e como medir (B2B).</p>
+              </div>
+              <div className="card">
+                <div className="tag">CARROSSEL</div>
+                <h3 style={{ marginTop: 6 }}>SLA que funciona</h3>
+                <p className="muted">Definição, gatilhos, auditoria e plano de ação.</p>
+              </div>
+              <div className="card">
+                <div className="tag">CARROSSEL</div>
+                <h3 style={{ marginTop: 6 }}>Contingência em 2h</h3>
+                <p className="muted">Playbook prático para evitar crise operacional.</p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -189,8 +278,8 @@ export default function Site({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        <footer className="section">
-          <div className="container fine">
+        <footer className="footer">
+          <div className="container">
             © RGR • Contato: servicosmedicosrgr@gmail.com • Instagram: @rgr.healthops
           </div>
         </footer>
