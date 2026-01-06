@@ -7,43 +7,38 @@ export default function Site({ lang }: { lang: Lang }) {
   const isPT = lang === "pt";
 
   const title = isPT
-    ? "RGR — MSO • Gestão de Serviços de Saúde com Excelência"
-    : "RGR — MSO • Healthcare Services Management Excellence";
+    ? "Operação, padrões e indicadores para serviços de saúde mais eficientes."
+    : "Operation, standards and indicators for more efficient healthcare services.";
 
   const subtitle = isPT
-    ? "Operação assistencial, governança médica e indicadores executivos para elevar qualidade, reduzir risco e aumentar previsibilidade."
-    : "Operations, medical governance and executive KPIs to improve quality, reduce risk and increase predictability.";
+    ? "A RGR é uma MSO (Managed Services Organization) que estrutura e sustenta a gestão de serviços de saúde: processos, SLAs, qualidade, dados e governança."
+    : "RGR is an MSO (Managed Services Organization) that structures and sustains healthcare service management: processes, SLAs, quality, data and governance.";
 
   return (
     <>
       {/* TOPBAR */}
       <header className="topbar">
         <div className="container topbar__inner">
-          <a className="brand" href="#inicio">
-            <div className="brand__logo">
-              <Image
-                src="/assets/logo-rgr.jpeg"
-                alt="RGR"
-                width={44}
-                height={44}
-              />
-            </div>
-
+          <a className="brand" href="#inicio" aria-label="Início">
+            <Image
+              src="/assets/logo-rgr.jpeg"
+              className="logo"
+              alt="Logo da RGR"
+              width={44}
+              height={44}
+            />
             <div className="brand__text">
-              <div className="brand__name">RGR</div>
-              <div className="brand__tag">
-                MSO • Governança • Operação • KPI
-              </div>
+              <strong>RGR</strong>
+              <span>{isPT ? "MSO • Gestão em Saúde" : "MSO • Health Management"}</span>
             </div>
           </a>
 
-          <nav className="navlinks">
+          <nav className="nav" aria-label="Menu">
             <a href="#sobre">Sobre</a>
-            <a href="#servicos">Serviços</a>
             <a href="#governanca">Governança</a>
-            <a href="#escopo">Escopo</a>
+            <a href="#escopo">Escopo Assistencial</a>
+            <a href="#inovacao">Inovação</a>
             <a href="#roadmap">Roadmap</a>
-            <a href="#dicas">Dicas</a>
             <a className="btn" href="#contato">Contato</a>
           </nav>
         </div>
@@ -51,234 +46,283 @@ export default function Site({ lang }: { lang: Lang }) {
 
       <main>
         {/* HERO */}
-        <section className="hero" id="inicio">
+        <section id="inicio" className="hero">
           <div className="container hero__grid">
             <div>
-              <span className="kicker">MSO • B2B Corporativo</span>
-
+              <p className="kicker">Gestão com excelência em saúde corporativa</p>
               <h1 className="hero__title">{title}</h1>
-              <p className="hero__lead">{subtitle}</p>
-
+              <p className="lead">{subtitle}</p>
+              
               <div className="cta">
-                <a className="btn btn--primary" href="#contato">
-                  Falar com a RGR
-                </a>
-                <a
-                  className="btn btn--ghost"
-                  href="https://www.instagram.com/rgr.healthops/"
-                  target="_blank"
-                >
-                  Instagram
-                </a>
+                <a className="btn btn--primary" href="#contato">Solicitar diagnóstico</a>
+                <a className="btn btn--ghost" href="#servicos">Ver serviços</a>
               </div>
 
-              <div className="pills">
-                <span className="pill"><b>MSO</b> Gestão assistencial</span>
-                <span className="pill"><b>SLA</b> Testável</span>
-                <span className="pill"><b>KPI</b> Executivos</span>
-                <span className="pill"><b>Qualidade</b> Auditável</span>
+              <div className="mini">
+                <div className="mini__item"><strong>Padronização</strong><span>protocolos e rotinas</span></div>
+                <div className="mini__item"><strong>Indicadores</strong><span>KPI, SLA, custos</span></div>
+                <div className="mini__item"><strong>Governança</strong><span>compliance e auditoria</span></div>
               </div>
             </div>
 
-            <aside className="hero__panel">
-              <h3>Resumo executivo</h3>
+            <aside className="card">
+              <h2>O que entregamos</h2>
               <ul>
-                <li>Governança médica estruturada</li>
-                <li>Rotina assistencial com SLA</li>
-                <li>Auditoria, indicadores e previsibilidade</li>
-                <li>Modelo MSO full-service</li>
+                <li>Diagnóstico e plano por fases</li>
+                <li>Processos (AS-IS/TO-BE) + POPs</li>
+                <li>Painéis e ritos de gestão</li>
+                <li>Qualidade, risco e melhoria contínua</li>
               </ul>
-              <div className="fine">
-                Contato: servicosmedicosrgr@gmail.com
-              </div>
+              <p className="fine">Implantação enxuta, com quick wins e sustentação mensal.</p>
             </aside>
           </div>
         </section>
 
         {/* SOBRE */}
-        <section className="section" id="sobre">
+        <section id="sobre" className="section">
           <div className="container">
-            <h2 className="h2">Sobre a RGR</h2>
+            <h2>Sobre a RGR</h2>
             <p className="muted">
-              A RGR é uma <strong>MSO (Managed Services Organization)</strong>
-              especializada na gestão de serviços de saúde, atuando na
-              organização da operação assistencial, governança médica e
-              controle de performance.
+              Atuamos na gestão e operação de serviços de saúde com foco em eficiência, segurança e experiência.
+              Implementamos padrões que simplificam o dia a dia e aumentam previsibilidade.
             </p>
 
             <div className="grid3">
               <div className="card">
-                <h3>Gestão Assistencial</h3>
-                <p className="muted">
-                  Organização da operação médica, escalas, rotinas e
-                  contingência com previsibilidade.
-                </p>
+                <h3>Excelência operacional</h3>
+                <p className="muted">Fluxos claros, responsabilidades definidas e rotina bem organizada.</p>
               </div>
-
               <div className="card">
-                <h3>Governança Médica</h3>
-                <p className="muted">
-                  Protocolos, supervisão clínica, auditoria e redução de risco
-                  assistencial.
-                </p>
+                <h3>Gestão por dados</h3>
+                <p className="muted">Indicadores que viram ação: metas, acompanhamento e melhoria.</p>
               </div>
-
               <div className="card">
-                <h3>Indicadores Executivos</h3>
-                <p className="muted">
-                  KPI, SLA, qualidade e produtividade com trilha de evidência.
-                </p>
+                <h3>Qualidade & compliance</h3>
+                <p className="muted">Documentação, auditoria e segurança assistencial.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* SERVIÇOS */}
-        <section className="section section--alt" id="servicos">
+        <section id="servicos" className="section section--alt">
           <div className="container">
-            <h2 className="h2">Serviços</h2>
-            <p className="muted">
-              Atuação modular ou full-service, conforme o nível de maturidade da
-              operação e os objetivos estratégicos da instituição.
-            </p>
+            <h2>Serviços</h2>
+            <p className="muted">Escolha módulos conforme sua maturidade e momento.</p>
 
-            <div className="grid3">
+            <div className="grid2">
               <div className="card">
-                <h3>Gestão MSO</h3>
-                <p className="muted">
-                  Operação assistencial ponta a ponta com governança e rotina.
-                </p>
+                <h3>Estruturação de MSO</h3>
+                <p className="muted">Governança, SLAs, RACI, protocolos e desenho de processos.</p>
               </div>
-
+              <div className="card">
+                <h3>Gestão de Prestadores</h3>
+                <p className="muted">Scorecards, auditoria, metas e planos de ação com a rede.</p>
+              </div>
               <div className="card">
                 <h3>Qualidade & Segurança</h3>
-                <p className="muted">
-                  Auditoria clínica, incidentes, melhoria contínua e compliance.
-                </p>
+                <p className="muted">Protocolos, gestão de incidentes e capacitação de equipes.</p>
               </div>
-
               <div className="card">
-                <h3>Inteligência & KPI</h3>
-                <p className="muted">
-                  Indicadores executivos, SLA e relatórios para diretoria.
-                </p>
+                <h3>Dados & BI</h3>
+                <p className="muted">Dashboards executivos e rotina de governança de dados.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* GOVERNANÇA */}
-        <section className="section" id="governanca">
+        <section id="governanca" className="section">
           <div className="container">
-            <h2 className="h2">Governança Médica</h2>
+            <h2>Governança Médica</h2>
             <p className="muted">
-              Sistema que garante segurança, consistência e previsibilidade na
-              operação assistencial.
+              Projeto executivo de eficiência operacional e gestão de performance para elevar padrão assistencial,
+              reduzir variabilidade e dar previsibilidade à operação — com modelo MSO full-service.
             </p>
+
+            <div className="grid3">
+              <div className="card">
+                <h3>Gestão MSO (Full-Service)</h3>
+                <p className="muted">
+                  Absorvemos a complexidade operacional: escala, contratos, documentação, indicadores e governança,
+                  para que o cliente foque no desfecho clínico.
+                </p>
+              </div>
+              <div className="card">
+                <h3>Integração Assistencial</h3>
+                <p className="muted">
+                  Unificação de processos da porta de entrada (PA/UPA) à alta hospitalar (UTI/Enfermaria),
+                  garantindo fluidez, segurança e redução do tempo de internação.
+                </p>
+              </div>
+              <div className="card">
+                <h3>Excelência Assistencial</h3>
+                <p className="muted">
+                  Muito além da gestão de profissionais: uma solução integrada de MSO 2.0 com protocolos,
+                  supervisão e melhoria contínua baseada em dados.
+                </p>
+              </div>
+            </div>
+
+            <div className="note">
+              Metas típicas de performance: <strong>99% cobertura mínima</strong>, <strong>reposição emergencial em até 2h</strong> e
+              <strong>escala fechada D-5</strong>.
+            </div>
+          </div>
+        </section>
+
+        {/* DESAFIOS */}
+        <section className="section section--alt">
+          <div className="container">
+            <h2>Desafios críticos e nossa solução</h2>
+            <p className="muted">Um modelo de governança pensado para resolver gargalos frequentes de rede e operação.</p>
 
             <div className="grid2">
               <div className="card">
-                <h3>Protocolos e Fluxos</h3>
-                <p className="muted">
-                  Padronização clínica aplicável ao dia a dia operacional.
-                </p>
+                <h3>Absenteísmo e gaps de escala</h3>
+                <p className="muted">Banco regional com reposição emergencial em até 2 horas + backup de escala (D-5).</p>
               </div>
-
               <div className="card">
-                <h3>Auditoria e Evidência</h3>
-                <p className="muted">
-                  Monitoramento contínuo, rastreabilidade e plano de ação.
-                </p>
+                <h3>Déficit de especialistas (RQE)</h3>
+                <p className="muted">Corpo clínico especializado para todas as áreas críticas, com validação documental.</p>
+              </div>
+              <div className="card">
+                <h3>Passivo e custo direto elevados</h3>
+                <p className="muted">Modelo B2B com compliance jurídico e blindagem contratual, com SLAs claros.</p>
+              </div>
+              <div className="card">
+                <h3>Falta de padronização clínica</h3>
+                <p className="muted">Supervisão local ativa e protocolos padronizados (clínicos e operacionais).</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* ESCOPO */}
-        <section className="section section--alt" id="escopo">
+        <section id="escopo" className="section">
           <div className="container">
-            <h2 className="h2">Escopo Assistencial</h2>
+            <h2>Escopo assistencial de ponta a ponta</h2>
+            <p className="muted">Cobertura modular por linhas de cuidado, com integração e governança.</p>
 
             <div className="grid2">
               <div className="card">
-                <h3>UPA / Emergência</h3>
-                <p className="muted">
-                  Fluxos críticos, contingência e governança assistencial.
-                </p>
+                <h3>PA & UPA</h3>
+                <p className="muted">Gestão ágil de pronto atendimento com protocolos de emergência.</p>
               </div>
-
               <div className="card">
-                <h3>UTI / Enfermaria</h3>
-                <p className="muted">
-                  Rotina clínica, rounds, protocolos e auditoria contínua.
-                </p>
+                <h3>UTI & críticos</h3>
+                <p className="muted">Especialistas em alta complexidade e adulto/neonatal com foco em desfecho.</p>
+              </div>
+              <div className="card">
+                <h3>Ambulatório</h3>
+                <p className="muted">Consultas em todas as especialidades com foco em continuidade assistencial.</p>
+              </div>
+              <div className="card">
+                <h3>Enfermaria</h3>
+                <p className="muted">Acompanhamento horizontal e gestão eficiente do giro de leitos.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* INOVAÇÃO */}
+        <section id="inovacao" className="section section--alt">
+          <div className="container">
+            <h2>Inovação e benchmark internacional</h2>
+            <p className="muted">Práticas modernas para elevar performance clínica e eficiência operacional.</p>
+
+            <div className="grid3">
+              <div className="card">
+                <h3>Staffing preditivo</h3>
+                <p className="muted">Análise de dados para prever picos de demanda e ajustar escalas proativamente.</p>
+              </div>
+              <div className="card">
+                <h3>Value-Based Care</h3>
+                <p className="muted">Foco em valor: qualidade e desfecho assistencial para reduzir desperdícios.</p>
+              </div>
+              <div className="card">
+                <h3>Hospital-at-Home Ops</h3>
+                <p className="muted">Suporte a modelos de alta com acompanhamento domiciliar quando aplicável.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* ROADMAP */}
-        <section className="section" id="roadmap">
+        <section id="roadmap" className="section">
           <div className="container">
-            <h2 className="h2">Roadmap de Implantação</h2>
+            <h2>Roadmap de implantação (piloto)</h2>
+            <p className="muted">Implantação por fases para ganhar velocidade sem perder controle.</p>
 
-            <div className="grid3">
+            <div className="grid2">
               <div className="card">
-                <h3>Diagnóstico</h3>
-                <p className="muted">
-                  Mapeamento de riscos, gaps e desenho do modelo operacional.
-                </p>
+                <h3>Mês 1 — Diagnóstico</h3>
+                <p className="muted">Auditoria de gaps assistenciais, mapeamento de riscos e desenho do modelo operacional.</p>
               </div>
-
               <div className="card">
-                <h3>Estruturação</h3>
-                <p className="muted">
-                  Governança, SLA, protocolos e rituais de gestão.
-                </p>
+                <h3>Mês 2–3 — Onboarding</h3>
+                <p className="muted">Treinamento em protocolos do cliente, padronização e início da rotina de gestão MSO.</p>
               </div>
-
               <div className="card">
-                <h3>Execução & KPI</h3>
-                <p className="muted">
-                  Operação assistencial, indicadores e auditoria contínua.
-                </p>
+                <h3>Mês 4 — Otimização</h3>
+                <p className="muted">Avaliação de performance clínica, ajuste de indicadores e planos de ação.</p>
+              </div>
+              <div className="card">
+                <h3>Mês 6 — Expansão</h3>
+                <p className="muted">Roll-out por evidência de KPI e ROI, com governança e sustentação contínua.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* DICAS */}
-        <section className="section" id="dicas">
+        <section id="dicas" className="section section--alt">
           <div className="container">
+            <h2>Dicas rápidas de saúde</h2>
             <Tips />
           </div>
         </section>
 
         {/* CONTATO */}
-        <section className="section section--alt" id="contato">
+        <section id="contato" className="section">
           <div className="container">
-            <h2 className="h2">Contato</h2>
+            <h2>Contato</h2>
+            <p className="muted">Envie sua necessidade e retornaremos com um diagnóstico inicial.</p>
             <p className="muted">
-              Atuação B2B corporativa. Sem agendamento de consultas.
+              <strong>E-mail:</strong>{" "}
+              <a href="mailto:servicosmedicosrgr@gmail.com">servicosmedicosrgr@gmail.com</a>
             </p>
 
-            <div className="grid2">
-              <div className="card">
-                <h3>E-mail</h3>
-                <p className="muted">servicosmedicosrgr@gmail.com</p>
+            <form className="card form">
+              <div className="row">
+                <div style={{ flex: 1 }}>
+                  <label htmlFor="nome">Nome</label>
+                  <input id="nome" required placeholder="Seu nome" style={{ width: '100%' }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label htmlFor="empresa">Empresa</label>
+                  <input id="empresa" required placeholder="Nome da empresa" style={{ width: '100%' }} />
+                </div>
               </div>
 
-              <div className="card">
-                <h3>Instagram</h3>
-                <p className="muted">@rgr.healthops</p>
-              </div>
-            </div>
+              <label htmlFor="mensagem" style={{ display: 'block', marginTop: '1rem' }}>Mensagem</label>
+              <textarea id="mensagem" rows={4} required placeholder="Ex.: piloto, número de unidades, metas, dores" style={{ width: '100%' }}></textarea>
+
+              <button className="btn btn--primary" type="submit" style={{ marginTop: '1rem' }}>Enviar</button>
+            </form>
           </div>
         </section>
 
         <footer className="footer">
-          <div className="container">
-            © RGR • MSO • Governança • Operação • Qualidade • KPI
+          <div className="container footer__inner">
+            <div className="foot">
+              <Image src="/assets/logo-rgr.jpeg" alt="" className="logo logo--sm" width={30} height={30} />
+              <div>
+                <strong>RGR</strong>
+                <p className="muted">Gestão de serviços de saúde com excelência.</p>
+              </div>
+            </div>
+            <p className="fine">© {new Date().getFullYear()} RGR</p>
           </div>
         </footer>
       </main>
