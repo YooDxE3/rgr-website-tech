@@ -19,12 +19,9 @@ const copy: Record<Lang, { title: string; subtitle: string; }> = {
 };
 
 async function getFeed() {
-  // feed local (padrão). Depois você pode trocar para Worker/KV.
   const fallback = { updated_at: "", items: [] as any[] };
-
   try {
-    // Em produção, isso funciona como request interno do próprio site
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/content/feed.json`, { cache: "no-store" });
+    const res = await fetch("/content/feed.json", { cache: "no-store" });
     if (!res.ok) return fallback;
     return await res.json();
   } catch {
