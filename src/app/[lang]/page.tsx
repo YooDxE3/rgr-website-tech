@@ -18,6 +18,15 @@ const copy: Record<Lang, { title: string; subtitle: string; }> = {
   }
 };
 
+export async function generateStaticParams() {
+  return [
+    { lang: "pt" },
+    { lang: "en" },
+    { lang: "es" }
+  ];
+}
+
+
 async function getFeed() {
   const fallback = { updated_at: "", items: [] as any[] };
   try {
