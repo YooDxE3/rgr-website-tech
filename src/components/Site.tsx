@@ -1,286 +1,354 @@
 import Image from "next/image";
-import OpsBriefs from "./OpsBriefs";
 import Tips from "./Tips";
 
 type Lang = "pt" | "en" | "es";
 
-const PT = {
-  nav: {
-    about: "Sobre",
-    services: "Serviços",
-    scope: "Escopo",
-    governance: "Governança",
-    innovation: "Inovação",
-    roadmap: "Roadmap",
-    campaigns: "Campanhas"
-  },
-  kicker: "RGR • MSO • Governança Médica",
-  title: "Gestão de Saúde corporativa com padrão, operação e indicadores",
-  lead:
-    "Uma estrutura B2B para elevar performance assistencial: governança médica, operação ponta a ponta, qualidade, compliance e KPI — com atualização automática de conteúdo por IA a cada 48h.",
-  ctas: { ops: "Ver Ops Briefs", contact: "Contato", ig: "Instagram" },
-
-  aboutTitle: "Sobre a RGR",
-  aboutText:
-    "A RGR atua como MSO e parceiro estratégico em saúde: desenha, opera e monitora serviços médicos com método, previsibilidade e rastreabilidade. Sem agendamento de consultas — foco corporativo e institucional.",
-
-  servicesTitle: "Módulos de serviços (B2B)",
-  servicesText:
-    "Escolha módulos conforme seu cenário e maturidade. Entrega orientada a SLA e segurança do paciente.",
-  services: [
-    { t: "Governança Médica", s: "Linhas de cuidado, fluxos, protocolos e comitês. Padronização e coordenação." },
-    { t: "Operação Assistencial", s: "Gestão diária, rituais, escalas, dimensionamento e contingência." },
-    { t: "Qualidade & Segurança", s: "Indicadores, auditoria, trilhas de evidência e melhoria contínua." },
-    { t: "Compliance & Documentação", s: "Rastreabilidade, políticas internas e gestão de conformidade." },
-    { t: "Inteligência & KPI", s: "Painéis executivos, SLA, alertas e visão de produção." },
-    { t: "Implantação & Turnaround", s: "Plano em fases, quick wins, governança e sustentação." }
-  ],
-
-  scopeTitle: "Escopo assistencial de ponta a ponta",
-  scopeText: "Cobertura modular por nível de criticidade e linhas de cuidado.",
-  scope: [
-    { t: "Pronto Atendimento / UPA", s: "Gestão de fluxo, tempo porta, contingência e metas assistenciais." },
-    { t: "Enfermaria", s: "Round estruturado, alta segura, qualidade e previsibilidade." },
-    { t: "UTI e críticos", s: "Protocolos, bundle, indicadores e aderência assistencial." },
-    { t: "Ambulatório corporativo", s: "Governança, padrões e produtividade por especialidade." },
-    { t: "Pediatria / Clínica / Emergência", s: "Escalas, cobertura, supervisão e integração com qualidade." },
-    { t: "Regulação interna", s: "Métricas, alinhamento com rede e critérios de internação." }
-  ],
-
-  governanceTitle: "Governança na prática",
-  governanceText: "O que muda quando a governança sai do papel e entra na rotina.",
-  governance: [
-    { t: "Ritual executivo", s: "D-5 de escala, D-1 confirmação, daily de gargalos e painel de SLA." },
-    { t: "Protocolos vivos", s: "Atualização periódica, auditoria de aderência e plano de ação." },
-    { t: "Indicadores que importam", s: "Tempo porta, taxa de retorno, eventos, NPS e produtividade." },
-    { t: "Plano de contingência", s: "Acionamento em 30–120 min com papéis definidos e prova de teste." }
-  ],
-
-  innovationTitle: "Inovação (sem modismo)",
-  innovationText:
-    "Benchmark global aplicado ao B2B: design limpo, informação acionável, automação e padrão operacional.",
-  innovation: [
-    { t: "Conteúdo 48h (IA)", s: "Ops Briefs atualizados automaticamente para manter o site vivo e relevante." },
-    { t: "Campanhas em carrossel", s: "Artes e copy B2B prontas para Instagram/LinkedIn com consistência visual." },
-    { t: "Multilíngue", s: "PT/EN/ES nativo (fase 2: áudio/legenda em vídeo)." },
-    { t: "Governança orientada a dados", s: "Toda promessa vira métrica com evidência e auditoria." }
-  ],
-
-  roadmapTitle: "Roadmap (piloto em fases)",
-  roadmapText: "Implantação rápida com base em rituais e indicadores.",
-  roadmap: [
-    { t: "Fase 1 — Diagnóstico + KPI", s: "Mapeamento, baseline, metas e quick wins." },
-    { t: "Fase 2 — Operação + Escalas", s: "Rotinas, dimensionamento, cobertura e contingência." },
-    { t: "Fase 3 — Governança", s: "Protocolos, comitês, auditoria e qualidade." },
-    { t: "Fase 4 — Automação", s: "Dashboards, alertas e conteúdo institucional automatizado." }
-  ],
-
-  campaignsTitle: "Campanhas prontas (carrossel)",
-  campaignsText:
-    "Conteúdo executável: você não recebe “ideia”, recebe campanha pronta para publicar e medir.",
-};
-
-const COPY: Record<Lang, any> = { pt: PT, en: PT, es: PT }; // (mantemos PT por agora; depois te entrego traduções completas)
-
 export default function Site({ lang }: { lang: Lang }) {
-  const t = COPY[lang];
+  // foco: MSO B2B (PT como principal; EN/ES você pode traduzir depois)
+  const isPT = lang === "pt";
+  const langPrefix = lang === "pt" ? "" : `/${lang}`;
 
-  const langHref = (l: Lang) => (l === "pt" ? "/" : `/${l}`);
+  const title = isPT
+    ? "RGR — MSO • Gestão de Serviços de Saúde com Excelência"
+    : "RGR — MSO • Healthcare Services Management Excellence";
+
+  const subtitle = isPT
+    ? "Operação assistencial, governança médica e indicadores executivos para elevar qualidade, reduzir risco e aumentar previsibilidade."
+    : "Operations, medical governance and executive KPIs to improve quality, reduce risk and increase predictability.";
 
   return (
     <>
       <header className="topbar">
-        <div className="container topbar__inner">
+        <div className="container topbarInner">
           <div className="brand">
-            <div className="brand__logo">
-              <Image src="/assets/logo-rgr.jpeg" alt="RGR" width={44} height={44} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div className="brandLogo">
+              <Image
+                src="/assets/logo-rgr.jpeg"
+                alt="RGR"
+                width={42}
+                height={42}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
             </div>
-            <div className="brand__text">
-              <div className="brand__name">RGR</div>
-              <div className="brand__tag">MSO • Gestão em Saúde</div>
+            <div>
+              <div className="brandName">RGR</div>
+              <div className="brandTag">MSO • Governança • Operação • Qualidade • KPI</div>
             </div>
           </div>
 
-          <nav className="navlinks">
-            <a href="#sobre">{t.nav.about}</a>
-            <a href="#servicos">{t.nav.services}</a>
-            <a href="#escopo">{t.nav.scope}</a>
-            <a href="#governanca">{t.nav.governance}</a>
-            <a href="#inovacao">{t.nav.innovation}</a>
-            <a href="#roadmap">{t.nav.roadmap}</a>
-            <a href="#campanhas">{t.nav.campaigns}</a>
+          <nav className="nav">
+            <a href={`${langPrefix}#sobre`}>Sobre</a>
+            <a href={`${langPrefix}#servicos`}>Serviços</a>
+            <a href={`${langPrefix}#governanca`}>Governança Médica</a>
+            <a href={`${langPrefix}#desafios`}>Desafios</a>
+            <a href={`${langPrefix}#escopo`}>Escopo</a>
+            <a href={`${langPrefix}#roadmap`}>Roadmap</a>
+            <a href={`${langPrefix}#dicas`}>Dicas</a>
+            <a href={`${langPrefix}#contato`}>Contato</a>
           </nav>
 
-          <div className="lang">
-            <a className={`badge ${lang === "pt" ? "badge--on" : ""}`} href={langHref("pt")}>PT</a>
-            <a className={`badge ${lang === "en" ? "badge--on" : ""}`} href={langHref("en")}>EN</a>
-            <a className={`badge ${lang === "es" ? "badge--on" : ""}`} href={langHref("es")}>ES</a>
-            <a className="btn btn--primary" href="mailto:servicosmedicosrgr@gmail.com">{t.ctas.contact}</a>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <a className="btn btnGhost" href="/">PT</a>
+            <a className="btn btnGhost" href="/en">EN</a>
+            <a className="btn btnGhost" href="/es">ES</a>
+            <a className="btn btnPrimary" href="mailto:servicosmedicosrgr@gmail.com">Contato</a>
           </div>
         </div>
       </header>
 
       <main>
+        {/* HERO */}
         <section className="hero" id="inicio">
-          <div className="container hero__grid">
+          <div className="container heroGrid">
             <div>
-              <div className="kicker"><span className="dot" /> {t.kicker}</div>
-              <h1 className="hero__title">{t.title}</h1>
-              <p className="hero__lead">{t.lead}</p>
+              <h1 className="heroTitle">{title}</h1>
+              <p className="muted" style={{ fontSize: 16 }}>{subtitle}</p>
 
-              <div className="pills">
-                <span className="pill"><b>Clean</b> & Tech</span>
-                <span className="pill"><b>IA</b> (48h)</span>
-                <span className="pill"><b>Governança</b> real</span>
-                <span className="pill"><b>KPI</b> & SLA</span>
+              <div className="pillRow">
+                <span className="pill"><strong>MSO</strong> B2B corporativo</span>
+                <span className="pill"><strong>SLA</strong> testável</span>
+                <span className="pill"><strong>KPI</strong> executivos</span>
+                <span className="pill"><strong>Qualidade</strong> + Auditoria</span>
               </div>
 
-              <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
-                <a className="btn btn--primary" href="#ops">{t.ctas.ops}</a>
-                <a className="btn" href="https://www.instagram.com/rgr.healthops/" target="_blank">{t.ctas.ig}</a>
+              <div style={{ display: "flex", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
+                <a className="btn btnPrimary" href="#contato">Falar com a RGR</a>
+                <a className="btn" href="https://www.instagram.com/rgr.healthops/" target="_blank">Instagram</a>
+              </div>
+
+              <div className="list">
+                <div className="li">
+                  <div className="dot" />
+                  <div className="muted">Sem agendamento de consultas. Foco total em gestão e operação de serviços de saúde.</div>
+                </div>
+                <div className="li">
+                  <div className="dot" />
+                  <div className="muted">Padronização, rituais de gestão, auditoria e trilha de evidência.</div>
+                </div>
+                <div className="li">
+                  <div className="dot" />
+                  <div className="muted">Conteúdo educativo de saúde atualizado automaticamente a cada 48h (dicas rápidas).</div>
+                </div>
               </div>
             </div>
 
-            <div className="hero__panel">
-              <div className="fine">Contato corporativo</div>
-              <div style={{ fontWeight: 900, fontSize: 16, marginTop: 8 }}>servicosmedicosrgr@gmail.com</div>
+            <div className="heroBox">
+              <div className="fine">Resumo executivo</div>
               <div className="hr" />
-              <div className="fine">Posicionamento</div>
-              <div style={{ marginTop: 8, color: "rgba(255,255,255,.85)", lineHeight: 1.6 }}>
-                MSO • Governança • Operação • Qualidade • Compliance • KPI
+              <div className="grid2">
+                <div className="card cardSoft">
+                  <div className="kpi"><strong>SLA</strong><span>Tempo-resposta</span></div>
+                  <div className="fine">gatilhos + acionamento + auditoria</div>
+                </div>
+                <div className="card cardSoft">
+                  <div className="kpi"><strong>KPI</strong><span>Qualidade</span></div>
+                  <div className="fine">indicadores + trilha de evidência</div>
+                </div>
+                <div className="card cardSoft">
+                  <div className="kpi"><strong>Ops</strong><span>Escala</span></div>
+                  <div className="fine">modelo D-5 + contingência</div>
+                </div>
+                <div className="card cardSoft">
+                  <div className="kpi"><strong>MSO</strong><span>Execução</span></div>
+                  <div className="fine">rotina + previsibilidade + entrega</div>
+                </div>
               </div>
+
               <div className="hr" />
-              <div className="fine">Instagram</div>
-              <div style={{ marginTop: 8, fontWeight: 800 }}>@rgr.healthops</div>
+              <div className="fine">Contato</div>
+              <div style={{ fontWeight: 900, marginTop: 6 }}>servicosmedicosrgr@gmail.com</div>
+              <div className="fine" style={{ marginTop: 6 }}>@rgr.healthops</div>
             </div>
           </div>
         </section>
 
+        {/* SOBRE */}
         <section className="section" id="sobre">
           <div className="container">
-            <h2 className="h2">{t.aboutTitle}</h2>
-            <p className="muted">{t.aboutText}</p>
-          </div>
-        </section>
+            <h2 className="h2">Sobre a RGR</h2>
+            <p className="muted">
+              A RGR é uma <strong>MSO</strong> dedicada à <strong>gestão de serviços de saúde com excelência</strong>.
+              Atuamos na estruturação e operação assistencial com governança médica, qualidade, compliance e indicadores,
+              entregando previsibilidade e performance para unidades e redes.
+            </p>
 
-        <section className="section section--alt" id="servicos">
-          <div className="container">
-            <h2 className="h2">{t.servicesTitle}</h2>
-            <p className="muted">{t.servicesText}</p>
             <div className="grid3" style={{ marginTop: 14 }}>
-              {t.services.map((x: any, i: number) => (
-                <div className="card" key={i}>
-                  <div className="tag">MÓDULO</div>
-                  <h3 style={{ marginTop: 6 }}>{x.t}</h3>
-                  <p className="muted">{x.s}</p>
-                </div>
-              ))}
+              <div className="card">
+                <h3>Governança</h3>
+                <p className="muted">Regras claras, responsabilidades, comitês e tomada de decisão padronizada.</p>
+              </div>
+              <div className="card">
+                <h3>Operação</h3>
+                <p className="muted">Rotina assistencial, escala, contingência e execução com SLA real.</p>
+              </div>
+              <div className="card">
+                <h3>Indicadores</h3>
+                <p className="muted">KPI executivos, auditoria, rastreabilidade e trilha de evidência.</p>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="section" id="ops">
+        {/* SERVIÇOS */}
+        <section className="section sectionAlt" id="servicos">
           <div className="container">
-            <OpsBriefs />
+            <h2 className="h2">Serviços</h2>
+            <p className="muted">Módulos que se conectam e escalam conforme sua operação.</p>
+
+            <div className="grid3" style={{ marginTop: 14 }}>
+              <div className="card">
+                <h3>Gestão MSO</h3>
+                <p className="muted">Operação ponta a ponta, rotina e governança de execução.</p>
+              </div>
+              <div className="card">
+                <h3>Qualidade & Segurança</h3>
+                <p className="muted">Auditoria, incidentes, melhoria contínua e evidências.</p>
+              </div>
+              <div className="card">
+                <h3>Inteligência & KPI</h3>
+                <p className="muted">Painéis executivos por unidade/linha e desempenho assistencial.</p>
+              </div>
+              <div className="card">
+                <h3>Gestão de Escala</h3>
+                <p className="muted">Modelo D-5, banco reserva, substituição e métricas de cobertura.</p>
+              </div>
+              <div className="card">
+                <h3>SLA & Compliance</h3>
+                <p className="muted">SLA testável: gatilhos, auditoria e relatórios para diretoria.</p>
+              </div>
+              <div className="card">
+                <h3>Protocolos & Fluxos</h3>
+                <p className="muted">Linhas de cuidado, padronização e adesão com evidência.</p>
+              </div>
+            </div>
           </div>
         </section>
 
+        {/* GOVERNANÇA MÉDICA */}
+        <section className="section" id="governanca">
+          <div className="container">
+            <h2 className="h2">Governança Médica</h2>
+            <p className="muted">
+              Governança é o sistema que garante consistência, segurança e previsibilidade. A RGR estrutura e mantém:
+              comitês, protocolos, fluxos críticos, trilha de auditoria e rituais de gestão orientados a KPI.
+            </p>
+
+            <div className="grid2" style={{ marginTop: 14 }}>
+              <div className="card">
+                <h3>Padronização que funciona</h3>
+                <p className="muted">Protocolos e fluxos aplicáveis ao chão da operação, com adesão monitorada.</p>
+              </div>
+              <div className="card">
+                <h3>Rituais executivos</h3>
+                <p className="muted">Reuniões e rotinas de gestão que garantem decisão rápida e execução.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* DESAFIOS */}
+        <section className="section sectionAlt" id="desafios">
+          <div className="container">
+            <h2 className="h2">Desafios críticos e nossas soluções</h2>
+            <p className="muted">Pontos onde operações travam — e como destravar com método.</p>
+
+            <div className="grid3" style={{ marginTop: 14 }}>
+              <div className="card">
+                <div className="fine">Desafio</div>
+                <h3>Escala instável</h3>
+                <p className="muted">Faltas, trocas e improviso derrubam SLA e aumentam risco.</p>
+                <div className="hr" />
+                <div className="fine">Solução RGR</div>
+                <p className="muted">Modelo D-5 + banco reserva + KPI de cobertura e reposição.</p>
+              </div>
+
+              <div className="card">
+                <div className="fine">Desafio</div>
+                <h3>Indicadores “decorativos”</h3>
+                <p className="muted">Mede-se muito e decide-se pouco.</p>
+                <div className="hr" />
+                <div className="fine">Solução RGR</div>
+                <p className="muted">KPI executivos com gatilhos, responsáveis e trilha de evidência.</p>
+              </div>
+
+              <div className="card">
+                <div className="fine">Desafio</div>
+                <h3>Qualidade sem rastreio</h3>
+                <p className="muted">Sem auditoria real, não há melhoria contínua.</p>
+                <div className="hr" />
+                <div className="fine">Solução RGR</div>
+                <p className="muted">Auditoria estruturada + incidentes + plano de ação monitorado.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ESCOPO */}
         <section className="section" id="escopo">
           <div className="container">
-            <h2 className="h2">{t.scopeTitle}</h2>
-            <p className="muted">{t.scopeText}</p>
-            <div className="grid3" style={{ marginTop: 14 }}>
-              {t.scope.map((x: any, i: number) => (
-                <div className="card card--soft" key={i}>
-                  <h3>{x.t}</h3>
-                  <p className="muted">{x.s}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+            <h2 className="h2">Escopo assistencial de ponta a ponta</h2>
+            <p className="muted">Cobertura modular conforme criticidade e linha de cuidado.</p>
 
-        <section className="section section--alt" id="governanca">
-          <div className="container">
-            <h2 className="h2">{t.governanceTitle}</h2>
-            <p className="muted">{t.governanceText}</p>
             <div className="grid2" style={{ marginTop: 14 }}>
-              {t.governance.map((x: any, i: number) => (
-                <div className="card" key={i}>
-                  <h3>{x.t}</h3>
-                  <p className="muted">{x.s}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section" id="inovacao">
-          <div className="container">
-            <h2 className="h2">{t.innovationTitle}</h2>
-            <p className="muted">{t.innovationText}</p>
-            <div className="grid2" style={{ marginTop: 14 }}>
-              {t.innovation.map((x: any, i: number) => (
-                <div className="card" key={i}>
-                  <div className="tag">INOVAÇÃO</div>
-                  <h3 style={{ marginTop: 6 }}>{x.t}</h3>
-                  <p className="muted">{x.s}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section section--alt" id="roadmap">
-          <div className="container">
-            <h2 className="h2">{t.roadmapTitle}</h2>
-            <p className="muted">{t.roadmapText}</p>
-            <div className="grid2" style={{ marginTop: 14 }}>
-              {t.roadmap.map((x: any, i: number) => (
-                <div className="card" key={i}>
-                  <div className="tag">FASE</div>
-                  <h3 style={{ marginTop: 6 }}>{x.t}</h3>
-                  <p className="muted">{x.s}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section" id="campanhas">
-          <div className="container">
-            <h2 className="h2">{t.campaignsTitle}</h2>
-            <p className="muted">{t.campaignsText}</p>
-
-            <div className="grid3" style={{ marginTop: 14 }}>
               <div className="card">
-                <div className="tag">CARROSSEL</div>
-                <h3 style={{ marginTop: 6 }}>Governança em 60s</h3>
-                <p className="muted">O que é, por que importa e como medir (B2B).</p>
+                <h3>UPA / Emergência</h3>
+                <p className="muted">Fluxos de porta, protocolos, contingência e governança assistencial.</p>
               </div>
               <div className="card">
-                <div className="tag">CARROSSEL</div>
-                <h3 style={{ marginTop: 6 }}>SLA que funciona</h3>
-                <p className="muted">Definição, gatilhos, auditoria e plano de ação.</p>
+                <h3>Enfermaria</h3>
+                <p className="muted">Rotina clínica, rounds, padronização e auditoria contínua.</p>
               </div>
               <div className="card">
-                <div className="tag">CARROSSEL</div>
-                <h3 style={{ marginTop: 6 }}>Contingência em 2h</h3>
-                <p className="muted">Playbook prático para evitar crise operacional.</p>
+                <h3>UTI / Críticos</h3>
+                <p className="muted">Linhas de cuidado, protocolos e governança multiprofissional.</p>
+              </div>
+              <div className="card">
+                <h3>Ambulatório corporativo</h3>
+                <p className="muted">Operação e indicadores (sem agendamento de consultas no site).</p>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="section section--alt">
+        {/* ROADMAP */}
+        <section className="section sectionAlt" id="roadmap">
+          <div className="container">
+            <h2 className="h2">Roadmap de implantação</h2>
+            <p className="muted">Implantação por fases para ganho rápido e sustentado.</p>
+
+            <div className="timeline">
+              <div className="step">
+                <div className="stepNum">Semana 1</div>
+                <div className="card">
+                  <h3>Diagnóstico + desenho</h3>
+                  <p className="muted">Mapeamento, gaps, riscos e plano de execução.</p>
+                </div>
+              </div>
+
+              <div className="step">
+                <div className="stepNum">Semana 2</div>
+                <div className="card">
+                  <h3>Governança + rituais</h3>
+                  <p className="muted">SLA, responsabilidades, comitês e rotinas executivas.</p>
+                </div>
+              </div>
+
+              <div className="step">
+                <div className="stepNum">Semana 3</div>
+                <div className="card">
+                  <h3>Operação + escala</h3>
+                  <p className="muted">Modelo D-5, contingência, processos e metas.</p>
+                </div>
+              </div>
+
+              <div className="step">
+                <div className="stepNum">Semana 4</div>
+                <div className="card">
+                  <h3>KPI + auditoria</h3>
+                  <p className="muted">Dashboard, trilha de evidência e melhoria contínua.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* DICAS 48H */}
+        <section className="section" id="dicas">
           <div className="container">
             <Tips />
           </div>
         </section>
 
+        {/* CONTATO */}
+        <section className="section sectionAlt" id="contato">
+          <div className="container">
+            <h2 className="h2">Contato</h2>
+            <p className="muted">
+              Vamos conversar sobre a sua operação (B2B). Envie uma mensagem e descreva sua necessidade.
+            </p>
+
+            <div className="grid2" style={{ marginTop: 14 }}>
+              <div className="card">
+                <h3>E-mail</h3>
+                <p className="muted">servicosmedicosrgr@gmail.com</p>
+                <div style={{ marginTop: 12 }}>
+                  <a className="btn btnPrimary" href="mailto:servicosmedicosrgr@gmail.com">Enviar e-mail</a>
+                </div>
+              </div>
+              <div className="card">
+                <h3>Instagram</h3>
+                <p className="muted">@rgr.healthops</p>
+                <div style={{ marginTop: 12 }}>
+                  <a className="btn" href="https://www.instagram.com/rgr.healthops/" target="_blank">Abrir Instagram</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <footer className="footer">
           <div className="container">
-            © RGR • Contato: servicosmedicosrgr@gmail.com • Instagram: @rgr.healthops
+            © RGR • MSO • Governança • Operação • Qualidade • KPI
           </div>
         </footer>
       </main>
