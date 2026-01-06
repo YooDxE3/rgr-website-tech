@@ -30,7 +30,7 @@ export async function generateStaticParams() {
 async function getFeed() {
   const fallback = { updated_at: "", items: [] as any[] };
   try {
-    const res = await fetch("/content/feed.json", { cache: "no-store" });
+    const res = await fetch("/content/feed.json");
     if (!res.ok) return fallback;
     return await res.json();
   } catch {
