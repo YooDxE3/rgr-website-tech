@@ -1,4 +1,20 @@
 {
-  "updated_at": "",
-  "items": []
+  "updated_at": "2026-01-06T19:42:21Z",
+  "items": [
+    {
+      "category": "Governança",
+      "title": "SLA não é slogan: é métrica",
+      "summary": "SLA só existe quando você mede. Checklist executivo: definição, gatilhos e auditoria."
+    },
+    {
+      "category": "Operação",
+      "title": "Escala D-5: o ritual que evita crise",
+      "summary": "Padronize a confirmação com antecedência, banco e reposição com KPI de tempo."
+    },
+    {
+      "category": "Qualidade",
+      "title": "Contingência em 2h: estrutura real",
+      "summary": "Plano testável: acionamento, regulação, substituição e lições aprendidas."
+    }
+  ]
 }
