@@ -1,4 +1,5 @@
-import { redirect } from "next/navigation";
-export default function Home() {
-  redirect("/pt");
+import Site from "../components/Site";
+
+export default function Page() {
+  return <Site lang="pt" />;
 }
