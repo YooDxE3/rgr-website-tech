@@ -21,7 +21,7 @@ export default function Site({ lang }: { lang: Lang }) {
         <div className="container topbar__inner">
           <a className="brand" href="#inicio" aria-label="Início">
             <Image
-              src="/assets/logo-rgr.jpeg"
+              src="../assets/logo-rgr.jpeg"
               className="logo"
               alt="Logo da RGR"
               width={44}
