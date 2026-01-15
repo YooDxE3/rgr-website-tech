@@ -19,27 +19,21 @@ export default function Site({ lang }: { lang: Lang }) {
     {/* TOPBAR */}
       <header className="topbar">
         <div className="container topbar__inner">
-          <a className="brand" href="#inicio" aria-label="Início">
-            <Image
-              src="../../public/assets/logo-rgr.jpeg"
-              className="logo"
-              alt="Logo da RGR"
-              width={44}
-              height={44}
-            />
+          <a className="brand" href="#inicio">
+            <Image src="/assets/logo-rgr.jpeg" alt="RGR" width={44} height={44} />
             <div className="brand__text">
               <strong>RGR</strong>
-              <span>{isPT ? "MSO • Gestão em Saúde" : "MSO • Health Management"}</span>
+              <span>{t.topbar.tagline}</span>
             </div>
           </a>
 
-          <nav className="nav" aria-label="Menu">
-            <a href="#sobre">Sobre</a>
-            <a href="#governanca">Governança</a>
-            <a href="#escopo">Escopo Assistencial</a>
-            <a href="#inovacao">Inovação</a>
-            <a href="#roadmap">Roadmap</a>
-            <a className="btn" href="#contato">Contato</a>
+          <nav className="nav">
+            <a href="#sobre">{t.topbar.menu.about}</a>
+            <a href="#governanca">{t.topbar.menu.governance}</a>
+            <a href="#escopo">{t.topbar.menu.scope}</a>
+            <a href="#inovacao">{t.topbar.menu.innovation}</a>
+            <a href="#roadmap">{t.topbar.menu.roadmap}</a>
+            <a className="btn" href="#contato">{t.topbar.menu.contact}</a>
           </nav>
         </div>
       </header>
@@ -49,9 +43,9 @@ export default function Site({ lang }: { lang: Lang }) {
         <section id="inicio" className="hero">
           <div className="container hero__grid">
             <div>
-              <p className="kicker">Gestão com excelência em saúde corporativa</p>
-              <h1 className="hero__title">{title}</h1>
-              <p className="lead">{subtitle}</p>
+              <p className="kicker">{t.hero.kicker}</p>
+              <h1>{t.hero.title}</h1>
+              <p className="lead">{t.hero.subtitle}</p>
               
               <div className="cta">
                 <a className="btn btn--primary" href="#contato">Solicitar diagnóstico</a>
@@ -66,14 +60,11 @@ export default function Site({ lang }: { lang: Lang }) {
             </div>
 
             <aside className="card">
-              <h2>O que entregamos</h2>
+              <h2>{t.hero.delivery.title}</h2>
               <ul>
-                <li>Diagnóstico e plano por fases</li>
-                <li>Processos (AS-IS/TO-BE) + POPs</li>
-                <li>Painéis e ritos de gestão</li>
-                <li>Qualidade, risco e melhoria contínua</li>
+                {t.hero.delivery.items.map((i) => <li key={i}>{i}</li>)}
               </ul>
-              <p className="fine">Implantação enxuta, com quick wins e sustentação mensal.</p>
+              <p className="fine">{t.hero.delivery.note}</p>
             </aside>
           </div>
         </section>
@@ -278,7 +269,7 @@ export default function Site({ lang }: { lang: Lang }) {
         {/* DICAS */}
         <section id="dicas" className="section section--alt">
           <div className="container">
-            <h2>Dicas rápidas de saúde</h2>
+            <h2>{t.tips.title}</h2>
             <Tips />
           </div>
         </section>
@@ -319,7 +310,7 @@ export default function Site({ lang }: { lang: Lang }) {
               <Image src="/assets/logo-rgr.jpeg" alt="" className="logo logo--sm" width={30} height={30} />
               <div>
                 <strong>RGR</strong>
-                <p className="muted">Gestão de serviços de saúde com excelência.</p>
+                <p className="muted">{t.footer.description}</p>
               </div>
             </div>
             <p className="fine">© {new Date().getFullYear()} RGR</p>

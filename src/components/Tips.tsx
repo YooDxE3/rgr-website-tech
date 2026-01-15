@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Lang } from "@/lib/i18n";
 
 type HealthPost = {
   id: string;
@@ -9,30 +10,27 @@ type HealthPost = {
   excerpt: string;
 };
 
-export default function Tips() {
+export default function Tips({ lang }: { lang: Lang }) {
   const [posts, setPosts] = useState<HealthPost[]>([]);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/content/feed.json", {
-          cache: "no-store",
-        });
-
+        const res = await fetch("/content/feed.json", { cache: "no-store" });
         const data = await res.json();
 
         const healthPosts = (data?.posts || []).filter(
-          (post: HealthPost) => post.category === "saude"
+          (p: HealthPost) => p.category === "saude"
         );
 
         setPosts(healthPosts.slice(0, 3));
-      } catch (error) {
-        console.error("Erro ao carregar dicas de saúde:", error);
+      } catch (e) {
+        console.error("Erro ao carregar dicas", e);
       }
     }
 
     load();
-  }, []);
+  }, [lang]);
 
   return (
     <div className="grid3" style={{ marginTop: 24 }}>
@@ -45,8 +43,13 @@ export default function Tips() {
 
       {posts.length === 0 && (
         <div className="card">
-          <strong>Nenhuma dica disponível</strong>
-          <p className="muted">Conteúdo será carregado automaticamente.</p>
+          <strong>
+            {lang === "en"
+              ? "No tips available"
+              : lang === "es"
+              ? "No hay consejos disponibles"
+              : "Nenhuma dica disponível"}
+          </strong>
         </div>
       )}
     </div>
