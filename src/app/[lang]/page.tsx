@@ -1,4 +1,4 @@
-import Site from "../components/Site";
+import Site from "../../components/Site";
 
 export type Lang = "pt" | "en" | "es";
 
