@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Tips from "./Tips";
-import OpsBriefs from "./OpsBriefs";
-import LanguageSwitcher from "./LanguageSwitcher"; // Mantenha o switcher se você criou
+import LanguageSwitcher from "./LanguageSwitcher"; 
 import { copy } from "@/lib/copy";
 import { Lang } from "@/lib/i18n";
 

@@ -6,6 +6,7 @@ import { Lang } from "@/lib/i18n";
 type HealthPost = {
   id: string;
   category: string;
+  lang?: string; // Agora o post tem idioma
   title: string;
   excerpt: string;
 };
@@ -19,8 +20,9 @@ export default function Tips({ lang }: { lang: Lang }) {
         const res = await fetch("/content/feed.json", { cache: "no-store" });
         const data = await res.json();
 
+        // FILTRO: Pega categoria 'saude' E o idioma correto
         const healthPosts = (data?.posts || []).filter(
-          (p: HealthPost) => p.category === "saude"
+          (p: HealthPost) => p.category === "saude" && p.lang === lang
         );
 
         setPosts(healthPosts.slice(0, 3));
@@ -30,7 +32,7 @@ export default function Tips({ lang }: { lang: Lang }) {
     }
 
     load();
-  }, [lang]);
+  }, [lang]); // Recarrega se o idioma mudar
 
   return (
     <div className="grid3" style={{ marginTop: 24 }}>
@@ -45,10 +47,10 @@ export default function Tips({ lang }: { lang: Lang }) {
         <div className="card">
           <strong>
             {lang === "en"
-              ? "No tips available"
+              ? "No tips available at the moment."
               : lang === "es"
-              ? "No hay consejos disponibles"
-              : "Nenhuma dica disponível"}
+              ? "No hay consejos disponibles en este momento."
+              : "Nenhuma dica disponível no momento."}
           </strong>
         </div>
       )}
