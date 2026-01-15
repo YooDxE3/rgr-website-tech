@@ -26,16 +26,12 @@ export default function Tips() {
   return (
     <>
       <h2 className="h2">Dicas rápidas de saúde</h2>
-      <p className="muted">Conteúdo educativo (não substitui consulta médica). Atualiza a cada 48 horas.</p>
+      <p className="muted">Conteúdo educativo (não substitui consulta médica).</p>
 
       <div className="grid2" style={{ marginTop: 14 }}>
         <div className="card">
           <h3>{tip?.title || "Carregando..."}</h3>
           <p className="muted">{tip?.description || "Aguarde um instante."}</p>
-        </div>
-        <div className="card">
-          <h3>Campanhas prontas</h3>
-          <p className="muted">O Content Hub gera carrossel e texto B2B, pronto para automação no Instagram.</p>
         </div>
       </div>
     </>
