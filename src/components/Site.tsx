@@ -13,7 +13,13 @@ export default function Site({ lang }: { lang: Lang }) {
       <header className="topbar">
         <div className="container topbar__inner">
           <a className="brand" href="#inicio">
-            <Image src="/assets/logo-rgr.jpeg" alt="RGR" width={44} height={44} />
+            <img 
+  src="/assets/logo-rgr.png" 
+  alt="RGR" 
+  width="44" 
+  height="44" 
+  style={{ objectFit: "contain" }}
+/>
             <div className="brand__text">
               <strong>RGR</strong>
               <span>{t.topbar.tagline}</span>
@@ -241,7 +247,7 @@ export default function Site({ lang }: { lang: Lang }) {
             <div className="foot">
               {/* Tag HTML normal, sem otimização */}
 <img 
-  src="/assets/logo-rgr.jpeg" 
+  src="/assets/logo-rgr.png" 
   alt="RGR" 
   width="44" 
   height="44" 
