@@ -7,58 +7,45 @@ type HealthPost = {
   category: string;
   title: string;
   excerpt: string;
-  content: string;
-  published_at: string;
 };
 
-export default function Tips() {
-  const [post, setPost] = useState<HealthPost | null>(null);
+export default function HealthTipsGrid() {
+  const [posts, setPosts] = useState<HealthPost[]>([]);
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/content/feed.json", { cache: "no-store" });
+        const res = await fetch("/content/feed.json", {
+          cache: "no-store",
+        });
         const data = await res.json();
 
         const healthPosts = (data?.posts || []).filter(
           (p: HealthPost) => p.category === "saude"
         );
 
-        if (!healthPosts.length) return;
-
-        // troca a cada 48h
-        const slot = Math.floor(Date.now() / (1000 * 60 * 60 * 48));
-        setPost(healthPosts[slot % healthPosts.length]);
+        setPosts(healthPosts.slice(0, 3)); // quantidade de cards
       } catch (err) {
-        console.error("Erro ao carregar dicas de saúde", err);
+        console.error("Erro ao carregar dicas", err);
       }
     })();
   }, []);
 
   return (
-    <section aria-labelledby="health-tips">
-      <h2 id="health-tips" className="h2">
-        Dicas rápidas de saúde
-      </h2>
-
+    <section>
+      <h2 className="h2">Inovação e benchmark internacional</h2>
       <p className="muted">
-        Conteúdo educativo (não substitui consulta médica).
+        Práticas modernas para elevar performance clínica e eficiência operacional.
       </p>
 
-      <article className="card" style={{ marginTop: 14 }}>
-        <h3>{post?.title || "Carregando..."}</h3>
-
-        <p className="muted">
-          {post?.excerpt || "Aguarde um instante."}
-        </p>
-
-        {/* Conteúdo rico = melhor indexação */}
-        {post && (
-          <section
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-        )}
-      </article>
+      <div className="grid3" style={{ marginTop: 24 }}>
+        {posts.map((post) => (
+          <article key={post.id} className="card">
+            <h3>{post.title}</h3>
+            <p className="muted">{post.excerpt}</p>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }
