@@ -1,46 +1,145 @@
 {
-  "generated_at": "2026-01-15T18:41:13.873013",
+  "generated_at": "2026-01-15T21:32:50.805514",
   "posts": [
     {
-      "id": "a-importancia-de-beber-agua-todos-os-dias",
+      "id": "water-pt",
       "category": "saude",
+      "lang": "pt",
       "title": "A importância de beber água todos os dias",
-      "excerpt": "Manter o corpo hidratado é essencial para o bom funcionamento do organismo.A água auxilia na digestão, circulação, controle da temperatura corporal e eliminação",
-      "content": "<p>Manter o corpo hidratado é essencial para o bom funcionamento do organismo.</p><p>A água auxilia na digestão, circulação, controle da temperatura corporal e eliminação de toxinas.</p><p>O ideal é consumir água ao longo do dia, mesmo sem sentir sede.</p>",
+      "excerpt": "Manter o corpo hidratado é essencial para o bom funcionamento do organismo.A água auxilia na digestão, circulação e controle da temperatura.",
+      "content": "<p>Manter o corpo hidratado é essencial para o bom funcionamento do organismo.</p><p>A água auxilia na digestão, circulação e controle da temperatura.</p>",
       "tags": [
         "hidratação",
+        "hydration",
         "saúde",
-        "bem-estar"
+        "health"
       ],
-      "published_at": "2026-01-15T18:41:13.873013",
+      "published_at": "2026-01-15T21:32:50.805514",
       "author": "RGR Saúde"
     },
     {
-      "id": "por-que-dormir-bem-melhora-sua-saude",
+      "id": "water-en",
       "category": "saude",
+      "lang": "en",
+      "title": "The importance of drinking water every day",
+      "excerpt": "Keeping the body hydrated is essential for the proper functioning of the organism.Water aids in digestion, circulation, and temperature control.",
+      "content": "<p>Keeping the body hydrated is essential for the proper functioning of the organism.</p><p>Water aids in digestion, circulation, and temperature control.</p>",
+      "tags": [
+        "hidratação",
+        "hydration",
+        "saúde",
+        "health"
+      ],
+      "published_at": "2026-01-15T21:32:50.805514",
+      "author": "RGR Saúde"
+    },
+    {
+      "id": "water-es",
+      "category": "saude",
+      "lang": "es",
+      "title": "La importancia de beber agua todos los días",
+      "excerpt": "Mantener el cuerpo hidratado es esencial para el buen funcionamiento del organismo.El agua ayuda en la digestión, la circulación y el control de la temperatura.",
+      "content": "<p>Mantener el cuerpo hidratado es esencial para el buen funcionamiento del organismo.</p><p>El agua ayuda en la digestión, la circulación y el control de la temperatura.</p>",
+      "tags": [
+        "hidratação",
+        "hydration",
+        "saúde",
+        "health"
+      ],
+      "published_at": "2026-01-15T21:32:50.805514",
+      "author": "RGR Saúde"
+    },
+    {
+      "id": "sleep-pt",
+      "category": "saude",
+      "lang": "pt",
       "title": "Por que dormir bem melhora sua saúde",
-      "excerpt": "Uma boa noite de sono é fundamental para a recuperação física e mental.Dormir mal pode afetar o sistema imunológico, a memória e o humor.Manter horários regular",
-      "content": "<p>Uma boa noite de sono é fundamental para a recuperação física e mental.</p><p>Dormir mal pode afetar o sistema imunológico, a memória e o humor.</p><p>Manter horários regulares para dormir ajuda a melhorar a qualidade do sono.</p>",
+      "excerpt": "Uma boa noite de sono é fundamental para a recuperação física e mental.Dormir mal pode afetar o sistema imunológico e a memória.",
+      "content": "<p>Uma boa noite de sono é fundamental para a recuperação física e mental.</p><p>Dormir mal pode afetar o sistema imunológico e a memória.</p>",
       "tags": [
         "sono",
-        "qualidade de vida",
-        "saúde"
+        "sleep",
+        "sueño",
+        "bem-estar"
       ],
-      "published_at": "2026-01-15T18:41:13.873013",
+      "published_at": "2026-01-15T21:32:50.805514",
       "author": "RGR Saúde"
     },
     {
-      "id": "alimentacao-equilibrada-faz-diferenca-no-dia-a-dia",
+      "id": "sleep-en",
       "category": "saude",
-      "title": "Alimentação equilibrada faz diferença no dia a dia",
-      "excerpt": "Uma alimentação balanceada fornece os nutrientes necessários para o corpo funcionar bem.Evitar ultraprocessados e priorizar alimentos naturais melhora a disposi",
-      "content": "<p>Uma alimentação balanceada fornece os nutrientes necessários para o corpo funcionar bem.</p><p>Evitar ultraprocessados e priorizar alimentos naturais melhora a disposição.</p><p>Pequenas mudanças já trazem grandes benefícios.</p>",
+      "lang": "en",
+      "title": "Why sleeping well improves your health",
+      "excerpt": "A good night's sleep is fundamental for physical and mental recovery.Poor sleep can affect the immune system and memory.",
+      "content": "<p>A good night's sleep is fundamental for physical and mental recovery.</p><p>Poor sleep can affect the immune system and memory.</p>",
       "tags": [
-        "alimentação",
-        "nutrição",
-        "saúde"
+        "sono",
+        "sleep",
+        "sueño",
+        "bem-estar"
       ],
-      "published_at": "2026-01-15T18:41:13.873013",
+      "published_at": "2026-01-15T21:32:50.805514",
+      "author": "RGR Saúde"
+    },
+    {
+      "id": "sleep-es",
+      "category": "saude",
+      "lang": "es",
+      "title": "Por qué dormir bien mejora tu salud",
+      "excerpt": "Una buena noche de sueño es fundamental para la recuperación física y mental.Dormir mal puede afectar el sistema inmunológico y la memoria.",
+      "content": "<p>Una buena noche de sueño es fundamental para la recuperación física y mental.</p><p>Dormir mal puede afectar el sistema inmunológico y la memoria.</p>",
+      "tags": [
+        "sono",
+        "sleep",
+        "sueño",
+        "bem-estar"
+      ],
+      "published_at": "2026-01-15T21:32:50.805514",
+      "author": "RGR Saúde"
+    },
+    {
+      "id": "food-pt",
+      "category": "saude",
+      "lang": "pt",
+      "title": "Alimentação equilibrada faz diferença",
+      "excerpt": "Uma alimentação balanceada fornece os nutrientes necessários para o corpo.Evitar ultraprocessados e priorizar alimentos naturais melhora a disposição.",
+      "content": "<p>Uma alimentação balanceada fornece os nutrientes necessários para o corpo.</p><p>Evitar ultraprocessados e priorizar alimentos naturais melhora a disposição.</p>",
+      "tags": [
+        "nutrição",
+        "nutrition",
+        "alimentación"
+      ],
+      "published_at": "2026-01-15T21:32:50.805514",
+      "author": "RGR Saúde"
+    },
+    {
+      "id": "food-en",
+      "category": "saude",
+      "lang": "en",
+      "title": "Balanced diet makes a difference",
+      "excerpt": "A balanced diet provides the necessary nutrients for the body.Avoiding ultra-processed foods improves energy levels.",
+      "content": "<p>A balanced diet provides the necessary nutrients for the body.</p><p>Avoiding ultra-processed foods improves energy levels.</p>",
+      "tags": [
+        "nutrição",
+        "nutrition",
+        "alimentación"
+      ],
+      "published_at": "2026-01-15T21:32:50.805514",
+      "author": "RGR Saúde"
+    },
+    {
+      "id": "food-es",
+      "category": "saude",
+      "lang": "es",
+      "title": "Una alimentación equilibrada marca la diferencia",
+      "excerpt": "Una alimentación equilibrada proporciona los nutrientes necesarios para el cuerpo.Evitar los ultraprocesados mejora la disposición.",
+      "content": "<p>Una alimentación equilibrada proporciona los nutrientes necesarios para el cuerpo.</p><p>Evitar los ultraprocesados mejora la disposición.</p>",
+      "tags": [
+        "nutrição",
+        "nutrition",
+        "alimentación"
+      ],
+      "published_at": "2026-01-15T21:32:50.805514",
       "author": "RGR Saúde"
     }
   ]
