@@ -1,25 +1,16 @@
-import Site from "../../components/Site";
+import Site from "@/components/Site";
+import { Lang, langs, normalizeLang } from "@/lib/i18n";
 
-export type Lang = "pt" | "en" | "es";
-
-export async function generateStaticParams() {
-  return [{ lang: "pt" }, { lang: "en" }, { lang: "es" }];
+export function generateStaticParams() {
+  return langs.map((lang) => ({ lang }));
 }
 
 export default function LangPage({
   params,
 }: {
-  params: { lang: Lang };
+  params: { lang: string };
 }) {
-  const lang: Lang = ["pt", "en", "es"].includes(params.lang)
-    ? params.lang
-    : "pt";
+  const lang: Lang = normalizeLang(params.lang);
 
-  return (
-    <html lang={lang === "pt" ? "pt-BR" : lang}>
-      <body>
-        <Site lang={lang} />
-      </body>
-    </html>
-  );
+  return <Site lang={lang} />;
 }

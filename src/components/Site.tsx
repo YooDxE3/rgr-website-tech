@@ -1,33 +1,7 @@
 import Image from "next/image";
 import Tips from "./Tips";
-import { Lang } from "../[lang]/page";
-
-const copy = {
-  pt: {
-    heroTitle:
-      "Operação, padrões e indicadores para serviços de saúde mais eficientes.",
-    heroSubtitle:
-      "A RGR é uma MSO que estrutura e sustenta a gestão de serviços de saúde.",
-    management: "MSO • Gestão em Saúde",
-    contact: "Contato",
-  },
-  en: {
-    heroTitle:
-      "Operations, standards and indicators for more efficient healthcare services.",
-    heroSubtitle:
-      "RGR is an MSO that structures and sustains healthcare service management.",
-    management: "MSO • Health Management",
-    contact: "Contact",
-  },
-  es: {
-    heroTitle:
-      "Operación, estándares e indicadores para servicios de salud más eficientes.",
-    heroSubtitle:
-      "RGR es una MSO que estructura y sostiene la gestión de servicios de salud.",
-    management: "MSO • Gestión en Salud",
-    contact: "Contacto",
-  },
-};
+import { Lang } from "@/lib/i18n";
+import { copy } from "@/lib/copy";
 
 export default function Site({ lang }: { lang: Lang }) {
   const t = copy[lang];
@@ -42,6 +16,7 @@ export default function Site({ lang }: { lang: Lang }) {
               alt="RGR"
               width={44}
               height={44}
+              priority
             />
             <div className="brand__text">
               <strong>RGR</strong>
@@ -79,12 +54,14 @@ export default function Site({ lang }: { lang: Lang }) {
                   Análise de dados para prever picos de demanda e ajustar escalas.
                 </p>
               </div>
+
               <div className="card">
                 <h3>Value-Based Care</h3>
                 <p className="muted">
                   Foco em valor, qualidade e desfecho assistencial.
                 </p>
               </div>
+
               <div className="card">
                 <h3>Hospital-at-Home Ops</h3>
                 <p className="muted">
