@@ -2,38 +2,63 @@
 
 import { useEffect, useState } from "react";
 
-type Tip = { title: string; description: string };
+type HealthPost = {
+  id: string;
+  category: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  published_at: string;
+};
 
 export default function Tips() {
-  const [tip, setTip] = useState<Tip | null>(null);
+  const [post, setPost] = useState<HealthPost | null>(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/assets/health_tips_ptbr.json", { cache: "no-store" });
+        const res = await fetch("/content/feed.json", { cache: "no-store" });
         const data = await res.json();
-        const tips: Tip[] = data?.tips || [];
 
-        if (!tips.length) return;
+        const healthPosts = (data?.posts || []).filter(
+          (p: HealthPost) => p.category === "saude"
+        );
+
+        if (!healthPosts.length) return;
 
         // troca a cada 48h
         const slot = Math.floor(Date.now() / (1000 * 60 * 60 * 48));
-        setTip(tips[slot % tips.length]);
-      } catch {}
+        setPost(healthPosts[slot % healthPosts.length]);
+      } catch (err) {
+        console.error("Erro ao carregar dicas de saúde", err);
+      }
     })();
   }, []);
 
   return (
-    <>
-      <h2 className="h2">Dicas rápidas de saúde</h2>
-      <p className="muted">Conteúdo educativo (não substitui consulta médica).</p>
+    <section aria-labelledby="health-tips">
+      <h2 id="health-tips" className="h2">
+        Dicas rápidas de saúde
+      </h2>
 
-      <div className="grid2" style={{ marginTop: 14 }}>
-        <div className="card">
-          <h3>{tip?.title || "Carregando..."}</h3>
-          <p className="muted">{tip?.description || "Aguarde um instante."}</p>
-        </div>
-      </div>
-    </>
+      <p className="muted">
+        Conteúdo educativo (não substitui consulta médica).
+      </p>
+
+      <article className="card" style={{ marginTop: 14 }}>
+        <h3>{post?.title || "Carregando..."}</h3>
+
+        <p className="muted">
+          {post?.excerpt || "Aguarde um instante."}
+        </p>
+
+        {/* Conteúdo rico = melhor indexação */}
+        {post && (
+          <section
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+        )}
+      </article>
+    </section>
   );
 }
