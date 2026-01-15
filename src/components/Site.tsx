@@ -239,7 +239,14 @@ export default function Site({ lang }: { lang: Lang }) {
         <footer className="footer">
           <div className="container footer__inner">
             <div className="foot">
-              <Image src="/assets/logo-rgr.jpeg" alt="" className="logo logo--sm" width={30} height={30} />
+              {/* Tag HTML normal, sem otimização */}
+<img 
+  src="/assets/logo-rgr.jpeg" 
+  alt="RGR" 
+  width="44" 
+  height="44" 
+  style={{ objectFit: "contain" }}
+/>
               <div>
                 <strong>RGR</strong>
                 <p className="muted">{t.footer.description}</p>
