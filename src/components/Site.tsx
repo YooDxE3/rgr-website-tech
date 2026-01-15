@@ -182,13 +182,6 @@ export default function Site({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        {/* OPERAÇÃO E INDICADORES (Novo componente integrado) */}
-        <section className="section">
-          <div className="container">
-            <OpsBriefs lang={lang} />
-          </div>
-        </section>
-
         {/* ROADMAP */}
         <section id="roadmap" className="section">
           <div className="container">

@@ -21,11 +21,11 @@ type Copy = {
     ctaSecondary: string;
     mini: {
       standardization: string;
-      standardization_sub: string; // Adicionado
+      standardization_sub: string;
       indicators: string;
-      indicators_sub: string;      // Adicionado
+      indicators_sub: string;
       governance: string;
-      governance_sub: string;      // Adicionado
+      governance_sub: string;
     };
     delivery: {
       title: string;
@@ -77,16 +77,7 @@ type Copy = {
     cards: { title: string; description: string }[];
   };
 
-  ops: {
-    title: string;
-    subtitle: string;
-    updated: string;
-    empty: string;
-    cards: {
-      title: string;
-      description: string;
-    }[];
-  };
+  // Seção 'ops' removida daqui
 
   tips: {
     title: string;
@@ -219,17 +210,7 @@ export const copy: Record<Lang, Copy> = {
         { title: "Mês 6 — Expansão", description: "Roll-out por evidência de KPI e ROI, com governança contínua." },
       ],
     },
-    ops: {
-      title: "Operação & Indicadores",
-      subtitle: "Gestão prática orientada a dados.",
-      updated: "Atualizado em",
-      empty: "Nenhuma atualização disponível no momento.",
-      cards: [
-        { title: "KPIs Assistenciais", description: "Indicadores clínicos e operacionais acionáveis." },
-        { title: "SLAs e Contratos", description: "Acordos claros com acompanhamento contínuo." },
-        { title: "Rituais de Gestão", description: "Reuniões, cadência e planos de ação." }
-      ]
-    },
+    // Seção 'ops' removida daqui
     tips: { title: "Dicas rápidas de saúde" },
     contact: {
       title: "Contato",
@@ -349,17 +330,7 @@ export const copy: Record<Lang, Copy> = {
         { title: "Month 6 — Expansion", description: "Roll-out based on KPI and ROI evidence, with continuous governance." },
       ],
     },
-    ops: {
-      title: "Operations & Indicators",
-      subtitle: "Practical, data-driven management.",
-      updated: "Last updated",
-      empty: "No updates available at the moment.",
-      cards: [
-        { title: "Care KPIs", description: "Clinical and operational performance indicators." },
-        { title: "SLAs & Contracts", description: "Clear agreements with continuous monitoring." },
-        { title: "Management Rituals", description: "Cadence, meetings and action plans." }
-      ]
-    },
+    // Seção 'ops' removida daqui
     tips: { title: "Quick health tips" },
     contact: {
       title: "Contact",
@@ -479,17 +450,7 @@ export const copy: Record<Lang, Copy> = {
         { title: "Mes 6 — Expansión", description: "Roll-out por evidencia de KPI y ROI, con gobernanza continua." },
       ],
     },
-    ops: {
-      title: "Operación e Indicadores",
-      subtitle: "Gestión práctica basada en datos.",
-      updated: "Actualizado el",
-      empty: "No hay actualizaciones disponibles en este momento.",
-      cards: [
-        { title: "KPIs Asistenciales", description: "Indicadores clínicos y operativos accionables." },
-        { title: "SLAs y Contratos", description: "Acuerdos claros con seguimiento continuo." },
-        { title: "Rituales de Gestión", description: "Cadencia, reuniones y planes de acción." }
-      ]
-    },
+    // Seção 'ops' removida daqui
     tips: { title: "Consejos rápidos de salud" },
     contact: {
       title: "Contacto",
