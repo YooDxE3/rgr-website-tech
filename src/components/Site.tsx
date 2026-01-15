@@ -51,9 +51,18 @@ export default function Site({ lang }: { lang: Lang }) {
               </div>
 
               <div className="mini">
-                <div className="mini__item"><strong>{t.hero.mini.standardization}</strong></div>
-                <div className="mini__item"><strong>{t.hero.mini.indicators}</strong></div>
-                <div className="mini__item"><strong>{t.hero.mini.governance}</strong></div>
+                <div className="mini__item">
+                  <strong>{t.hero.mini.standardization}</strong>
+                  <span>{t.hero.mini.standardization_sub}</span>
+                </div>
+                <div className="mini__item">
+                  <strong>{t.hero.mini.indicators}</strong>
+                  <span>{t.hero.mini.indicators_sub}</span>
+                </div>
+                <div className="mini__item">
+                  <strong>{t.hero.mini.governance}</strong>
+                  <span>{t.hero.mini.governance_sub}</span>
+                </div>
               </div>
             </div>
 
