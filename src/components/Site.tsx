@@ -3,11 +3,10 @@ import Tips from "./Tips";
 import { copy } from "@/lib/copy";
 import { Lang } from "@/lib/i18n";
 
-
-export type Lang = "pt" | "en" | "es";
-
 export default function Site({ lang }: { lang: Lang }) {
   const t = copy[lang];
+
+  const isPT = lang === "pt";
 
   const title = isPT
     ? "Operação, padrões e indicadores para serviços de saúde mais eficientes."
@@ -273,7 +272,7 @@ export default function Site({ lang }: { lang: Lang }) {
         <section id="dicas" className="section section--alt">
           <div className="container">
             <h2>{t.tips.title}</h2>
-            <Tips />
+            <Tips lang={lang} />
           </div>
         </section>
 
