@@ -15,16 +15,19 @@ export default function Tips() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/content/feed.json", { cache: "no-store" });
+        const res = await fetch("/content/feed.json", {
+          cache: "no-store",
+        });
+
         const data = await res.json();
 
-        const healthPosts = (data?.items || []).filter(
-          (p: HealthPost) => p.category === "saude"
+        const healthPosts = (data?.posts || []).filter(
+          (post: HealthPost) => post.category === "saude"
         );
 
         setPosts(healthPosts.slice(0, 3));
-      } catch (e) {
-        console.error("Erro ao carregar dicas", e);
+      } catch (error) {
+        console.error("Erro ao carregar dicas de saúde:", error);
       }
     }
 
