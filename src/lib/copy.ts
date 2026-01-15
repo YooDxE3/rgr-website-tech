@@ -74,6 +74,16 @@ type Copy = {
     cards: { title: string; description: string }[];
   };
 
+  ops: {
+  title: string;
+  subtitle: string;
+  cards: {
+    title: string;
+    description: string;
+  }[];
+};
+
+
   tips: {
     title: string;
   };
@@ -202,6 +212,25 @@ export const copy: Record<Lang, Copy> = {
         { title: "Expansão", description: "Escala." },
       ],
     },
+    ops: {
+  title: "Operação & Indicadores",
+  subtitle: "Gestão prática orientada a dados.",
+  cards: [
+    {
+      title: "KPIs Assistenciais",
+      description: "Indicadores clínicos e operacionais acionáveis."
+    },
+    {
+      title: "SLAs e Contratos",
+      description: "Acordos claros com acompanhamento contínuo."
+    },
+    {
+      title: "Rituais de Gestão",
+      description: "Reuniões, cadência e planos de ação."
+    }
+  ]
+},
+
     tips: { title: "Dicas rápidas de saúde" },
     contact: {
       title: "Contato",
@@ -318,6 +347,25 @@ export const copy: Record<Lang, Copy> = {
         { title: "Expansion", description: "Scalable growth." },
       ],
     },
+    ops: {
+  title: "Operations & Indicators",
+  subtitle: "Practical, data-driven management.",
+  cards: [
+    {
+      title: "Care KPIs",
+      description: "Clinical and operational performance indicators."
+    },
+    {
+      title: "SLAs & Contracts",
+      description: "Clear agreements with continuous monitoring."
+    },
+    {
+      title: "Management Rituals",
+      description: "Cadence, meetings and action plans."
+    }
+  ]
+},
+
     tips: { title: "Quick health tips" },
     contact: {
       title: "Contact",
@@ -434,6 +482,25 @@ export const copy: Record<Lang, Copy> = {
         { title: "Expansión", description: "Escalabilidad." },
       ],
     },
+    ops: {
+  title: "Operación e Indicadores",
+  subtitle: "Gestión práctica basada en datos.",
+  cards: [
+    {
+      title: "KPIs Asistenciales",
+      description: "Indicadores clínicos y operativos accionables."
+    },
+    {
+      title: "SLAs y Contratos",
+      description: "Acuerdos claros con seguimiento continuo."
+    },
+    {
+      title: "Rituales de Gestión",
+      description: "Cadencia, reuniones y planes de acción."
+    }
+  ]
+},
+
     tips: { title: "Consejos rápidos de salud" },
     contact: {
       title: "Contacto",
