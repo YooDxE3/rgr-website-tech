@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Tips from "./Tips";
-import { Lang } from "@/lib/i18n";
-import { copy } from "@/lib/copy";
+import { Lang } from "../lib/i18n";
+import { copy } from "../lib/copy";
 
 export default function Site({ lang }: { lang: Lang }) {
   const t = copy[lang];
