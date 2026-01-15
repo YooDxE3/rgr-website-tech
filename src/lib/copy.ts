@@ -77,11 +77,13 @@ type Copy = {
   ops: {
   title: string;
   subtitle: string;
+  updated: string;
   cards: {
     title: string;
     description: string;
   }[];
 };
+
 
 
   tips: {
@@ -215,6 +217,7 @@ export const copy: Record<Lang, Copy> = {
     ops: {
   title: "Operação & Indicadores",
   subtitle: "Gestão prática orientada a dados.",
+  updated: "Atualizado em",
   cards: [
     {
       title: "KPIs Assistenciais",
@@ -230,6 +233,7 @@ export const copy: Record<Lang, Copy> = {
     }
   ]
 },
+
 
     tips: { title: "Dicas rápidas de saúde" },
     contact: {
@@ -350,6 +354,7 @@ export const copy: Record<Lang, Copy> = {
     ops: {
   title: "Operations & Indicators",
   subtitle: "Practical, data-driven management.",
+  updated: "Last updated",
   cards: [
     {
       title: "Care KPIs",
@@ -365,6 +370,7 @@ export const copy: Record<Lang, Copy> = {
     }
   ]
 },
+
 
     tips: { title: "Quick health tips" },
     contact: {
@@ -485,6 +491,7 @@ export const copy: Record<Lang, Copy> = {
     ops: {
   title: "Operación e Indicadores",
   subtitle: "Gestión práctica basada en datos.",
+  updated: "Actualizado el",
   cards: [
     {
       title: "KPIs Asistenciales",
@@ -500,6 +507,7 @@ export const copy: Record<Lang, Copy> = {
     }
   ]
 },
+
 
     tips: { title: "Consejos rápidos de salud" },
     contact: {
