@@ -4,7 +4,7 @@ import Tips from "./Tips";
 export type Lang = "pt" | "en" | "es";
 
 export default function Site({ lang }: { lang: Lang }) {
-  const isPT = lang === "pt";
+  const t = copy[lang];
 
   const title = isPT
     ? "Operação, padrões e indicadores para serviços de saúde mais eficientes."
