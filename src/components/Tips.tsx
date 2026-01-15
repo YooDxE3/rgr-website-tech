@@ -13,22 +13,22 @@ export default function HealthTipsGrid() {
   const [posts, setPosts] = useState<HealthPost[]>([]);
 
   useEffect(() => {
-    (async () => {
+    async function load() {
       try {
-        const res = await fetch("/content/feed.json", {
-          cache: "no-store",
-        });
+        const res = await fetch("/content/feed.json");
         const data = await res.json();
 
-        const healthPosts = (data?.posts || []).filter(
+        const healthPosts = (data?.items || []).filter(
           (p: HealthPost) => p.category === "saude"
         );
 
-        setPosts(healthPosts.slice(0, 3)); // quantidade de cards
-      } catch (err) {
-        console.error("Erro ao carregar dicas", err);
+        setPosts(healthPosts.slice(0, 3));
+      } catch (e) {
+        console.error("Erro ao carregar dicas", e);
       }
-    })();
+    }
+
+    load();
   }, []);
 
   return (
@@ -44,6 +44,13 @@ export default function HealthTipsGrid() {
             <p className="muted">{post.excerpt}</p>
           </article>
         ))}
+
+        {posts.length === 0 && (
+          <div className="card">
+            <strong>Nenhuma dica disponível</strong>
+            <p className="muted">Conteúdo será carregado automaticamente.</p>
+          </div>
+        )}
       </div>
     </section>
   );

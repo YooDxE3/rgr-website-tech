@@ -2,7 +2,8 @@ import "./globals.css";
 
 export const metadata = {
   title: "RGR — MSO • Gestão em Saúde",
-  description: "B2B corporativo • Governança médica • Operação • Qualidade • KPI"
+  description:
+    "B2B corporativo • Governança médica • Operação • Qualidade • KPI",
 };
 
 export default function RootLayout({
@@ -14,9 +15,13 @@ export default function RootLayout({
     <html>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
           rel="stylesheet"
         />
       </head>
