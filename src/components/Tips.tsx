@@ -33,7 +33,6 @@ export default function HealthTipsGrid() {
 
   return (
     <section>
-      <h2 className="h2">Inovação e benchmark internacional</h2>
       <p className="muted">
         Práticas modernas para elevar performance clínica e eficiência operacional.
       </p>
