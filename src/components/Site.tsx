@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Tips from "./Tips";
+import { copy } from "@/lib/copy";
+import { Lang } from "@/lib/i18n";
+
 
 export type Lang = "pt" | "en" | "es";
 
