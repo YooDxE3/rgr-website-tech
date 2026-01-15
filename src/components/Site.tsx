@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Tips from "./Tips";
-import OpsBriefs from "./OpsBriefs"; // Importado para integrar no site
+import OpsBriefs from "./OpsBriefs";
+import LanguageSwitcher from "./LanguageSwitcher"; // Mantenha o switcher se você criou
 import { copy } from "@/lib/copy";
 import { Lang } from "@/lib/i18n";
 
@@ -20,14 +21,18 @@ export default function Site({ lang }: { lang: Lang }) {
             </div>
           </a>
 
-          <nav className="nav">
-            <a href="#sobre">{t.topbar.menu.about}</a>
-            <a href="#governanca">{t.topbar.menu.governance}</a>
-            <a href="#escopo">{t.topbar.menu.scope}</a>
-            <a href="#inovacao">{t.topbar.menu.innovation}</a>
-            <a href="#roadmap">{t.topbar.menu.roadmap}</a>
-            <a className="btn" href="#contato">{t.topbar.menu.contact}</a>
-          </nav>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <nav className="nav">
+              <a href="#sobre">{t.topbar.menu.about}</a>
+              <a href="#governanca">{t.topbar.menu.governance}</a>
+              <a href="#escopo">{t.topbar.menu.scope}</a>
+              <a href="#inovacao">{t.topbar.menu.innovation}</a>
+              <a href="#roadmap">{t.topbar.menu.roadmap}</a>
+              <a className="btn" href="#contato">{t.topbar.menu.contact}</a>
+            </nav>
+            {/* Se você criou o LanguageSwitcher, ele fica aqui. Se não, pode remover esta linha */}
+            <LanguageSwitcher current={lang} />
+          </div>
         </div>
       </header>
 
@@ -117,8 +122,59 @@ export default function Site({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        {/* OPERAÇÃO E INDICADORES (OpsBriefs) */}
+        {/* DESAFIOS (RESTAURADO) */}
         <section className="section section--alt">
+          <div className="container">
+            <h2>{t.challenges.title}</h2>
+            <p className="muted">{t.challenges.subtitle}</p>
+
+            <div className="grid2">
+              {t.challenges.cards.map((card, i) => (
+                <div className="card" key={i}>
+                  <h3>{card.title}</h3>
+                  <p className="muted">{card.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ESCOPO */}
+        <section id="escopo" className="section">
+          <div className="container">
+            <h2>{t.scope.title}</h2>
+            <p className="muted">{t.scope.subtitle}</p>
+
+            <div className="grid2">
+              {t.scope.cards.map((card, i) => (
+                <div className="card" key={i}>
+                  <h3>{card.title}</h3>
+                  <p className="muted">{card.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* INOVAÇÃO */}
+        <section id="inovacao" className="section section--alt">
+          <div className="container">
+            <h2>{t.innovation.title}</h2>
+            <p className="muted">{t.innovation.subtitle}</p>
+
+            <div className="grid3">
+              {t.innovation.cards.map((card, i) => (
+                <div className="card" key={i}>
+                  <h3>{card.title}</h3>
+                  <p className="muted">{card.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* OPERAÇÃO E INDICADORES (Novo componente integrado) */}
+        <section className="section">
           <div className="container">
             <OpsBriefs lang={lang} />
           </div>
