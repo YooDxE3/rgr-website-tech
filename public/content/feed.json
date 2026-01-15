@@ -1,20 +1,19 @@
 {
-  "updated_at": "2026-01-15T12:22:51Z",
-  "items": [
+  "generated_at": "2026-01-15T16:46:02.522256",
+  "posts": [
     {
-      "category": "Governança",
-      "title": "SLA não é slogan: é métrica",
-      "summary": "SLA só existe quando você mede. Checklist executivo: definição, gatilhos e auditoria."
-    },
-    {
-      "category": "Operação",
-      "title": "Escala D-5: o ritual que evita crise",
-      "summary": "Padronize a confirmação com antecedência, banco e reposição com KPI de tempo."
-    },
-    {
-      "category": "Qualidade",
-      "title": "Contingência em 2h: estrutura real",
-      "summary": "Plano testável: acionamento, regulação, substituição e lições aprendidas."
+      "id": "por-que-dormir-bem-melhora-sua-saude",
+      "category": "saude",
+      "title": "Por que dormir bem melhora sua saúde",
+      "excerpt": "Uma boa noite de sono é fundamental para a recuperação física e mental.",
+      "content": "<p>Uma boa noite de sono é fundamental para a recuperação física e mental.</p><p>Dormir mal pode afetar o sistema imunológico, a memória e o humor.</p><p>Manter horários regulares para dormir ajuda a melhorar a qualidade do sono.</p>",
+      "tags": [
+        "sono",
+        "qualidade de vida",
+        "saúde"
+      ],
+      "published_at": "2026-01-15T16:46:02.522256",
+      "author": "RGR Saúde"
     }
   ]
 }
