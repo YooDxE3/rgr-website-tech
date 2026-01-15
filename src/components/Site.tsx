@@ -13,7 +13,7 @@ export default function Site({ lang }: { lang: Lang }) {
       <header className="topbar">
         <div className="container topbar__inner">
           <a className="brand" href="#inicio">
-            <Image src="../assets/logo-rgr.jpeg" alt="RGR" width={44} height={44} />
+            <Image src="/assets/logo-rgr.jpeg" alt="RGR" width={44} height={44} />
             <div className="brand__text">
               <strong>RGR</strong>
               <span>{t.topbar.tagline}</span>
@@ -239,7 +239,7 @@ export default function Site({ lang }: { lang: Lang }) {
         <footer className="footer">
           <div className="container footer__inner">
             <div className="foot">
-              <Image src="../assets/logo-rgr.jpeg" alt="" className="logo logo--sm" width={30} height={30} />
+              <Image src="/assets/logo-rgr.jpeg" alt="" className="logo logo--sm" width={30} height={30} />
               <div>
                 <strong>RGR</strong>
                 <p className="muted">{t.footer.description}</p>
