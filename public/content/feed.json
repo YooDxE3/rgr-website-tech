@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-01-16T21:42:46.037706",
+  "generated_at": "2026-01-16T21:55:26.891842",
   "posts": [
     {
-      "id": "tip_01-pt",
+      "id": "rgr_tip_01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Pausas Ativas: Corpo em Movimento",
-      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam seu bem-e...",
-      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam seu bem-estar geral no trabalho.</p>",
+      "title": "Mova-se, alongue-se e sinta-se melhor!",
+      "excerpt": "Faça pausas curtas para alongar e caminhar. Isso alivia a tensão e melhora a circulação sanguínea, aumentando seu bem-estar geral.",
+      "content": "<p>Faça pausas curtas para alongar e caminhar. Isso alivia a tensão e melhora a circulação sanguínea, aumentando seu bem-estar geral.</p>",
       "tags": [
-        "Movimento",
-        "Pausas",
-        "Bem-estar"
+        "movimento",
+        "bem-estar",
+        "pausa"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_01-en",
+      "id": "rgr_tip_01-en",
       "category": "saude",
       "lang": "en",
-      "title": "Active Breaks: Keep Moving",
-      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your overall well-be...",
-      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your overall well-being at work.</p>",
+      "title": "Move, Stretch, Feel Better!",
+      "excerpt": "Take short breaks to stretch and walk around. This relieves tension, improves blood circulation, and boosts your overall well-being throughout the workday.",
+      "content": "<p>Take short breaks to stretch and walk around. This relieves tension, improves blood circulation, and boosts your overall well-being throughout the workday.</p>",
       "tags": [
-        "Movimento",
-        "Pausas",
-        "Bem-estar"
+        "movimento",
+        "bem-estar",
+        "pausa"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_01-es",
+      "id": "rgr_tip_01-es",
       "category": "saude",
       "lang": "es",
-      "title": "Pausas Activas: Cuerpo en Movimiento",
-      "excerpt": "Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan su bienesta...",
-      "content": "<p>Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan su bienestar general en el trabajo.</p>",
+      "title": "Muévete, estírate y siéntete mejor!",
+      "excerpt": "Toma pausas cortas para estirarte y caminar. Esto alivia la tensión y mejora la circulación sanguínea, aumentando tu bienestar general en el trabajo.",
+      "content": "<p>Toma pausas cortas para estirarte y caminar. Esto alivia la tensión y mejora la circulación sanguínea, aumentando tu bienestar general en el trabajo.</p>",
       "tags": [
-        "Movimento",
-        "Pausas",
-        "Bem-estar"
+        "movimento",
+        "bem-estar",
+        "pausa"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_02-pt",
+      "id": "rgr_tip_02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidratação e Foco Renovado",
-      "excerpt": "Mantenha-se hidratado. Beba água regularmente para manter sua energia e concentração. Uma garrafa na mesa é um ótimo lem...",
-      "content": "<p>Mantenha-se hidratado. Beba água regularmente para manter sua energia e concentração. Uma garrafa na mesa é um ótimo lembrete constante.</p>",
+      "title": "Hidrate-se: Energia e foco garantidos!",
+      "excerpt": "Beba água regularmente. A hidratação adequada mantém seu cérebro alerta, previne dores de cabeça e sustenta sua produtividade durante o dia.",
+      "content": "<p>Beba água regularmente. A hidratação adequada mantém seu cérebro alerta, previne dores de cabeça e sustenta sua produtividade durante o dia.</p>",
       "tags": [
-        "Hidratação",
-        "Foco",
-        "Energia"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_02-en",
+      "id": "rgr_tip_02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydration for Renewed Focus",
-      "excerpt": "Stay hydrated. Drink water regularly to maintain your energy and concentration. A water bottle on your desk is a great c...",
-      "content": "<p>Stay hydrated. Drink water regularly to maintain your energy and concentration. A water bottle on your desk is a great constant reminder.</p>",
+      "title": "Hydrate: Boost Energy and Focus!",
+      "excerpt": "Drink water regularly throughout the day. Proper hydration keeps your brain alert, prevents headaches, and sustains your productivity and concentration at work.",
+      "content": "<p>Drink water regularly throughout the day. Proper hydration keeps your brain alert, prevents headaches, and sustains your productivity and concentration at work.</p>",
       "tags": [
-        "Hidratação",
-        "Foco",
-        "Energia"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_02-es",
+      "id": "rgr_tip_02-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidratación y Enfoque Renovado",
-      "excerpt": "Manténgase hidratado. Beba agua regularmente para mantener su energía y concentración. Una botella en la mesa es un exce...",
-      "content": "<p>Manténgase hidratado. Beba agua regularmente para mantener su energía y concentración. Una botella en la mesa es un excelente recordatorio constante.</p>",
+      "title": "Hidrátate: Energía y enfoque!",
+      "excerpt": "Bebe agua regularmente durante el día. La hidratación adecuada mantiene tu cerebro alerta, previene dolores de cabeza y sustenta tu productividad.",
+      "content": "<p>Bebe agua regularmente durante el día. La hidratación adecuada mantiene tu cerebro alerta, previene dolores de cabeza y sustenta tu productividad.</p>",
       "tags": [
-        "Hidratação",
-        "Foco",
-        "Energia"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_03-pt",
+      "id": "rgr_tip_03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Postura Correta: Saúde da Coluna",
-      "excerpt": "Ajuste sua cadeira e monitor. Mantenha a coluna reta e os pés no chão para prevenir dores. Uma boa postura faz diferença...",
-      "content": "<p>Ajuste sua cadeira e monitor. Mantenha a coluna reta e os pés no chão para prevenir dores. Uma boa postura faz diferença diária.</p>",
+      "title": "Postura Correta: Saúde da sua coluna",
+      "excerpt": "Ajuste sua cadeira e monitor para uma postura ergonômica. Isso previne dores nas costas e pescoço, promovendo conforto e saúde a longo prazo.",
+      "content": "<p>Ajuste sua cadeira e monitor para uma postura ergonômica. Isso previne dores nas costas e pescoço, promovendo conforto e saúde a longo prazo.</p>",
       "tags": [
-        "Postura",
-        "Ergonomia",
-        "Coluna"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_03-en",
+      "id": "rgr_tip_03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Correct Posture: Spinal Health",
-      "excerpt": "Adjust your chair and monitor. Keep your spine straight and feet flat on the floor to prevent pain. Good posture makes a...",
-      "content": "<p>Adjust your chair and monitor. Keep your spine straight and feet flat on the floor to prevent pain. Good posture makes a daily difference.</p>",
+      "title": "Correct Posture: Spinal Health First!",
+      "excerpt": "Adjust your chair and monitor for an ergonomic posture. This prevents back and neck pain, promoting long-term comfort and health while you work.",
+      "content": "<p>Adjust your chair and monitor for an ergonomic posture. This prevents back and neck pain, promoting long-term comfort and health while you work.</p>",
       "tags": [
-        "Postura",
-        "Ergonomia",
-        "Coluna"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip_03-es",
+      "id": "rgr_tip_03-es",
       "category": "saude",
       "lang": "es",
-      "title": "Postura Correcta: Salud Espinal",
-      "excerpt": "Ajuste su silla y monitor. Mantenga la columna recta y los pies en el suelo para prevenir dolores. Una buena postura mar...",
-      "content": "<p>Ajuste su silla y monitor. Mantenga la columna recta y los pies en el suelo para prevenir dolores. Una buena postura marca la diferencia diaria.</p>",
+      "title": "Postura Correcta: Salud de tu columna",
+      "excerpt": "Ajusta tu silla y monitor para una postura ergonómica. Esto previene dolores de espalda y cuello, promoviendo confort y salud a largo plazo.",
+      "content": "<p>Ajusta tu silla y monitor para una postura ergonómica. Esto previene dolores de espalda y cuello, promoviendo confort y salud a largo plazo.</p>",
       "tags": [
-        "Postura",
-        "Ergonomia",
-        "Coluna"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-01-16T21:42:46.037706",
+      "published_at": "2026-01-16T21:55:26.891842",
       "author": "RGR Saúde (IA)"
     }
   ]
