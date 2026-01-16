@@ -6,7 +6,7 @@ const baseUrl = "https://rgrsaude.com";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "RGR — MSO • Gestão em Saúde",
+    default: "RGR Saúde — Gestão Hospitalar e MSO",
     template: "%s | RGR Saúde",
   },
   description:
