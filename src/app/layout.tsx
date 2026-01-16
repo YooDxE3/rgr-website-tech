@@ -10,8 +10,8 @@ export const metadata: Metadata = {
     template: "%s | RGR Saúde",
   },
   description:
-    "RGR é uma MSO (Managed Services Organization) focada em eficiência operacional, governança médica, qualidade e redução de custos em serviços de saúde.",
-  keywords: ["MSO", "Gestão em Saúde", "Governança Clínica", "Eficiência Hospitalar", "Saúde Corporativa"],
+    "RGR Saúde é uma MSO (Managed Services Organization) focada em eficiência operacional, governança médica, qualidade e redução de custos em serviços de saúde.",
+  keywords: ["RGR Saúde", "RGR MSO", "Gestão em Saúde", "Governança Clínica", "Eficiência Hospitalar", "Saúde Corporativa"],
   authors: [{ name: "RGR Saúde" }],
   creator: "RGR Saúde",
   
