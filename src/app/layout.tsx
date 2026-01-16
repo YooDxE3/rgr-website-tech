@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   authors: [{ name: "RGR Saúde" }],
   creator: "RGR Saúde",
   
-  // CORREÇÃO 1: Extensão correta da imagem (Use a que funcionou: .jpeg ou .jpg)
+  // CORREÇÃO 1: Tudo atualizado para .png
   icons: {
     icon: "/assets/logo-rgr.png", 
     shortcut: "/assets/logo-rgr.png",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "RGR Saúde",
     images: [
       {
-        // CORREÇÃO 2: Extensão correta aqui também
+        // CORREÇÃO 2: Extensão .png aqui também
         url: "/assets/logo-rgr.png", 
         width: 800,
         height: 800,
@@ -40,9 +40,8 @@ export const metadata: Metadata = {
     ],
   },
 
+  // CORREÇÃO 3 (CRUCIAL): 'canonical' removido para permitir a indexação de todas as línguas
   alternates: {
-    // ERRO FATAL REMOVIDO: A linha 'canonical: "/"' foi apagada.
-    // Isso permite que cada página (/pt, /en) seja indexada individualmente.
     languages: {
       "pt": "/pt",
       "en": "/en",
@@ -65,9 +64,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "MedicalBusiness",
     "name": "RGR Saúde",
-    "alternateName": "RGR Gestão em Saúde",
     "url": "https://rgrsaude.com",
-    // CORREÇÃO 3: Consistência na imagem do JSON-LD
+    // CORREÇÃO 4: JSON-LD apontando para a imagem correta .png
     "logo": "https://rgrsaude.com/assets/logo-rgr.png",
     "description": "MSO focada em eficiência operacional, governança médica e qualidade em serviços de saúde.",
     "email": "servicosmedicosrgr@gmail.com",
