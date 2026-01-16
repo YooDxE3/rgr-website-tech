@@ -7,6 +7,29 @@ import { Lang } from "@/lib/i18n";
 export default function Site({ lang }: { lang: Lang }) {
   const t = copy[lang];
 
+  const labelStyle = { 
+    display: "block", 
+    fontSize: "0.75rem", 
+    textTransform: "uppercase" as const, 
+    letterSpacing: "1px", 
+    fontWeight: 600,
+    color: "#888", 
+    marginBottom: "4px" 
+  };
+
+  const linkStyle = { 
+    color: "#0070f3", 
+    fontWeight: 600, 
+    textDecoration: "none",
+    fontSize: "1.1rem"
+  };
+
+  const descStyle = {
+    margin: "4px 0 0 0",
+    fontSize: "0.9rem",
+    color: "#555"
+  };
+
   return (
     <>
       {/* TOPBAR */}
