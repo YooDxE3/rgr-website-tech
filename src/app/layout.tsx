@@ -4,6 +4,11 @@ export const metadata = {
   title: "RGR — MSO • Gestão em Saúde",
   description:
     "B2B corporativo • Governança médica • Operação • Qualidade • KPI",
+  icons: {
+    icon: "/assets/logo-rgr.jpeg", // O caminho que validamos antes
+    shortcut: "/assets/logo-rgr.jpeg",
+    apple: "/assets/logo-rgr.jpeg", // Para iPhone/iPad
+  },
 };
 
 export default function RootLayout({
