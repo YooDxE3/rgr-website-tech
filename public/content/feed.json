@@ -1,146 +1,140 @@
 {
-  "generated_at": "2026-01-15T21:32:50.805514",
+  "generated_at": "2026-01-16T21:55:26.891842",
   "posts": [
     {
-      "id": "water-pt",
+      "id": "rgr_tip_01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "A importância de beber água todos os dias",
-      "excerpt": "Manter o corpo hidratado é essencial para o bom funcionamento do organismo.A água auxilia na digestão, circulação e controle da temperatura.",
-      "content": "<p>Manter o corpo hidratado é essencial para o bom funcionamento do organismo.</p><p>A água auxilia na digestão, circulação e controle da temperatura.</p>",
+      "title": "Mova-se, alongue-se e sinta-se melhor!",
+      "excerpt": "Faça pausas curtas para alongar e caminhar. Isso alivia a tensão e melhora a circulação sanguínea, aumentando seu bem-estar geral.",
+      "content": "<p>Faça pausas curtas para alongar e caminhar. Isso alivia a tensão e melhora a circulação sanguínea, aumentando seu bem-estar geral.</p>",
       "tags": [
-        "hidratação",
-        "hydration",
-        "saúde",
-        "health"
+        "movimento",
+        "bem-estar",
+        "pausa"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "water-en",
+      "id": "rgr_tip_01-en",
       "category": "saude",
       "lang": "en",
-      "title": "The importance of drinking water every day",
-      "excerpt": "Keeping the body hydrated is essential for the proper functioning of the organism.Water aids in digestion, circulation, and temperature control.",
-      "content": "<p>Keeping the body hydrated is essential for the proper functioning of the organism.</p><p>Water aids in digestion, circulation, and temperature control.</p>",
+      "title": "Move, Stretch, Feel Better!",
+      "excerpt": "Take short breaks to stretch and walk around. This relieves tension, improves blood circulation, and boosts your overall well-being throughout the workday.",
+      "content": "<p>Take short breaks to stretch and walk around. This relieves tension, improves blood circulation, and boosts your overall well-being throughout the workday.</p>",
       "tags": [
-        "hidratação",
-        "hydration",
-        "saúde",
-        "health"
+        "movimento",
+        "bem-estar",
+        "pausa"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "water-es",
+      "id": "rgr_tip_01-es",
       "category": "saude",
       "lang": "es",
-      "title": "La importancia de beber agua todos los días",
-      "excerpt": "Mantener el cuerpo hidratado es esencial para el buen funcionamiento del organismo.El agua ayuda en la digestión, la circulación y el control de la temperatura.",
-      "content": "<p>Mantener el cuerpo hidratado es esencial para el buen funcionamiento del organismo.</p><p>El agua ayuda en la digestión, la circulación y el control de la temperatura.</p>",
+      "title": "Muévete, estírate y siéntete mejor!",
+      "excerpt": "Toma pausas cortas para estirarte y caminar. Esto alivia la tensión y mejora la circulación sanguínea, aumentando tu bienestar general en el trabajo.",
+      "content": "<p>Toma pausas cortas para estirarte y caminar. Esto alivia la tensión y mejora la circulación sanguínea, aumentando tu bienestar general en el trabajo.</p>",
       "tags": [
-        "hidratação",
-        "hydration",
-        "saúde",
-        "health"
+        "movimento",
+        "bem-estar",
+        "pausa"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "sleep-pt",
+      "id": "rgr_tip_02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Por que dormir bem melhora sua saúde",
-      "excerpt": "Uma boa noite de sono é fundamental para a recuperação física e mental.Dormir mal pode afetar o sistema imunológico e a memória.",
-      "content": "<p>Uma boa noite de sono é fundamental para a recuperação física e mental.</p><p>Dormir mal pode afetar o sistema imunológico e a memória.</p>",
+      "title": "Hidrate-se: Energia e foco garantidos!",
+      "excerpt": "Beba água regularmente. A hidratação adequada mantém seu cérebro alerta, previne dores de cabeça e sustenta sua produtividade durante o dia.",
+      "content": "<p>Beba água regularmente. A hidratação adequada mantém seu cérebro alerta, previne dores de cabeça e sustenta sua produtividade durante o dia.</p>",
       "tags": [
-        "sono",
-        "sleep",
-        "sueño",
-        "bem-estar"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "sleep-en",
+      "id": "rgr_tip_02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Why sleeping well improves your health",
-      "excerpt": "A good night's sleep is fundamental for physical and mental recovery.Poor sleep can affect the immune system and memory.",
-      "content": "<p>A good night's sleep is fundamental for physical and mental recovery.</p><p>Poor sleep can affect the immune system and memory.</p>",
+      "title": "Hydrate: Boost Energy and Focus!",
+      "excerpt": "Drink water regularly throughout the day. Proper hydration keeps your brain alert, prevents headaches, and sustains your productivity and concentration at work.",
+      "content": "<p>Drink water regularly throughout the day. Proper hydration keeps your brain alert, prevents headaches, and sustains your productivity and concentration at work.</p>",
       "tags": [
-        "sono",
-        "sleep",
-        "sueño",
-        "bem-estar"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "sleep-es",
+      "id": "rgr_tip_02-es",
       "category": "saude",
       "lang": "es",
-      "title": "Por qué dormir bien mejora tu salud",
-      "excerpt": "Una buena noche de sueño es fundamental para la recuperación física y mental.Dormir mal puede afectar el sistema inmunológico y la memoria.",
-      "content": "<p>Una buena noche de sueño es fundamental para la recuperación física y mental.</p><p>Dormir mal puede afectar el sistema inmunológico y la memoria.</p>",
+      "title": "Hidrátate: Energía y enfoque!",
+      "excerpt": "Bebe agua regularmente durante el día. La hidratación adecuada mantiene tu cerebro alerta, previene dolores de cabeza y sustenta tu productividad.",
+      "content": "<p>Bebe agua regularmente durante el día. La hidratación adecuada mantiene tu cerebro alerta, previene dolores de cabeza y sustenta tu productividad.</p>",
       "tags": [
-        "sono",
-        "sleep",
-        "sueño",
-        "bem-estar"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "food-pt",
+      "id": "rgr_tip_03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Alimentação equilibrada faz diferença",
-      "excerpt": "Uma alimentação balanceada fornece os nutrientes necessários para o corpo.Evitar ultraprocessados e priorizar alimentos naturais melhora a disposição.",
-      "content": "<p>Uma alimentação balanceada fornece os nutrientes necessários para o corpo.</p><p>Evitar ultraprocessados e priorizar alimentos naturais melhora a disposição.</p>",
+      "title": "Postura Correta: Saúde da sua coluna",
+      "excerpt": "Ajuste sua cadeira e monitor para uma postura ergonômica. Isso previne dores nas costas e pescoço, promovendo conforto e saúde a longo prazo.",
+      "content": "<p>Ajuste sua cadeira e monitor para uma postura ergonômica. Isso previne dores nas costas e pescoço, promovendo conforto e saúde a longo prazo.</p>",
       "tags": [
-        "nutrição",
-        "nutrition",
-        "alimentación"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "food-en",
+      "id": "rgr_tip_03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Balanced diet makes a difference",
-      "excerpt": "A balanced diet provides the necessary nutrients for the body.Avoiding ultra-processed foods improves energy levels.",
-      "content": "<p>A balanced diet provides the necessary nutrients for the body.</p><p>Avoiding ultra-processed foods improves energy levels.</p>",
+      "title": "Correct Posture: Spinal Health First!",
+      "excerpt": "Adjust your chair and monitor for an ergonomic posture. This prevents back and neck pain, promoting long-term comfort and health while you work.",
+      "content": "<p>Adjust your chair and monitor for an ergonomic posture. This prevents back and neck pain, promoting long-term comfort and health while you work.</p>",
       "tags": [
-        "nutrição",
-        "nutrition",
-        "alimentación"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "food-es",
+      "id": "rgr_tip_03-es",
       "category": "saude",
       "lang": "es",
-      "title": "Una alimentación equilibrada marca la diferencia",
-      "excerpt": "Una alimentación equilibrada proporciona los nutrientes necesarios para el cuerpo.Evitar los ultraprocesados mejora la disposición.",
-      "content": "<p>Una alimentación equilibrada proporciona los nutrientes necesarios para el cuerpo.</p><p>Evitar los ultraprocesados mejora la disposición.</p>",
+      "title": "Postura Correcta: Salud de tu columna",
+      "excerpt": "Ajusta tu silla y monitor para una postura ergonómica. Esto previene dolores de espalda y cuello, promoviendo confort y salud a largo plazo.",
+      "content": "<p>Ajusta tu silla y monitor para una postura ergonómica. Esto previene dolores de espalda y cuello, promoviendo confort y salud a largo plazo.</p>",
       "tags": [
-        "nutrição",
-        "nutrition",
-        "alimentación"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:55:26.891842",
+      "author": "RGR Saúde (IA)"
     }
   ]
 }
