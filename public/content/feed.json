@@ -1,146 +1,140 @@
 {
-  "generated_at": "2026-01-15T21:32:50.805514",
+  "generated_at": "2026-01-16T21:37:42.745873",
   "posts": [
     {
-      "id": "water-pt",
+      "id": "tip1_rgr_saude-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "A importância de beber água todos os dias",
-      "excerpt": "Manter o corpo hidratado é essencial para o bom funcionamento do organismo.A água auxilia na digestão, circulação e controle da temperatura.",
-      "content": "<p>Manter o corpo hidratado é essencial para o bom funcionamento do organismo.</p><p>A água auxilia na digestão, circulação e controle da temperatura.</p>",
+      "title": "Faça Pausas Ativas e se Movimente!",
+      "excerpt": "Passar longos períodos sentado pode ser prejudicial à saúde. A RGR Saúde recomenda fazer pequenas pausas a cada hora. Levante-se, estique-se, caminhe um pouco o...",
+      "content": "<p>Passar longos períodos sentado pode ser prejudicial à saúde. A RGR Saúde recomenda fazer pequenas pausas a cada hora. Levante-se, estique-se, caminhe um pouco ou faça alguns alongamentos leves. Isso melhora a circulação, reduz a tensão muscular e aumenta a concentração.</p>",
       "tags": [
-        "hidratação",
-        "hydration",
-        "saúde",
-        "health"
+        "pausas",
+        "movimento",
+        "ergonomia"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "water-en",
+      "id": "tip1_rgr_saude-en",
       "category": "saude",
       "lang": "en",
-      "title": "The importance of drinking water every day",
-      "excerpt": "Keeping the body hydrated is essential for the proper functioning of the organism.Water aids in digestion, circulation, and temperature control.",
-      "content": "<p>Keeping the body hydrated is essential for the proper functioning of the organism.</p><p>Water aids in digestion, circulation, and temperature control.</p>",
+      "title": "Take Active Breaks and Move!",
+      "excerpt": "Spending long periods sitting can be detrimental to your health. RGR Saúde recommends taking short breaks every hour. Stand up, stretch, walk a bit, or do some...",
+      "content": "<p>Spending long periods sitting can be detrimental to your health. RGR Saúde recommends taking short breaks every hour. Stand up, stretch, walk a bit, or do some light stretches. This improves circulation, reduces muscle tension, and increases concentration.</p>",
       "tags": [
-        "hidratação",
-        "hydration",
-        "saúde",
-        "health"
+        "pausas",
+        "movimento",
+        "ergonomia"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "water-es",
+      "id": "tip1_rgr_saude-es",
       "category": "saude",
       "lang": "es",
-      "title": "La importancia de beber agua todos los días",
-      "excerpt": "Mantener el cuerpo hidratado es esencial para el buen funcionamiento del organismo.El agua ayuda en la digestión, la circulación y el control de la temperatura.",
-      "content": "<p>Mantener el cuerpo hidratado es esencial para el buen funcionamiento del organismo.</p><p>El agua ayuda en la digestión, la circulación y el control de la temperatura.</p>",
+      "title": "¡Toma Pausas Activas y Muévete!",
+      "excerpt": "Permanecer sentado por largos períodos puede ser perjudicial para la salud. RGR Saúde recomienda tomar pequeños descansos cada hora. Levántate, estírate, camina...",
+      "content": "<p>Permanecer sentado por largos períodos puede ser perjudicial para la salud. RGR Saúde recomienda tomar pequeños descansos cada hora. Levántate, estírate, camina un poco o haz algunos estiramientos suaves. Esto mejora la circulación, reduce la tensión muscular y aumenta la concentración.</p>",
       "tags": [
-        "hidratação",
-        "hydration",
-        "saúde",
-        "health"
+        "pausas",
+        "movimento",
+        "ergonomia"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "sleep-pt",
+      "id": "tip2_rgr_saude-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Por que dormir bem melhora sua saúde",
-      "excerpt": "Uma boa noite de sono é fundamental para a recuperação física e mental.Dormir mal pode afetar o sistema imunológico e a memória.",
-      "content": "<p>Uma boa noite de sono é fundamental para a recuperação física e mental.</p><p>Dormir mal pode afetar o sistema imunológico e a memória.</p>",
+      "title": "Mantenha-se Hidratado e Alimente-se Bem!",
+      "excerpt": "A hidratação adequada é crucial para o bom funcionamento do cérebro e do corpo. Tenha sempre uma garrafa de água por perto e evite refrigerantes e sucos açucara...",
+      "content": "<p>A hidratação adequada é crucial para o bom funcionamento do cérebro e do corpo. Tenha sempre uma garrafa de água por perto e evite refrigerantes e sucos açucarados. Além disso, opte por lanches saudáveis como frutas, castanhas ou iogurte para manter os níveis de energia e evitar quedas de produtividade.</p>",
       "tags": [
-        "sono",
-        "sleep",
-        "sueño",
-        "bem-estar"
+        "hidratação",
+        "alimentação",
+        "energia"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "sleep-en",
+      "id": "tip2_rgr_saude-en",
       "category": "saude",
       "lang": "en",
-      "title": "Why sleeping well improves your health",
-      "excerpt": "A good night's sleep is fundamental for physical and mental recovery.Poor sleep can affect the immune system and memory.",
-      "content": "<p>A good night's sleep is fundamental for physical and mental recovery.</p><p>Poor sleep can affect the immune system and memory.</p>",
+      "title": "Stay Hydrated and Eat Well!",
+      "excerpt": "Adequate hydration is crucial for proper brain and body function. Always keep a water bottle nearby and avoid sodas and sugary juices. Also, opt for healthy sna...",
+      "content": "<p>Adequate hydration is crucial for proper brain and body function. Always keep a water bottle nearby and avoid sodas and sugary juices. Also, opt for healthy snacks like fruits, nuts, or yogurt to maintain energy levels and prevent drops in productivity.</p>",
       "tags": [
-        "sono",
-        "sleep",
-        "sueño",
-        "bem-estar"
+        "hidratação",
+        "alimentação",
+        "energia"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "sleep-es",
+      "id": "tip2_rgr_saude-es",
       "category": "saude",
       "lang": "es",
-      "title": "Por qué dormir bien mejora tu salud",
-      "excerpt": "Una buena noche de sueño es fundamental para la recuperación física y mental.Dormir mal puede afectar el sistema inmunológico y la memoria.",
-      "content": "<p>Una buena noche de sueño es fundamental para la recuperación física y mental.</p><p>Dormir mal puede afectar el sistema inmunológico y la memoria.</p>",
+      "title": "¡Mantente Hidratado y Come Bien!",
+      "excerpt": "La hidratación adecuada es crucial para el buen funcionamiento del cerebro y el cuerpo. Ten siempre una botella de agua cerca y evita los refrescos y jugos azuc...",
+      "content": "<p>La hidratación adecuada es crucial para el buen funcionamiento del cerebro y el cuerpo. Ten siempre una botella de agua cerca y evita los refrescos y jugos azucarados. Además, opta por meriendas saludables como frutas, nueces o yogur para mantener los niveles de energía y evitar caídas en la productividad.</p>",
       "tags": [
-        "sono",
-        "sleep",
-        "sueño",
-        "bem-estar"
+        "hidratação",
+        "alimentação",
+        "energia"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "food-pt",
+      "id": "tip3_rgr_saude-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Alimentação equilibrada faz diferença",
-      "excerpt": "Uma alimentação balanceada fornece os nutrientes necessários para o corpo.Evitar ultraprocessados e priorizar alimentos naturais melhora a disposição.",
-      "content": "<p>Uma alimentação balanceada fornece os nutrientes necessários para o corpo.</p><p>Evitar ultraprocessados e priorizar alimentos naturais melhora a disposição.</p>",
+      "title": "Cuide do Seu Bem-Estar Mental e Gerencie o Estresse!",
+      "excerpt": "O ambiente de trabalho pode ser estressante, mas é importante encontrar formas de gerenciar isso. A RGR Saúde sugere técnicas simples de respiração, uma breve m...",
+      "content": "<p>O ambiente de trabalho pode ser estressante, mas é importante encontrar formas de gerenciar isso. A RGR Saúde sugere técnicas simples de respiração, uma breve meditação ou até mesmo um curto passeio para clarear a mente. Não hesite em buscar apoio se sentir que o estresse está afetando sua saúde ou produtividade.</p>",
       "tags": [
-        "nutrição",
-        "nutrition",
-        "alimentación"
+        "estresse",
+        "saúdemental",
+        "foco"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "food-en",
+      "id": "tip3_rgr_saude-en",
       "category": "saude",
       "lang": "en",
-      "title": "Balanced diet makes a difference",
-      "excerpt": "A balanced diet provides the necessary nutrients for the body.Avoiding ultra-processed foods improves energy levels.",
-      "content": "<p>A balanced diet provides the necessary nutrients for the body.</p><p>Avoiding ultra-processed foods improves energy levels.</p>",
+      "title": "Take Care of Your Mental Well-being and Manage Stress!",
+      "excerpt": "The workplace can be stressful, but it's important to find ways to manage it. RGR Saúde suggests simple breathing techniques, a brief meditation, or even a shor...",
+      "content": "<p>The workplace can be stressful, but it's important to find ways to manage it. RGR Saúde suggests simple breathing techniques, a brief meditation, or even a short walk to clear your mind. Don't hesitate to seek support if you feel stress is affecting your health or productivity.</p>",
       "tags": [
-        "nutrição",
-        "nutrition",
-        "alimentación"
+        "estresse",
+        "saúdemental",
+        "foco"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     },
     {
-      "id": "food-es",
+      "id": "tip3_rgr_saude-es",
       "category": "saude",
       "lang": "es",
-      "title": "Una alimentación equilibrada marca la diferencia",
-      "excerpt": "Una alimentación equilibrada proporciona los nutrientes necesarios para el cuerpo.Evitar los ultraprocesados mejora la disposición.",
-      "content": "<p>Una alimentación equilibrada proporciona los nutrientes necesarios para el cuerpo.</p><p>Evitar los ultraprocesados mejora la disposición.</p>",
+      "title": "¡Cuida Tu Bienestar Mental y Gestiona el Estrés!",
+      "excerpt": "El ambiente laboral puede ser estresante, pero es importante encontrar formas de gestionarlo. RGR Saúde sugiere técnicas simples de respiración, una breve medit...",
+      "content": "<p>El ambiente laboral puede ser estresante, pero es importante encontrar formas de gestionarlo. RGR Saúde sugiere técnicas simples de respiración, una breve meditación o incluso un corto paseo para despejar la mente. No dudes en buscar apoyo si sientes que el estrés está afectando tu salud o productividad.</p>",
       "tags": [
-        "nutrição",
-        "nutrition",
-        "alimentación"
+        "estresse",
+        "saúdemental",
+        "foco"
       ],
-      "published_at": "2026-01-15T21:32:50.805514",
-      "author": "RGR Saúde"
+      "published_at": "2026-01-16T21:37:42.745873",
+      "author": "RGR Saúde (IA)"
     }
   ]
 }
