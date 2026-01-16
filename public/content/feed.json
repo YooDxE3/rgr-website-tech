@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-01-16T21:37:42.745873",
+  "generated_at": "2026-01-16T21:42:46.037706",
   "posts": [
     {
-      "id": "tip1_rgr_saude-pt",
+      "id": "tip_01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Faça Pausas Ativas e se Movimente!",
-      "excerpt": "Passar longos períodos sentado pode ser prejudicial à saúde. A RGR Saúde recomenda fazer pequenas pausas a cada hora. Levante-se, estique-se, caminhe um pouco o...",
-      "content": "<p>Passar longos períodos sentado pode ser prejudicial à saúde. A RGR Saúde recomenda fazer pequenas pausas a cada hora. Levante-se, estique-se, caminhe um pouco ou faça alguns alongamentos leves. Isso melhora a circulação, reduz a tensão muscular e aumenta a concentração.</p>",
+      "title": "Pausas Ativas: Corpo em Movimento",
+      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam seu bem-e...",
+      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam seu bem-estar geral no trabalho.</p>",
       "tags": [
-        "pausas",
-        "movimento",
-        "ergonomia"
+        "Movimento",
+        "Pausas",
+        "Bem-estar"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1_rgr_saude-en",
+      "id": "tip_01-en",
       "category": "saude",
       "lang": "en",
-      "title": "Take Active Breaks and Move!",
-      "excerpt": "Spending long periods sitting can be detrimental to your health. RGR Saúde recommends taking short breaks every hour. Stand up, stretch, walk a bit, or do some...",
-      "content": "<p>Spending long periods sitting can be detrimental to your health. RGR Saúde recommends taking short breaks every hour. Stand up, stretch, walk a bit, or do some light stretches. This improves circulation, reduces muscle tension, and increases concentration.</p>",
+      "title": "Active Breaks: Keep Moving",
+      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your overall well-be...",
+      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your overall well-being at work.</p>",
       "tags": [
-        "pausas",
-        "movimento",
-        "ergonomia"
+        "Movimento",
+        "Pausas",
+        "Bem-estar"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1_rgr_saude-es",
+      "id": "tip_01-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Toma Pausas Activas y Muévete!",
-      "excerpt": "Permanecer sentado por largos períodos puede ser perjudicial para la salud. RGR Saúde recomienda tomar pequeños descansos cada hora. Levántate, estírate, camina...",
-      "content": "<p>Permanecer sentado por largos períodos puede ser perjudicial para la salud. RGR Saúde recomienda tomar pequeños descansos cada hora. Levántate, estírate, camina un poco o haz algunos estiramientos suaves. Esto mejora la circulación, reduce la tensión muscular y aumenta la concentración.</p>",
+      "title": "Pausas Activas: Cuerpo en Movimiento",
+      "excerpt": "Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan su bienesta...",
+      "content": "<p>Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan su bienestar general en el trabajo.</p>",
       "tags": [
-        "pausas",
-        "movimento",
-        "ergonomia"
+        "Movimento",
+        "Pausas",
+        "Bem-estar"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2_rgr_saude-pt",
+      "id": "tip_02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mantenha-se Hidratado e Alimente-se Bem!",
-      "excerpt": "A hidratação adequada é crucial para o bom funcionamento do cérebro e do corpo. Tenha sempre uma garrafa de água por perto e evite refrigerantes e sucos açucara...",
-      "content": "<p>A hidratação adequada é crucial para o bom funcionamento do cérebro e do corpo. Tenha sempre uma garrafa de água por perto e evite refrigerantes e sucos açucarados. Além disso, opte por lanches saudáveis como frutas, castanhas ou iogurte para manter os níveis de energia e evitar quedas de produtividade.</p>",
+      "title": "Hidratação e Foco Renovado",
+      "excerpt": "Mantenha-se hidratado. Beba água regularmente para manter sua energia e concentração. Uma garrafa na mesa é um ótimo lem...",
+      "content": "<p>Mantenha-se hidratado. Beba água regularmente para manter sua energia e concentração. Uma garrafa na mesa é um ótimo lembrete constante.</p>",
       "tags": [
-        "hidratação",
-        "alimentação",
-        "energia"
+        "Hidratação",
+        "Foco",
+        "Energia"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2_rgr_saude-en",
+      "id": "tip_02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Stay Hydrated and Eat Well!",
-      "excerpt": "Adequate hydration is crucial for proper brain and body function. Always keep a water bottle nearby and avoid sodas and sugary juices. Also, opt for healthy sna...",
-      "content": "<p>Adequate hydration is crucial for proper brain and body function. Always keep a water bottle nearby and avoid sodas and sugary juices. Also, opt for healthy snacks like fruits, nuts, or yogurt to maintain energy levels and prevent drops in productivity.</p>",
+      "title": "Hydration for Renewed Focus",
+      "excerpt": "Stay hydrated. Drink water regularly to maintain your energy and concentration. A water bottle on your desk is a great c...",
+      "content": "<p>Stay hydrated. Drink water regularly to maintain your energy and concentration. A water bottle on your desk is a great constant reminder.</p>",
       "tags": [
-        "hidratação",
-        "alimentação",
-        "energia"
+        "Hidratação",
+        "Foco",
+        "Energia"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2_rgr_saude-es",
+      "id": "tip_02-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Mantente Hidratado y Come Bien!",
-      "excerpt": "La hidratación adecuada es crucial para el buen funcionamiento del cerebro y el cuerpo. Ten siempre una botella de agua cerca y evita los refrescos y jugos azuc...",
-      "content": "<p>La hidratación adecuada es crucial para el buen funcionamiento del cerebro y el cuerpo. Ten siempre una botella de agua cerca y evita los refrescos y jugos azucarados. Además, opta por meriendas saludables como frutas, nueces o yogur para mantener los niveles de energía y evitar caídas en la productividad.</p>",
+      "title": "Hidratación y Enfoque Renovado",
+      "excerpt": "Manténgase hidratado. Beba agua regularmente para mantener su energía y concentración. Una botella en la mesa es un exce...",
+      "content": "<p>Manténgase hidratado. Beba agua regularmente para mantener su energía y concentración. Una botella en la mesa es un excelente recordatorio constante.</p>",
       "tags": [
-        "hidratação",
-        "alimentação",
-        "energia"
+        "Hidratação",
+        "Foco",
+        "Energia"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3_rgr_saude-pt",
+      "id": "tip_03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Cuide do Seu Bem-Estar Mental e Gerencie o Estresse!",
-      "excerpt": "O ambiente de trabalho pode ser estressante, mas é importante encontrar formas de gerenciar isso. A RGR Saúde sugere técnicas simples de respiração, uma breve m...",
-      "content": "<p>O ambiente de trabalho pode ser estressante, mas é importante encontrar formas de gerenciar isso. A RGR Saúde sugere técnicas simples de respiração, uma breve meditação ou até mesmo um curto passeio para clarear a mente. Não hesite em buscar apoio se sentir que o estresse está afetando sua saúde ou produtividade.</p>",
+      "title": "Postura Correta: Saúde da Coluna",
+      "excerpt": "Ajuste sua cadeira e monitor. Mantenha a coluna reta e os pés no chão para prevenir dores. Uma boa postura faz diferença...",
+      "content": "<p>Ajuste sua cadeira e monitor. Mantenha a coluna reta e os pés no chão para prevenir dores. Uma boa postura faz diferença diária.</p>",
       "tags": [
-        "estresse",
-        "saúdemental",
-        "foco"
+        "Postura",
+        "Ergonomia",
+        "Coluna"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3_rgr_saude-en",
+      "id": "tip_03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Take Care of Your Mental Well-being and Manage Stress!",
-      "excerpt": "The workplace can be stressful, but it's important to find ways to manage it. RGR Saúde suggests simple breathing techniques, a brief meditation, or even a shor...",
-      "content": "<p>The workplace can be stressful, but it's important to find ways to manage it. RGR Saúde suggests simple breathing techniques, a brief meditation, or even a short walk to clear your mind. Don't hesitate to seek support if you feel stress is affecting your health or productivity.</p>",
+      "title": "Correct Posture: Spinal Health",
+      "excerpt": "Adjust your chair and monitor. Keep your spine straight and feet flat on the floor to prevent pain. Good posture makes a...",
+      "content": "<p>Adjust your chair and monitor. Keep your spine straight and feet flat on the floor to prevent pain. Good posture makes a daily difference.</p>",
       "tags": [
-        "estresse",
-        "saúdemental",
-        "foco"
+        "Postura",
+        "Ergonomia",
+        "Coluna"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3_rgr_saude-es",
+      "id": "tip_03-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Cuida Tu Bienestar Mental y Gestiona el Estrés!",
-      "excerpt": "El ambiente laboral puede ser estresante, pero es importante encontrar formas de gestionarlo. RGR Saúde sugiere técnicas simples de respiración, una breve medit...",
-      "content": "<p>El ambiente laboral puede ser estresante, pero es importante encontrar formas de gestionarlo. RGR Saúde sugiere técnicas simples de respiración, una breve meditación o incluso un corto paseo para despejar la mente. No dudes en buscar apoyo si sientes que el estrés está afectando tu salud o productividad.</p>",
+      "title": "Postura Correcta: Salud Espinal",
+      "excerpt": "Ajuste su silla y monitor. Mantenga la columna recta y los pies en el suelo para prevenir dolores. Una buena postura mar...",
+      "content": "<p>Ajuste su silla y monitor. Mantenga la columna recta y los pies en el suelo para prevenir dolores. Una buena postura marca la diferencia diaria.</p>",
       "tags": [
-        "estresse",
-        "saúdemental",
-        "foco"
+        "Postura",
+        "Ergonomia",
+        "Coluna"
       ],
-      "published_at": "2026-01-16T21:37:42.745873",
+      "published_at": "2026-01-16T21:42:46.037706",
       "author": "RGR Saúde (IA)"
     }
   ]
