@@ -1,13 +1,59 @@
 import "./globals.css";
+import { Metadata } from "next";
 
-export const metadata = {
-  title: "RGR — MSO • Gestão em Saúde",
+// Define a URL base para o Google entender os caminhos das imagens e links
+const baseUrl = "https://rgrsaude.com";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "RGR — MSO • Gestão em Saúde",
+    template: "%s | RGR Saúde",
+  },
   description:
-    "B2B corporativo • Governança médica • Operação • Qualidade • KPI",
+    "RGR é uma MSO (Managed Services Organization) focada em eficiência operacional, governança médica, qualidade e redução de custos em serviços de saúde.",
+  keywords: ["MSO", "Gestão em Saúde", "Governança Clínica", "Eficiência Hospitalar", "Saúde Corporativa"],
+  authors: [{ name: "RGR Saúde" }],
+  creator: "RGR Saúde",
+  
+  // Configuração dos ícones (que já fizemos)
   icons: {
-    icon: "/assets/logo-rgr.pgn", // O caminho que validamos antes
-    shortcut: "/assets/logo-rgr.png",
-    apple: "/assets/logo-rgr.png", // Para iPhone/iPad
+    icon: "/assets/logo-rgr.jpeg",
+    shortcut: "/assets/logo-rgr.jpeg",
+    apple: "/assets/logo-rgr.jpeg",
+  },
+
+  // Configuração para Redes Sociais (Open Graph)
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: baseUrl,
+    title: "RGR — MSO • Gestão em Saúde",
+    description: "Operação, padrões e indicadores para serviços de saúde mais eficientes.",
+    siteName: "RGR Saúde",
+    images: [
+      {
+        url: "/assets/logo-rgr.jpeg",
+        width: 800,
+        height: 800,
+        alt: "Logo RGR Saúde",
+      },
+    ],
+  },
+
+  // Configuração para Google (SEO Multilíngue)
+  alternates: {
+    canonical: "/",
+    languages: {
+      "pt": "/pt",
+      "en": "/en",
+      "es": "/es",
+    },
+  },
+  
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
