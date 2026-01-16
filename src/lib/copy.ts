@@ -86,7 +86,8 @@ type Copy = {
   contact: {
     title: string;
     subtitle: string;
-    emailLabel: string;
+    admDesc: string; 
+    credDesc: string;
     form: {
       name: string;
       company: string;
@@ -317,7 +318,8 @@ export const copy: Record<Lang, Copy> = {
       title: "Contato",
       subtitle:
         "Envie sua necessidade e retornaremos com um diagnóstico inicial.",
-      emailLabel: "E-mail:",
+      admDesc: "Administrativo • Jurídico • Licitações • Ofícios",
+      credDesc: "Médicos • Enfermagem • Parceiros • Documentação",
       form: {
         name: "Nome",
         company: "Empresa",
@@ -539,7 +541,8 @@ export const copy: Record<Lang, Copy> = {
       title: "Contact",
       subtitle:
         "Send us your needs and we will return with an initial assessment.",
-      emailLabel: "Email:",
+      admDesc: "Administrative • Legal • Bids • Official Letters",
+      credDesc: "Doctors • Nursing • Partners • Documentation",
       form: {
         name: "Name",
         company: "Company",
@@ -765,7 +768,8 @@ export const copy: Record<Lang, Copy> = {
     contact: {
       title: "Contacto",
       subtitle: "Envíe su necesidad y retornaremos con un diagnóstico inicial.",
-      emailLabel: "Correo:",
+      admDesc: "Administrativo • Jurídico • Licitaciones • Oficios",
+      credDesc: "Médicos • Enfermería • Socios • Documentación",
       form: {
         name: "Nombre",
         company: "Empresa",

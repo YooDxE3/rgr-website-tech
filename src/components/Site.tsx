@@ -224,36 +224,71 @@ export default function Site({ lang }: { lang: Lang }) {
             <h2>{t.contact.title}</h2>
             <p className="muted">{t.contact.subtitle}</p>
 
-            <form className="card form">
+            {/* --- NOVO BLOCO DE CONTATO (WHATSAPP + EMAILS) --- */}
+            <div style={{ marginBottom: "2rem", marginTop: "1.5rem" }}>
+              
+              {/* WhatsApp */}
+              <div style={{ marginBottom: "1.5rem", fontSize: "1.1rem" }}>
+                <span style={{ display: "block", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.5px", color: "#666", marginBottom: "4px" }}>WhatsApp</span>
+                <a 
+                  href="https://wa.me/5548992180572" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: "#0070f3", fontWeight: 600, textDecoration: "none" }}
+                >
+                  +55 (48) 99218-0572
+                </a>
+              </div>
+
+              {/* E-mails */}
+              <div style={{ display: "grid", gap: "1.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+                
+                {/* Email 1 */}
+                <div className="card" style={{ padding: "1.2rem", margin: 0, border: "1px solid #eee" }}>
+                  <a href="mailto:adm@rgrsaude.com" style={{ display: "block", fontWeight: 600, color: "#333", marginBottom: "0.5rem", textDecoration: "none" }}>
+                    adm@rgrsaude.com
+                  </a>
+                  <p className="fine" style={{ margin: 0, color: "#666" }}>
+                    {t.contact.admDesc}
+                  </p>
+                </div>
+
+                {/* Email 2 */}
+                <div className="card" style={{ padding: "1.2rem", margin: 0, border: "1px solid #eee" }}>
+                  <a href="mailto:credenciamento@rgrsaude.com" style={{ display: "block", fontWeight: 600, color: "#333", marginBottom: "0.5rem", textDecoration: "none" }}>
+                    credenciamento@rgrsaude.com
+                  </a>
+                  <p className="fine" style={{ margin: 0, color: "#666" }}>
+                    {t.contact.credDesc}
+                  </p>
+                </div>
+
+              </div>
+            </div>
+            {/* ------------------------------------------------ */}
+
+            <form 
+              className="card form" 
+              action="https://formspree.io/f/xkooojnj" 
+              method="POST"
+            >
               <div className="row">
                 <div style={{ flex: 1 }}>
                   <label htmlFor="nome">{t.contact.form.name}</label>
-                  <input id="nome" required style={{ width: "100%" }} />
+                  <input id="nome" name="nome" required style={{ width: '100%' }} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <label htmlFor="empresa">{t.contact.form.company}</label>
-                  <input id="empresa" required style={{ width: "100%" }} />
+                  <input id="empresa" name="empresa" required style={{ width: '100%' }} />
                 </div>
               </div>
 
-              <label
-                htmlFor="mensagem"
-                style={{ display: "block", marginTop: "1rem" }}
-              >
+              <label htmlFor="mensagem" style={{ display: 'block', marginTop: '1rem' }}>
                 {t.contact.form.message}
               </label>
-              <textarea
-                id="mensagem"
-                rows={4}
-                required
-                style={{ width: "100%" }}
-              ></textarea>
+              <textarea id="mensagem" name="mensagem" rows={4} required style={{ width: '100%' }}></textarea>
 
-              <button
-                className="btn btn--primary"
-                type="submit"
-                style={{ marginTop: "1rem" }}
-              >
+              <button className="btn btn--primary" type="submit" style={{ marginTop: '1rem' }}>
                 {t.contact.form.button}
               </button>
             </form>
@@ -263,14 +298,7 @@ export default function Site({ lang }: { lang: Lang }) {
         <footer className="footer">
           <div className="container footer__inner">
             <div className="foot">
-              {/* Tag HTML normal, sem otimização */}
-              <img
-                src="/assets/logo-rgr.png"
-                alt="RGR"
-                width="44"
-                height="44"
-                style={{ objectFit: "contain" }}
-              />
+              <Image src="/assets/logo-rgr.png" alt="" className="logo logo--sm" width={30} height={30} />
               <div>
                 <strong>RGR</strong>
                 <p className="muted">{t.footer.description}</p>
