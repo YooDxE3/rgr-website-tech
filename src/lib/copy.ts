@@ -104,7 +104,7 @@ export const copy: Record<Lang, Copy> = {
   /* ======================= PT ======================= */
   pt: {
     topbar: {
-      tagline: "MSO • Gestão em Saúde",
+      tagline: "RGR Saúde • MSO",
       menu: {
         about: "Sobre",
         governance: "Governança",
@@ -115,11 +115,11 @@ export const copy: Record<Lang, Copy> = {
       },
     },
     hero: {
-      kicker: "Gestão com excelência em saúde corporativa",
+      kicker: "RGR Saúde: Excelência em gestão corporativa",
       title:
         "Operação, padrões e indicadores para serviços de saúde mais eficientes.",
       subtitle:
-        "A RGR é uma MSO (Managed Services Organization) que estrutura e sustenta a gestão de serviços de saúde: processos, SLAs, qualidade, dados e governança.",
+        "A RGR Saúde é uma MSO (Managed Services Organization) que estrutura e sustenta a gestão de serviços de saúde: processos, SLAs, qualidade e dados.",
       ctaPrimary: "Solicitar diagnóstico",
       ctaSecondary: "Ver serviços",
       mini: {
