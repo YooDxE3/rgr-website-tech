@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   
   // Configuração dos ícones (que já fizemos)
   icons: {
-    icon: "/assets/logo-rgr.jpeg",
-    shortcut: "/assets/logo-rgr.jpeg",
-    apple: "/assets/logo-rgr.jpeg",
+    icon: "/assets/logo-rgr.png",
+    shortcut: "/assets/logo-rgr.png",
+    apple: "/assets/logo-rgr.png",
   },
 
   // Configuração para Redes Sociais (Open Graph)
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     siteName: "RGR Saúde",
     images: [
       {
-        url: "/assets/logo-rgr.jpeg",
+        url: "/assets/logo-rgr.png",
         width: 800,
         height: 800,
         alt: "Logo RGR Saúde",
