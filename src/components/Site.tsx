@@ -7,27 +7,27 @@ import { Lang } from "@/lib/i18n";
 export default function Site({ lang }: { lang: Lang }) {
   const t = copy[lang];
 
-  const labelStyle = { 
-    display: "block", 
-    fontSize: "0.75rem", 
-    textTransform: "uppercase" as const, 
-    letterSpacing: "1px", 
+  const labelStyle = {
+    display: "block",
+    fontSize: "0.75rem",
+    textTransform: "uppercase" as const,
+    letterSpacing: "1px",
     fontWeight: 600,
-    color: "#888", 
-    marginBottom: "4px" 
+    color: "#888",
+    marginBottom: "4px",
   };
 
-  const linkStyle = { 
-    color: "#0070f3", 
-    fontWeight: 600, 
+  const linkStyle = {
+    color: "#0070f3",
+    fontWeight: 600,
     textDecoration: "none",
-    fontSize: "1.1rem"
+    fontSize: "1.1rem",
   };
 
   const descStyle = {
     margin: "4px 0 0 0",
     fontSize: "0.9rem",
-    color: "#555"
+    color: "#555",
   };
 
   return (
@@ -249,14 +249,21 @@ export default function Site({ lang }: { lang: Lang }) {
 
             {/* --- BLOCO DE CANAIS DE ATENDIMENTO --- */}
             {/* Agora usamos display grid para organizar, mas sem as "cards" (bordas) */}
-            <div style={{ marginBottom: "2.5rem", marginTop: "2rem", display: "grid", gap: "2rem", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))" }}>
-              
+            <div
+              style={{
+                marginBottom: "2.5rem",
+                marginTop: "2rem",
+                display: "grid",
+                gap: "2rem",
+                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              }}
+            >
               {/* WhatsApp */}
               <div>
                 <span style={labelStyle}>WhatsApp</span>
-                <a 
-                  href="https://wa.me/5548992180572" 
-                  target="_blank" 
+                <a
+                  href="https://wa.me/5548992180572"
+                  target="_blank"
                   rel="noopener noreferrer"
                   style={linkStyle}
                 >
@@ -271,9 +278,7 @@ export default function Site({ lang }: { lang: Lang }) {
                 <a href="mailto:adm@rgrsaude.com" style={linkStyle}>
                   adm@rgrsaude.com
                 </a>
-                <p style={descStyle}>
-                  {t.contact.admDesc}
-                </p>
+                <p style={descStyle}>{t.contact.admDesc}</p>
               </div>
 
               {/* Email 2 */}
@@ -282,37 +287,57 @@ export default function Site({ lang }: { lang: Lang }) {
                 <a href="mailto:credenciamento@rgrsaude.com" style={linkStyle}>
                   credenciamento@rgrsaude.com
                 </a>
-                <p style={descStyle}>
-                  {t.contact.credDesc}
-                </p>
+                <p style={descStyle}>{t.contact.credDesc}</p>
               </div>
-
             </div>
             {/* ------------------------------------------------ */}
 
             {/* FORMULÁRIO ATUALIZADO */}
-            <form 
-              className="card form" 
-              action="https://formspree.io/f/xkooojnj" 
+            <form
+              className="card form"
+              action="https://formspree.io/f/xkooojnj"
               method="POST"
             >
               <div className="row">
                 <div style={{ flex: 1 }}>
                   <label htmlFor="nome">{t.contact.form.name}</label>
-                  <input id="nome" name="nome" required style={{ width: '100%' }} />
+                  <input
+                    id="nome"
+                    name="nome"
+                    required
+                    style={{ width: "100%" }}
+                  />
                 </div>
                 <div style={{ flex: 1 }}>
                   <label htmlFor="empresa">{t.contact.form.company}</label>
-                  <input id="empresa" name="empresa" required style={{ width: '100%' }} />
+                  <input
+                    id="empresa"
+                    name="empresa"
+                    required
+                    style={{ width: "100%" }}
+                  />
                 </div>
               </div>
 
-              <label htmlFor="mensagem" style={{ display: 'block', marginTop: '1rem' }}>
+              <label
+                htmlFor="mensagem"
+                style={{ display: "block", marginTop: "1rem" }}
+              >
                 {t.contact.form.message}
               </label>
-              <textarea id="mensagem" name="mensagem" rows={4} required style={{ width: '100%' }}></textarea>
+              <textarea
+                id="mensagem"
+                name="mensagem"
+                rows={4}
+                required
+                style={{ width: "100%" }}
+              ></textarea>
 
-              <button className="btn btn--primary" type="submit" style={{ marginTop: '1rem' }}>
+              <button
+                className="btn btn--primary"
+                type="submit"
+                style={{ marginTop: "1rem" }}
+              >
                 {t.contact.form.button}
               </button>
             </form>
@@ -322,7 +347,13 @@ export default function Site({ lang }: { lang: Lang }) {
         <footer className="footer">
           <div className="container footer__inner">
             <div className="foot">
-              <Image src="/assets/logo-rgr.png" alt="" className="logo logo--sm" width={30} height={30} />
+              <img
+                src="/assets/logo-rgr.png"
+                alt="RGR"
+                width="44"
+                height="44"
+                style={{ objectFit: "contain" }}
+              />
               <div>
                 <strong>RGR</strong>
                 <p className="muted">{t.footer.description}</p>
