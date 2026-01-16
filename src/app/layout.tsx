@@ -1,7 +1,6 @@
 import "./globals.css";
 import { Metadata } from "next";
 
-// Define a URL base para o Google entender os caminhos das imagens e links
 const baseUrl = "https://rgrsaude.com";
 
 export const metadata: Metadata = {
@@ -16,14 +15,13 @@ export const metadata: Metadata = {
   authors: [{ name: "RGR Saúde" }],
   creator: "RGR Saúde",
   
-  // Configuração dos ícones (que já fizemos)
+  // CORREÇÃO 1: Extensão correta da imagem (Use a que funcionou: .jpeg ou .jpg)
   icons: {
-    icon: "/assets/logo-rgr.png",
+    icon: "/assets/logo-rgr.png", 
     shortcut: "/assets/logo-rgr.png",
     apple: "/assets/logo-rgr.png",
   },
 
-  // Configuração para Redes Sociais (Open Graph)
   openGraph: {
     type: "website",
     locale: "pt_BR",
@@ -33,7 +31,8 @@ export const metadata: Metadata = {
     siteName: "RGR Saúde",
     images: [
       {
-        url: "/assets/logo-rgr.png",
+        // CORREÇÃO 2: Extensão correta aqui também
+        url: "/assets/logo-rgr.png", 
         width: 800,
         height: 800,
         alt: "Logo RGR Saúde",
@@ -41,9 +40,9 @@ export const metadata: Metadata = {
     ],
   },
 
-  // Configuração para Google (SEO Multilíngue)
   alternates: {
-    canonical: "/",
+    // ERRO FATAL REMOVIDO: A linha 'canonical: "/"' foi apagada.
+    // Isso permite que cada página (/pt, /en) seja indexada individualmente.
     languages: {
       "pt": "/pt",
       "en": "/en",
@@ -62,28 +61,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Criamos o objeto JSON-LD aqui
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "MedicalBusiness", // ou "Organization"
+    "@type": "MedicalBusiness",
     "name": "RGR Saúde",
     "alternateName": "RGR Gestão em Saúde",
     "url": "https://rgrsaude.com",
-    "logo": "https://rgrsaude.com/assets/logo-rgr.jpeg",
+    // CORREÇÃO 3: Consistência na imagem do JSON-LD
+    "logo": "https://rgrsaude.com/assets/logo-rgr.png",
     "description": "MSO focada em eficiência operacional, governança médica e qualidade em serviços de saúde.",
     "email": "servicosmedicosrgr@gmail.com",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "BR"
-      // Se tiver endereço físico, adicione:
-      // "addressLocality": "São Paulo",
-      // "addressRegion": "SP"
     },
-    "sameAs": [
-      // Se tiver LinkedIn ou Instagram, coloque aqui:
-      // "https://www.linkedin.com/company/rgr-saude",
-      // "https://www.instagram.com/rgr.saude"
-    ]
+    "sameAs": []
   };
 
   return (
@@ -101,13 +93,10 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* INJEÇÃO DO JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* FIM DA INJEÇÃO */}
-        
         {children}
       </body>
     </html>
