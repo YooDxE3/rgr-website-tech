@@ -224,49 +224,50 @@ export default function Site({ lang }: { lang: Lang }) {
             <h2>{t.contact.title}</h2>
             <p className="muted">{t.contact.subtitle}</p>
 
-            {/* --- NOVO BLOCO DE CONTATO (WHATSAPP + EMAILS) --- */}
-            <div style={{ marginBottom: "2rem", marginTop: "1.5rem" }}>
+            {/* --- BLOCO DE CANAIS DE ATENDIMENTO --- */}
+            {/* Agora usamos display grid para organizar, mas sem as "cards" (bordas) */}
+            <div style={{ marginBottom: "2.5rem", marginTop: "2rem", display: "grid", gap: "2rem", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))" }}>
               
               {/* WhatsApp */}
-              <div style={{ marginBottom: "1.5rem", fontSize: "1.1rem" }}>
-                <span style={{ display: "block", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.5px", color: "#666", marginBottom: "4px" }}>WhatsApp</span>
+              <div>
+                <span style={labelStyle}>WhatsApp</span>
                 <a 
                   href="https://wa.me/5548992180572" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ color: "#0070f3", fontWeight: 600, textDecoration: "none" }}
+                  style={linkStyle}
                 >
                   +55 (48) 99218-0572
                 </a>
+                <p style={descStyle}>Atendimento rápido</p>
               </div>
 
-              {/* E-mails */}
-              <div style={{ display: "grid", gap: "1.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
-                
-                {/* Email 1 */}
-                <div className="card" style={{ padding: "1.2rem", margin: 0, border: "1px solid #eee" }}>
-                  <a href="mailto:adm@rgrsaude.com" style={{ display: "block", fontWeight: 600, color: "#333", marginBottom: "0.5rem", textDecoration: "none" }}>
-                    adm@rgrsaude.com
-                  </a>
-                  <p className="fine" style={{ margin: 0, color: "#666" }}>
-                    {t.contact.admDesc}
-                  </p>
-                </div>
-
-                {/* Email 2 */}
-                <div className="card" style={{ padding: "1.2rem", margin: 0, border: "1px solid #eee" }}>
-                  <a href="mailto:credenciamento@rgrsaude.com" style={{ display: "block", fontWeight: 600, color: "#333", marginBottom: "0.5rem", textDecoration: "none" }}>
-                    credenciamento@rgrsaude.com
-                  </a>
-                  <p className="fine" style={{ margin: 0, color: "#666" }}>
-                    {t.contact.credDesc}
-                  </p>
-                </div>
-
+              {/* Email 1 */}
+              <div>
+                <span style={labelStyle}>E-mail Geral</span>
+                <a href="mailto:adm@rgrsaude.com" style={linkStyle}>
+                  adm@rgrsaude.com
+                </a>
+                <p style={descStyle}>
+                  {t.contact.admDesc}
+                </p>
               </div>
+
+              {/* Email 2 */}
+              <div>
+                <span style={labelStyle}>E-mail Técnico</span>
+                <a href="mailto:credenciamento@rgrsaude.com" style={linkStyle}>
+                  credenciamento@rgrsaude.com
+                </a>
+                <p style={descStyle}>
+                  {t.contact.credDesc}
+                </p>
+              </div>
+
             </div>
             {/* ------------------------------------------------ */}
 
+            {/* FORMULÁRIO ATUALIZADO */}
             <form 
               className="card form" 
               action="https://formspree.io/f/xkooojnj" 
