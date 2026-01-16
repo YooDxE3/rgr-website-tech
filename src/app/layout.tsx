@@ -5,9 +5,9 @@ export const metadata = {
   description:
     "B2B corporativo • Governança médica • Operação • Qualidade • KPI",
   icons: {
-    icon: "/assets/logo-rgr.jpeg", // O caminho que validamos antes
-    shortcut: "/assets/logo-rgr.jpeg",
-    apple: "/assets/logo-rgr.jpeg", // Para iPhone/iPad
+    icon: "/assets/logo-rgr.pgn", // O caminho que validamos antes
+    shortcut: "/assets/logo-rgr.png",
+    apple: "/assets/logo-rgr.png", // Para iPhone/iPad
   },
 };
 
