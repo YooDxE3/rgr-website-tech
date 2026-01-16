@@ -5,11 +5,7 @@ export function generateStaticParams() {
   return langs.map((lang) => ({ lang }));
 }
 
-export default function LangPage({
-  params,
-}: {
-  params: { lang: string };
-}) {
+export default function LangPage({ params }: { params: { lang: string } }) {
   const lang: Lang = normalizeLang(params.lang);
 
   return <Site lang={lang} />;

@@ -22,7 +22,7 @@ export default function Tips({ lang }: { lang: Lang }) {
 
         // FILTRO: Pega categoria 'saude' E o idioma correto
         const healthPosts = (data?.posts || []).filter(
-          (p: HealthPost) => p.category === "saude" && p.lang === lang
+          (p: HealthPost) => p.category === "saude" && p.lang === lang,
         );
 
         setPosts(healthPosts.slice(0, 3));
@@ -49,8 +49,8 @@ export default function Tips({ lang }: { lang: Lang }) {
             {lang === "en"
               ? "No tips available at the moment."
               : lang === "es"
-              ? "No hay consejos disponibles en este momento."
-              : "Nenhuma dica disponível no momento."}
+                ? "No hay consejos disponibles en este momento."
+                : "Nenhuma dica disponível no momento."}
           </strong>
         </div>
       )}

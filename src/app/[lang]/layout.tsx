@@ -13,9 +13,7 @@ export default function LangLayout({
 
   return (
     <html lang={lang}>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

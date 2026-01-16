@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Tips from "./Tips";
-import LanguageSwitcher from "./LanguageSwitcher"; 
+import LanguageSwitcher from "./LanguageSwitcher";
 import { copy } from "@/lib/copy";
 import { Lang } from "@/lib/i18n";
 
@@ -13,27 +13,29 @@ export default function Site({ lang }: { lang: Lang }) {
       <header className="topbar">
         <div className="container topbar__inner">
           <a className="brand" href="#inicio">
-            <img 
-  src="/assets/logo-rgr.png" 
-  alt="RGR" 
-  width="44" 
-  height="44" 
-  style={{ objectFit: "contain" }}
-/>
+            <img
+              src="/assets/logo-rgr.png"
+              alt="RGR"
+              width="44"
+              height="44"
+              style={{ objectFit: "contain" }}
+            />
             <div className="brand__text">
               <strong>RGR</strong>
               <span>{t.topbar.tagline}</span>
             </div>
           </a>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <nav className="nav">
               <a href="#sobre">{t.topbar.menu.about}</a>
               <a href="#governanca">{t.topbar.menu.governance}</a>
               <a href="#escopo">{t.topbar.menu.scope}</a>
               <a href="#inovacao">{t.topbar.menu.innovation}</a>
               <a href="#roadmap">{t.topbar.menu.roadmap}</a>
-              <a className="btn" href="#contato">{t.topbar.menu.contact}</a>
+              <a className="btn" href="#contato">
+                {t.topbar.menu.contact}
+              </a>
             </nav>
             {/* Se você criou o LanguageSwitcher, ele fica aqui. Se não, pode remover esta linha */}
             <LanguageSwitcher current={lang} />
@@ -49,10 +51,14 @@ export default function Site({ lang }: { lang: Lang }) {
               <p className="kicker">{t.hero.kicker}</p>
               <h1>{t.hero.title}</h1>
               <p className="lead">{t.hero.subtitle}</p>
-              
+
               <div className="cta">
-                <a className="btn btn--primary" href="#contato">{t.hero.ctaPrimary}</a>
-                <a className="btn btn--ghost" href="#servicos">{t.hero.ctaSecondary}</a>
+                <a className="btn btn--primary" href="#contato">
+                  {t.hero.ctaPrimary}
+                </a>
+                <a className="btn btn--ghost" href="#servicos">
+                  {t.hero.ctaSecondary}
+                </a>
               </div>
 
               <div className="mini">
@@ -74,7 +80,9 @@ export default function Site({ lang }: { lang: Lang }) {
             <aside className="card">
               <h2>{t.hero.delivery.title}</h2>
               <ul>
-                {t.hero.delivery.items.map((i) => <li key={i}>{i}</li>)}
+                {t.hero.delivery.items.map((i) => (
+                  <li key={i}>{i}</li>
+                ))}
               </ul>
               <p className="fine">{t.hero.delivery.note}</p>
             </aside>
@@ -130,9 +138,7 @@ export default function Site({ lang }: { lang: Lang }) {
               ))}
             </div>
 
-            <div className="note">
-              {t.governance.note}
-            </div>
+            <div className="note">{t.governance.note}</div>
           </div>
         </section>
 
@@ -222,20 +228,32 @@ export default function Site({ lang }: { lang: Lang }) {
               <div className="row">
                 <div style={{ flex: 1 }}>
                   <label htmlFor="nome">{t.contact.form.name}</label>
-                  <input id="nome" required style={{ width: '100%' }} />
+                  <input id="nome" required style={{ width: "100%" }} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <label htmlFor="empresa">{t.contact.form.company}</label>
-                  <input id="empresa" required style={{ width: '100%' }} />
+                  <input id="empresa" required style={{ width: "100%" }} />
                 </div>
               </div>
 
-              <label htmlFor="mensagem" style={{ display: 'block', marginTop: '1rem' }}>
+              <label
+                htmlFor="mensagem"
+                style={{ display: "block", marginTop: "1rem" }}
+              >
                 {t.contact.form.message}
               </label>
-              <textarea id="mensagem" rows={4} required style={{ width: '100%' }}></textarea>
+              <textarea
+                id="mensagem"
+                rows={4}
+                required
+                style={{ width: "100%" }}
+              ></textarea>
 
-              <button className="btn btn--primary" type="submit" style={{ marginTop: '1rem' }}>
+              <button
+                className="btn btn--primary"
+                type="submit"
+                style={{ marginTop: "1rem" }}
+              >
                 {t.contact.form.button}
               </button>
             </form>
@@ -246,13 +264,13 @@ export default function Site({ lang }: { lang: Lang }) {
           <div className="container footer__inner">
             <div className="foot">
               {/* Tag HTML normal, sem otimização */}
-<img 
-  src="/assets/logo-rgr.png" 
-  alt="RGR" 
-  width="44" 
-  height="44" 
-  style={{ objectFit: "contain" }}
-/>
+              <img
+                src="/assets/logo-rgr.png"
+                alt="RGR"
+                width="44"
+                height="44"
+                style={{ objectFit: "contain" }}
+              />
               <div>
                 <strong>RGR</strong>
                 <p className="muted">{t.footer.description}</p>

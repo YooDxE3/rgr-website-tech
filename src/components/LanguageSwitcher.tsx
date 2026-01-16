@@ -9,7 +9,15 @@ export default function LanguageSwitcher({ current }: { current: Lang }) {
   ];
 
   return (
-    <div className="lang-switcher" style={{ display: "flex", alignItems: "center", marginLeft: "1.5rem", fontSize: "0.85rem" }}>
+    <div
+      className="lang-switcher"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        marginLeft: "1.5rem",
+        fontSize: "0.85rem",
+      }}
+    >
       {options.map((opt, i) => (
         <span key={opt.value} style={{ display: "flex", alignItems: "center" }}>
           <Link
@@ -19,7 +27,7 @@ export default function LanguageSwitcher({ current }: { current: Lang }) {
               opacity: current === opt.value ? 1 : 0.6,
               textDecoration: "none",
               color: "inherit",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
           >
             {opt.label}
