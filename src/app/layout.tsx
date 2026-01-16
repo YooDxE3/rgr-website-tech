@@ -62,6 +62,30 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Criamos o objeto JSON-LD aqui
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness", // ou "Organization"
+    "name": "RGR Saúde",
+    "alternateName": "RGR Gestão em Saúde",
+    "url": "https://rgrsaude.com",
+    "logo": "https://rgrsaude.com/assets/logo-rgr.jpeg",
+    "description": "MSO focada em eficiência operacional, governança médica e qualidade em serviços de saúde.",
+    "email": "servicosmedicosrgr@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "BR"
+      // Se tiver endereço físico, adicione:
+      // "addressLocality": "São Paulo",
+      // "addressRegion": "SP"
+    },
+    "sameAs": [
+      // Se tiver LinkedIn ou Instagram, coloque aqui:
+      // "https://www.linkedin.com/company/rgr-saude",
+      // "https://www.instagram.com/rgr.saude"
+    ]
+  };
+
   return (
     <html>
       <head>
@@ -76,7 +100,16 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {/* INJEÇÃO DO JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {/* FIM DA INJEÇÃO */}
+        
+        {children}
+      </body>
     </html>
   );
 }
