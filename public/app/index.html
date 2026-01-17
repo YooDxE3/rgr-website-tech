@@ -776,95 +776,113 @@
             </div>
 
             <div class="sp"></div>
-            <div
-              id="loginBox"
-              class="card"
-              style="background: rgba(255, 255, 255, 0.02)"
-            >
-              <div class="cardin">
-                <div class="row" style="justify-content: space-between">
-                  <div>
-                    <h2 data-i18n="loginTitle">Login interno</h2>
-                    <div class="muted" data-i18n="loginHint">
-                      Admin/Gestor entram com senha demo. Profissional entra
-                      após aprovação.
+            <div id="viewLogin">
+              <div
+                class="card"
+                style="
+                  max-width: 400px;
+                  margin: 40px auto;
+                  border-top: 4px solid var(--primary);
+                "
+              >
+                <div class="cardin">
+                  <div style="text-align: center; margin-bottom: 20px">
+                    <h1 style="margin: 0">Acesso Restrito</h1>
+                    <div class="sub">
+                      Identifique-se para gerar seu token de acesso.
                     </div>
                   </div>
-                  <span class="badge" id="roleBadge">ADMIN</span>
-                </div>
-                <div class="sp"></div>
-                <div id="loginForm">
-                  <div class="two">
-                    <div id="pwdCol">
-                      <div class="muted" data-i18n="lblPassword">Senha</div>
-                      <input id="pwd" type="password" placeholder="••••" />
-                    </div>
-                    <div id="profCol">
-                      <div class="muted" data-i18n="lblProfCategory">
-                        Categoria
-                      </div>
-                      <select id="profCatSel">
-                        <option value="health" data-i18n="optKindHealth">
-                          Profissionais de Saúde
-                        </option>
-                        <option value="network" data-i18n="optKindNetwork">
-                          Rede Credenciada
-                        </option>
-                        <option value="vendor" data-i18n="optKindVendor">
-                          Fornecedores
-                        </option>
-                      </select>
-                      <div style="height: 10px"></div>
-                      <div class="muted" data-i18n="lblProf">
-                        Profissional (aprovado)
-                      </div>
-                      <select id="profSel"></select>
-                    </div>
-                  </div>
-                  <div class="sp"></div>
-                  <div class="row">
-                    <button class="primary" id="btnLogin" data-i18n="btnLogin">
-                      Entrar
-                    </button>
-                    <button id="btnDemoPwd" data-i18n="btnShowPwd">
-                      Mostrar senhas demo
-                    </button>
-                  </div>
-                  <div class="sp"></div>
-                  <div class="muted" id="demoPwd" style="display: none"></div>
-                </div>
 
-                <div id="externoIntro" style="display: none">
-                  <div class="muted" data-i18n="extIntro">
-                    O médico realiza cadastro e envia documentos. Após
-                    aprovação, libera a área interna.
-                  </div>
-                  <div class="sp"></div>
-                  <button class="primary" id="btnGoExt" data-i18n="btnGoExt">
-                    Ir para 1º acesso
-                  </button>
-                </div>
-
-                <div id="sessRestore" style="display: none">
-                  <div class="divider"></div>
-                  <div class="row" style="justify-content: space-between">
-                    <div class="muted" id="sessText"></div>
-                    <div class="row">
-                      <button
-                        class="small"
-                        id="btnSessContinue"
-                        data-i18n="btnContinue"
-                      >
-                        Continuar
-                      </button>
-                      <button
-                        class="small danger"
-                        id="btnSessReset"
-                        data-i18n="btnSwitch"
-                      >
-                        Trocar
-                      </button>
+                  <div
+                    class="tabs"
+                    style="
+                      justify-content: center;
+                      margin-bottom: 25px;
+                      background: rgba(0, 0, 0, 0.2);
+                      padding: 4px;
+                      border-radius: 10px;
+                    "
+                  >
+                    <div
+                      class="tab active"
+                      onclick="setLoginTab('prof')"
+                      id="tabL_prof"
+                    >
+                      Profissional
                     </div>
+                    <div
+                      class="tab"
+                      onclick="setLoginTab('gestor')"
+                      id="tabL_gestor"
+                    >
+                      Gestor
+                    </div>
+                    <div
+                      class="tab"
+                      onclick="setLoginTab('admin')"
+                      id="tabL_admin"
+                    >
+                      Admin
+                    </div>
+                  </div>
+
+                  <div id="loginForm">
+                    <div class="muted" style="margin-bottom: 4px">
+                      Login / Usuário
+                    </div>
+                    <input
+                      id="lUser"
+                      type="text"
+                      placeholder="Digite seu usuário..."
+                      style="padding: 14px"
+                    />
+
+                    <div class="sp"></div>
+
+                    <div class="muted" style="margin-bottom: 4px">Senha</div>
+                    <input
+                      id="lPass"
+                      type="password"
+                      placeholder="••••••••"
+                      style="padding: 14px"
+                    />
+
+                    <div class="sp"></div>
+                    <div class="sp"></div>
+
+                    <button
+                      class="primary block"
+                      onclick="doSecureLogin()"
+                      style="font-size: 16px; padding: 14px"
+                    >
+                      🔐 Entrar e Gerar Token
+                    </button>
+                  </div>
+
+                  <div class="sp"></div>
+                  <div
+                    id="loginFooter"
+                    style="
+                      text-align: center;
+                      font-size: 12px;
+                      color: var(--muted);
+                    "
+                  >
+                    Área exclusiva para profissionais de saúde.
+                  </div>
+
+                  <div
+                    id="extLinkArea"
+                    style="
+                      margin-top: 20px;
+                      text-align: center;
+                      border-top: 1px solid var(--line);
+                      padding-top: 15px;
+                    "
+                  >
+                    <button class="small" onclick="goRegister()">
+                      Não tenho cadastro (1º Acesso)
+                    </button>
                   </div>
                 </div>
               </div>
@@ -6295,44 +6313,167 @@
           $("profCol").style.display = "none";
         }
       }
-      function doLogin() {
-        if (currentRole === "externo") {
-          goExternal();
-          return;
-        }
-        if (currentRole === "prof") {
-          const pid = $("profSel").value;
-          if (!pid) {
-            toast(t("msgPickProf"));
-            return;
-          }
-          goInternal("prof", pid);
-          return;
-        }
-        const pwd = $("pwd").value.trim();
-        if (!pwd) {
-          toast(t("msgNeedPwd"));
-          return;
-        }
+      /* --- SISTEMA DE AUTENTICAÇÃO E TOKEN (NOVO) --- */
 
-        const p = pwd.toLowerCase();
-        const okAdmin = p === "rgr1234" || p === "admin123" || p === "1234";
-        const okGestor =
-          p === "gestor1234" || p === "gestor123" || p === "1234";
-        const ok =
-          currentRole === "admin"
-            ? okAdmin
-            : currentRole === "gestor"
-              ? okGestor
-              : okAdmin || okGestor;
+      // 1. Variável para controlar qual aba está selecionada
+      let loginRole = "prof";
 
-        if (!ok) {
-          toast(t("msgBadPwd"));
-          return;
+      // 2. Função para trocar as abas visualmente
+      function setLoginTab(role) {
+        loginRole = role;
+        // Atualiza visual das abas
+        document
+          .querySelectorAll("#viewLogin .tab")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("tabL_" + role).classList.add("active");
+
+        // Limpa campos
+        $("lUser").value = "";
+        $("lPass").value = "";
+
+        // Muda placeholders para ajudar o usuário
+        if (role === "prof") {
+          $("lUser").placeholder = "WhatsApp ou CPF";
+          $("loginFooter").textContent = "Acesso para Médicos e Enfermeiros.";
+          $("extLinkArea").style.display = "block";
+        } else {
+          $("lUser").placeholder = "Usuário do Sistema";
+          $("loginFooter").textContent = "Acesso Administrativo.";
+          $("extLinkArea").style.display = "none";
         }
-        goInternal(currentRole);
       }
 
+      // 3. A Função de Login Segura
+      async function doSecureLogin() {
+        const u = $("lUser").value.trim();
+        const p = $("lPass").value.trim();
+
+        if (!u || !p) {
+          toast("Preencha usuário e senha.");
+          return;
+        }
+
+        let foundUser = null;
+
+        if (loginRole === "prof") {
+          // Para PROFISSIONAIS: Busca na lista de contas aprovadas
+          // Verifica se DB.accounts existe
+          const acc = (DB.accounts || []).find((a) => a.user === u);
+
+          if (acc) {
+            // Valida senha (Texto simples ou Hash)
+            let isValid = false;
+            if (acc.pass && acc.pass === p) isValid = true;
+            else if (acc.passwordHash && (await sha256(p)) === acc.passwordHash)
+              isValid = true;
+
+            if (isValid) {
+              // Pega dados do perfil profissional para compor o token
+              const profData = DB.profs.find((pr) => pr.id === acc.profId);
+              foundUser = {
+                id: acc.profId,
+                role: "prof",
+                name: profData ? profData.name : u,
+                authTime: Date.now(),
+              };
+
+              // Lógica de trocar senha no primeiro acesso
+              if (acc.mustChangePwd) {
+                const newP = prompt(
+                  "⚠️ Primeiro Acesso: Defina uma nova senha segura:",
+                );
+                if (newP && newP.length >= 4) {
+                  acc.passwordHash = await sha256(newP);
+                  delete acc.pass;
+                  acc.mustChangePwd = false;
+                  saveDB();
+                } else {
+                  toast("Senha inválida. Login cancelado.");
+                  return;
+                }
+              }
+            }
+          }
+        } else {
+          // Para ADMIN e GESTOR: Busca na tabela DB.users (que criamos no Passo 1)
+          const sysUser = (DB.users || []).find(
+            (x) => x.role === loginRole && x.user === u,
+          );
+
+          if (sysUser && sysUser.pass === p) {
+            foundUser = {
+              id: sysUser.id,
+              role: sysUser.role,
+              name: sysUser.name,
+              authTime: Date.now(),
+            };
+          }
+        }
+
+        // 4. Resultado da Validação
+        if (foundUser) {
+          generateAndSaveToken(foundUser);
+        } else {
+          toast("🚫 Acesso Negado. Verifique suas credenciais.");
+        }
+      }
+
+      // 5. Gerador de Token
+      function generateAndSaveToken(userObj) {
+        // Cria um payload JSON
+        const payload = JSON.stringify(userObj);
+
+        // Cria um "Token" (Codifica em Base64 para simular um JWT)
+        // Em um servidor real, isso seria assinado com criptografia.
+        const token = btoa(payload);
+
+        // Salva na Sessão (sessionStorage limpa quando fecha o navegador, localStorage mantem)
+        localStorage.setItem("rgr_token", token);
+
+        toast("✅ Token Gerado! Entrando...");
+
+        // Carrega o sistema
+        loadSessionFromToken();
+      }
+
+      // 6. Carrega Sessão pelo Token (Coloque chamada para isso no boot)
+      function loadSessionFromToken() {
+        const token = localStorage.getItem("rgr_token");
+        if (!token) return false;
+
+        try {
+          // Decodifica o token
+          const userObj = JSON.parse(atob(token));
+
+          // Define a sessão global
+          session = {
+            role: userObj.role,
+            profId: userObj.id, // Se for admin, isso é o ID do admin
+            name: userObj.name,
+          };
+
+          // Atualiza UI
+          currentRole = session.role;
+          $("sessionBadge").textContent = session.name;
+          $("sessionBadge").style.display = "inline-block";
+          $("btnLogoutTop").style.display = "inline-block";
+
+          // Entra no painel
+          goInternal(session.role);
+          return true;
+        } catch (e) {
+          console.error("Token inválido", e);
+          logout();
+          return false;
+        }
+      }
+
+      // 7. Atualizar o Logout para destruir o token
+      window.logout = function () {
+        localStorage.removeItem("rgr_token");
+        session = null;
+        goHome();
+      };
       function demoPwd() {
         const d = $("demoPwd");
         d.style.display = d.style.display === "none" ? "" : "none";
@@ -6541,6 +6682,32 @@
         $("langSel").addEventListener("change", () => {
           DB.lang = $("langSel").value;
           saveDB();
+          if (!DB.users) DB.users = [];
+
+          const adminExists = DB.users.find((u) => u.role === "admin");
+          if (!adminExists) {
+            DB.users.push({
+              id: "admin_master",
+              role: "admin",
+              user: "admin", // Login
+              pass: "rgr1234", // Senha Padrão
+              name: "Administrador Master",
+            });
+            console.log("Admin padrão criado.");
+          }
+
+          // Verifica se já existe o GESTOR PADRÃO.
+          const gestorExists = DB.users.find((u) => u.role === "gestor");
+          if (!gestorExists) {
+            DB.users.push({
+              id: "gestor_01",
+              role: "gestor",
+              user: "gestor",
+              pass: "1234",
+              name: "Gerente de Operações",
+            });
+          }
+          saveDB();
 
           // Rebuild lists that have localized labels
           fillExternalLists();
@@ -6682,6 +6849,13 @@
         const banner = document.getElementById("installBanner");
         if (banner) banner.style.display = "none";
       });
+
+      // Tenta restaurar sessão via token
+      const restored = loadSessionFromToken();
+
+      if (!restored) {
+        goHome(); // Se não tem token, vai pro login
+      }
       boot();
 
       /* ===================== viaRGR Platform Enhancements (v19.12.3) ===================== */
