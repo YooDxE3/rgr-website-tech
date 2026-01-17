@@ -757,136 +757,127 @@
                 </button>
               </div>
             </div>
-            <h1 data-i18n="homeTitle">Entrar no viaRGR</h1>
-            <div class="sub" data-i18n="homeSub">
-              Escolha o tipo de acesso. O médico inicia na área externa (1º
-              acesso).
+
+            <div
+              style="text-align: center; margin-bottom: 20px; margin-top: 10px"
+            >
+              <h1 style="margin: 0; font-size: 22px">Acesso Restrito</h1>
+              <div class="sub">
+                Identifique-se para gerar seu token de acesso.
+              </div>
             </div>
-            <div class="sp"></div>
-            <div class="tabs" id="roleTabs">
-              <div class="tab active" data-role="admin" data-i18n="roleAdmin">
-                Administrador
-              </div>
-              <div class="tab" data-role="gestor" data-i18n="roleGestor">
-                Gestor
-              </div>
-              <div class="tab" data-role="prof" data-i18n="roleProf">
+
+            <div
+              class="tabs"
+              id="viewLogin"
+              style="
+                justify-content: center;
+                margin-bottom: 25px;
+                background: rgba(0, 0, 0, 0.2);
+                padding: 4px;
+                border-radius: 10px;
+              "
+            >
+              <div
+                class="tab active"
+                onclick="setLoginTab('prof')"
+                id="tabL_prof"
+                style="flex: 1; text-align: center"
+              >
                 Profissional
               </div>
-              <div class="tab" data-role="externo" data-i18n="roleExt">
-                1º acesso (Cadastro)
+              <div
+                class="tab"
+                onclick="setLoginTab('gestor')"
+                id="tabL_gestor"
+                style="flex: 1; text-align: center"
+              >
+                Gestor
+              </div>
+              <div
+                class="tab"
+                onclick="setLoginTab('admin')"
+                id="tabL_admin"
+                style="flex: 1; text-align: center"
+              >
+                Admin
               </div>
             </div>
 
-            <div class="sp"></div>
-            <div id="viewLogin">
-              <div
-                class="card"
-                style="
-                  max-width: 400px;
-                  margin: 40px auto;
-                  border-top: 4px solid var(--primary);
-                "
+            <div id="loginForm">
+              <div class="muted" style="margin-bottom: 6px">
+                Login / Usuário
+              </div>
+              <input
+                id="lUser"
+                type="text"
+                placeholder="WhatsApp ou CPF"
+                style="padding: 14px; font-size: 16px"
+              />
+
+              <div class="sp"></div>
+
+              <div class="muted" style="margin-bottom: 6px">Senha</div>
+              <input
+                id="lPass"
+                type="password"
+                placeholder="••••••••"
+                style="padding: 14px; font-size: 16px"
+              />
+
+              <div class="sp"></div>
+              <div class="sp"></div>
+
+              <button
+                class="primary block"
+                onclick="doSecureLogin()"
+                style="font-size: 16px; padding: 14px; width: 100%"
               >
-                <div class="cardin">
-                  <div style="text-align: center; margin-bottom: 20px">
-                    <h1 style="margin: 0">Acesso Restrito</h1>
-                    <div class="sub">
-                      Identifique-se para gerar seu token de acesso.
-                    </div>
-                  </div>
+                🔐 Entrar e Gerar Token
+              </button>
+            </div>
 
-                  <div
-                    class="tabs"
-                    style="
-                      justify-content: center;
-                      margin-bottom: 25px;
-                      background: rgba(0, 0, 0, 0.2);
-                      padding: 4px;
-                      border-radius: 10px;
-                    "
+            <div class="sp"></div>
+            <div
+              id="loginFooter"
+              style="text-align: center; font-size: 12px; color: var(--muted)"
+            >
+              Área exclusiva para profissionais de saúde.
+            </div>
+
+            <div
+              id="extLinkArea"
+              style="
+                margin-top: 20px;
+                text-align: center;
+                border-top: 1px solid var(--line);
+                padding-top: 15px;
+              "
+            >
+              <button class="small" onclick="goExternal()">
+                Não tenho cadastro (1º Acesso)
+              </button>
+            </div>
+
+            <div id="sessRestore" style="display: none; margin-top: 20px">
+              <div class="divider"></div>
+              <div class="row" style="justify-content: space-between">
+                <div class="muted" id="sessText"></div>
+                <div class="row">
+                  <button
+                    class="small"
+                    id="btnSessContinue"
+                    data-i18n="btnContinue"
                   >
-                    <div
-                      class="tab active"
-                      onclick="setLoginTab('prof')"
-                      id="tabL_prof"
-                    >
-                      Profissional
-                    </div>
-                    <div
-                      class="tab"
-                      onclick="setLoginTab('gestor')"
-                      id="tabL_gestor"
-                    >
-                      Gestor
-                    </div>
-                    <div
-                      class="tab"
-                      onclick="setLoginTab('admin')"
-                      id="tabL_admin"
-                    >
-                      Admin
-                    </div>
-                  </div>
-
-                  <div id="loginForm">
-                    <div class="muted" style="margin-bottom: 4px">
-                      Login / Usuário
-                    </div>
-                    <input
-                      id="lUser"
-                      type="text"
-                      placeholder="Digite seu usuário..."
-                      style="padding: 14px"
-                    />
-
-                    <div class="sp"></div>
-
-                    <div class="muted" style="margin-bottom: 4px">Senha</div>
-                    <input
-                      id="lPass"
-                      type="password"
-                      placeholder="••••••••"
-                      style="padding: 14px"
-                    />
-
-                    <div class="sp"></div>
-                    <div class="sp"></div>
-
-                    <button
-                      class="primary block"
-                      onclick="doSecureLogin()"
-                      style="font-size: 16px; padding: 14px"
-                    >
-                      🔐 Entrar e Gerar Token
-                    </button>
-                  </div>
-
-                  <div class="sp"></div>
-                  <div
-                    id="loginFooter"
-                    style="
-                      text-align: center;
-                      font-size: 12px;
-                      color: var(--muted);
-                    "
+                    Continuar
+                  </button>
+                  <button
+                    class="small danger"
+                    id="btnSessReset"
+                    data-i18n="btnSwitch"
                   >
-                    Área exclusiva para profissionais de saúde.
-                  </div>
-
-                  <div
-                    id="extLinkArea"
-                    style="
-                      margin-top: 20px;
-                      text-align: center;
-                      border-top: 1px solid var(--line);
-                      padding-top: 15px;
-                    "
-                  >
-                    <button class="small" onclick="goRegister()">
-                      Não tenho cadastro (1º Acesso)
-                    </button>
-                  </div>
+                    Trocar
+                  </button>
                 </div>
               </div>
             </div>
