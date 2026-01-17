@@ -1460,26 +1460,24 @@
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyC8JtU3sPU0fsaGto540oDKVPIj2zwx5sc",
-
         authDomain: "rgr-saude.firebaseapp.com",
-
         projectId: "rgr-saude",
-
         storageBucket: "rgr-saude.firebasestorage.app",
-
         messagingSenderId: "1053656570474",
-
         appId: "1:1053656570474:web:139db120469a1684810813",
       };
 
-      const app = initializeApp(firebaseConfig);
+      // CORREÇÃO AQUI: Usando o namespace global 'firebase'
+      firebase.initializeApp(firebaseConfig);
 
       const db = firebase.firestore();
       const auth = firebase.auth();
 
       console.log("🔥 Firebase Conectado!");
+
       /* ===================== Storage ===================== */
       const KEY = "viargr_demo_v19";
+
       const defaultDB = () => {
         const now = new Date().toISOString();
         return {
@@ -6711,11 +6709,7 @@
       async function boot() {
         console.log("🚀 Iniciando sistema...");
 
-        // ============================================================
-        // 1. CARREGAMENTO DE DADOS (Lógica Nova - Firebase)
-        // ============================================================
-
-        // Tenta carregar do cache local primeiro
+        // 1. Firebase Sync
         const localData = localStorage.getItem("rgr_db");
         if (localData) {
           try {
@@ -6725,7 +6719,6 @@
           }
         }
 
-        // Conecta no Firebase (Tempo Real)
         if (typeof db !== "undefined") {
           db.collection("sistema")
             .doc("v1")
@@ -6738,25 +6731,20 @@
                 DB.accounts = data.accounts || [];
                 DB.users = data.users || [];
                 DB.cadastros = data.cadastros || [];
-                console.log("☁️ Dados sincronizados da nuvem!");
+                console.log("☁️ Dados sincronizados!");
 
-                // Atualiza tela se estiver logado
-                if (session) {
+                if (session && typeof renderInternalBody === "function") {
                   const activeTab = document.querySelector(".tab.active");
-                  const key = activeTab ? activeTab.dataset.key : "schedule";
-                  // Função de segurança para não quebrar se a função de render não existir
-                  if (typeof renderInternalBody === "function")
-                    renderInternalBody(key);
+                  renderInternalBody(
+                    activeTab ? activeTab.dataset.key : "schedule",
+                  );
                 }
               }
             });
         }
 
-        // ============================================================
-        // 2. GARANTIA DE USUÁRIOS (Lógica Nova)
-        // ============================================================
+        // 2. Garantir Admins
         if (!DB.users) DB.users = [];
-
         if (!DB.users.find((u) => u.role === "admin")) {
           DB.users.push({
             id: "admin_master",
@@ -6776,11 +6764,7 @@
           });
         }
 
-        // ============================================================
-        // 3. CONFIGURAÇÃO VISUAL E BOTÕES (Do seu código Antigo)
-        // ============================================================
-
-        // Idioma
+        // 3. Configurações Visuais
         const langEl = $("langSel");
         if (langEl) {
           langEl.value = DB.lang || "pt";
@@ -6791,19 +6775,17 @@
           });
         }
 
-        // Preenche listas externas (Estados, Profissões)
+        // Preenche listas do cadastro externo
         if (typeof fillExternalLists === "function") fillExternalLists();
         if (typeof fillExternalProfession === "function")
           fillExternalProfession();
         if (typeof updateExternalKind === "function") updateExternalKind();
         if (typeof renderExternalStatus === "function") renderExternalStatus();
 
-        // Listeners de mudança em selects externos
         if ($("extKind"))
           $("extKind").addEventListener("change", updateExternalKind);
-        // (Removemos profCatSel pois o login novo não usa, mas se o cadastro usar, mantemos)
 
-        // Binds de Arquivos (Uploads no Cadastro) - CRUCIAL
+        // Binds de Arquivos
         if (typeof bindFileName === "function") {
           bindFileName("doc1File", "doc1Name", "doc1Ok", true);
           bindFileName("doc2Front", "doc2FrontName", "doc2Ok", true);
@@ -6812,106 +6794,71 @@
           bindFileName("doc4File", "doc4Name", null, false);
         }
 
-        // Botões de Ação
-        // Nota: btnLogin não precisa mais de onclick aqui pois já está no HTML novo (doSecureLogin)
+        // Botões Globais
+        // Nota: btnGoExt e btnLogin agora usam onclick no HTML, não precisa bindar aqui
 
-        if ($("btnGoExt")) $("btnGoExt").onclick = goExternal;
         if ($("btnSend")) $("btnSend").onclick = externalSubmit;
-
         if ($("btnClear"))
           $("btnClear").onclick = () => {
             clearExternal();
             toast("Limpo.");
           };
+        if ($("btnLogout")) $("btnLogout").onclick = logout;
 
-        if ($("btnLogout")) $("btnLogout").onclick = logout; // Usando a nova função logout
-
-        // Botões de "Voltar para Home"
-        const goHomeAction = () => {
-          goHome();
-        };
+        const goHomeAction = () => goHome();
         if ($("btnHome")) $("btnHome").onclick = goHomeAction;
         if ($("btnBackHome1")) $("btnBackHome1").onclick = goHomeAction;
 
-        // ============================================================
-        // 4. INICIALIZAÇÃO FINAL (Lógica Nova de Token)
-        // ============================================================
-
+        // 4. Inicializa
         applyI18n();
 
-        // Tenta restaurar sessão via Token
         if (typeof loadSessionFromToken === "function") {
-          // Se tiver token válido, ele entra sozinho.
-          // Se não, ele já está na Home.
           loadSessionFromToken();
         } else {
           goHome();
         }
       }
 
-      // --- LÓGICA DE INSTALAÇÃO PWA (UNIVERSAL) ---
+      // --- LÓGICA PWA ---
       let deferredPrompt;
-
-      // 1. Detecta se é iPhone/iPad (iOS)
       const isIos = /iphone|ipad|ipod/.test(
         window.navigator.userAgent.toLowerCase(),
       );
       const isInStandaloneMode =
         "standalone" in window.navigator && window.navigator.standalone;
 
-      // 2. Lógica Principal
       window.addEventListener("beforeinstallprompt", (e) => {
-        // ANDROID / CHROME PC
         e.preventDefault();
         deferredPrompt = e;
         showInstallBanner();
       });
 
-      // Se for iPhone e AINDA NÃO estiver instalado
-      if (isIos && !isInStandaloneMode) {
-        showInstallBanner(true); // true = modo iOS
-      }
+      if (isIos && !isInStandaloneMode) showInstallBanner(true);
 
       function showInstallBanner(isIosMode = false) {
         const banner = document.getElementById("installBanner");
         const btn = document.getElementById("btnInstallAction");
-
         if (!banner) return;
-
-        // Mostra o banner
         banner.style.display = "block";
 
         if (isIosMode) {
-          // No iPhone não dá para instalar por botão, tem que ensinar o usuário
-          if (btn) btn.style.display = "none"; // Esconde o botão de clique
-
-          // Adiciona texto de instrução para iPhone
+          if (btn) btn.style.display = "none";
           const textDiv = banner.querySelector("div[style*='color: white']");
-          if (textDiv) {
-            textDiv.innerHTML += `
-        <div style="margin-top:8px; font-size:11px; background:rgba(255,255,255,0.2); padding:5px; border-radius:4px;">
-           Para instalar: Toque em <b>Compartilhar</b> <span style="font-size:16px">⎋</span> e depois em <b>"Adicionar à Tela de Início"</b> ⊕
-        </div>
-      `;
-          }
+          if (textDiv)
+            textDiv.innerHTML += `<div style="margin-top:8px; font-size:11px; background:rgba(255,255,255,0.2); padding:5px; border-radius:4px;">Para instalar: Toque em <b>Compartilhar</b> <span style="font-size:16px">⎋</span> e depois em <b>"Adicionar à Tela de Início"</b> ⊕</div>`;
         } else {
-          // No Android/PC, configura o clique do botão
-          if (btn) {
+          if (btn)
             btn.onclick = async () => {
               if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === "accepted") {
-                  banner.style.display = "none";
-                }
+                if (outcome === "accepted") banner.style.display = "none";
                 deferredPrompt = null;
               }
             };
-          }
         }
       }
 
-      // Se o app for instalado com sucesso, esconde tudo
       window.addEventListener("appinstalled", () => {
         const banner = document.getElementById("installBanner");
         if (banner) banner.style.display = "none";
@@ -6957,6 +6904,19 @@
           alert("Erro ao subir: " + e.message);
           console.error(e);
         }
+      }
+      if (typeof firebase !== "undefined") {
+        boot();
+      } else {
+        console.error("Firebase SDK não carregou. Verifique sua conexão.");
+        alert("Erro: Firebase não carregado.");
+      }
+
+      // PWA Worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch(() => {});
+        });
       }
       boot();
 
