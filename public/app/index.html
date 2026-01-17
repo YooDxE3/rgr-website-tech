@@ -7,6 +7,9 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <title>viaRGR — Demo Integrada (Calendário + Idiomas)</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#0B1220" />
     <style>
@@ -1446,6 +1449,27 @@
     </div>
 
     <script>
+      /* ===================== CONEXÃO FIREBASE ===================== */
+      const firebaseConfig = {
+        apiKey: "AIzaSyC8JtU3sPU0fsaGto540oDKVPIj2zwx5sc",
+        authDomain: "rgr-saude.firebaseapp.com",
+        projectId: "rgr-saude",
+        storageBucket: "rgr-saude.firebasestorage.app",
+        messagingSenderId: "1053656570474",
+        appId: "1:1053656570474:web:139db120469a1684810813",
+      };
+
+      // Inicializa o Firebase e exporta as variáveis db e auth
+      let db, auth;
+      if (typeof firebase !== "undefined") {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        auth = firebase.auth();
+        console.log("🔥 Firebase Conectado com Sucesso!");
+      } else {
+        console.error("❌ Erro: Scripts do Firebase não carregaram.");
+      }
+      /* ============================================================ */
       /* ===================== Storage ===================== */
       const KEY = "viargr_demo_v19";
       const defaultDB = () => {
