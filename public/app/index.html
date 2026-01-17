@@ -6585,6 +6585,7 @@
 
       /* ===================== Boot ===================== */
       function boot() {
+        alert("Versão com Firebase Carregada!");
         $("langSel").value = DB.lang || "pt";
         $("langSel").addEventListener("change", () => {
           DB.lang = $("langSel").value;
