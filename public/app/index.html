@@ -7,9 +7,6 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <title>viaRGR — Demo Integrada (Calendário + Idiomas)</title>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#0B1220" />
     <style>
@@ -757,127 +754,118 @@
                 </button>
               </div>
             </div>
-
-            <div
-              style="text-align: center; margin-bottom: 20px; margin-top: 10px"
-            >
-              <h1 style="margin: 0; font-size: 22px">Acesso Restrito</h1>
-              <div class="sub">
-                Identifique-se para gerar seu token de acesso.
-              </div>
+            <h1 data-i18n="homeTitle">Entrar no viaRGR</h1>
+            <div class="sub" data-i18n="homeSub">
+              Escolha o tipo de acesso. O médico inicia na área externa (1º
+              acesso).
             </div>
-
-            <div
-              class="tabs"
-              id="viewLogin"
-              style="
-                justify-content: center;
-                margin-bottom: 25px;
-                background: rgba(0, 0, 0, 0.2);
-                padding: 4px;
-                border-radius: 10px;
-              "
-            >
-              <div
-                class="tab active"
-                onclick="setLoginTab('prof')"
-                id="tabL_prof"
-                style="flex: 1; text-align: center"
-              >
-                Profissional
+            <div class="sp"></div>
+            <div class="tabs" id="roleTabs">
+              <div class="tab active" data-role="admin" data-i18n="roleAdmin">
+                Administrador
               </div>
-              <div
-                class="tab"
-                onclick="setLoginTab('gestor')"
-                id="tabL_gestor"
-                style="flex: 1; text-align: center"
-              >
+              <div class="tab" data-role="gestor" data-i18n="roleGestor">
                 Gestor
               </div>
-              <div
-                class="tab"
-                onclick="setLoginTab('admin')"
-                id="tabL_admin"
-                style="flex: 1; text-align: center"
-              >
-                Admin
+              <div class="tab" data-role="prof" data-i18n="roleProf">
+                Profissional
               </div>
-            </div>
-
-            <div id="loginForm">
-              <div class="muted" style="margin-bottom: 6px">
-                Login / Usuário
+              <div class="tab" data-role="externo" data-i18n="roleExt">
+                1º acesso (Cadastro)
               </div>
-              <input
-                id="lUser"
-                type="text"
-                placeholder="WhatsApp ou CPF"
-                style="padding: 14px; font-size: 16px"
-              />
-
-              <div class="sp"></div>
-
-              <div class="muted" style="margin-bottom: 6px">Senha</div>
-              <input
-                id="lPass"
-                type="password"
-                placeholder="••••••••"
-                style="padding: 14px; font-size: 16px"
-              />
-
-              <div class="sp"></div>
-              <div class="sp"></div>
-
-              <button
-                class="primary block"
-                onclick="doSecureLogin()"
-                style="font-size: 16px; padding: 14px; width: 100%"
-              >
-                🔐 Entrar e Gerar Token
-              </button>
             </div>
 
             <div class="sp"></div>
             <div
-              id="loginFooter"
-              style="text-align: center; font-size: 12px; color: var(--muted)"
+              id="loginBox"
+              class="card"
+              style="background: rgba(255, 255, 255, 0.02)"
             >
-              Área exclusiva para profissionais de saúde.
-            </div>
+              <div class="cardin">
+                <div class="row" style="justify-content: space-between">
+                  <div>
+                    <h2 data-i18n="loginTitle">Login interno</h2>
+                    <div class="muted" data-i18n="loginHint">
+                      Admin/Gestor entram com senha demo. Profissional entra
+                      após aprovação.
+                    </div>
+                  </div>
+                  <span class="badge" id="roleBadge">ADMIN</span>
+                </div>
+                <div class="sp"></div>
+                <div id="loginForm">
+                  <div class="two">
+                    <div id="pwdCol">
+                      <div class="muted" data-i18n="lblPassword">Senha</div>
+                      <input id="pwd" type="password" placeholder="••••" />
+                    </div>
+                    <div id="profCol">
+                      <div class="muted" data-i18n="lblProfCategory">
+                        Categoria
+                      </div>
+                      <select id="profCatSel">
+                        <option value="health" data-i18n="optKindHealth">
+                          Profissionais de Saúde
+                        </option>
+                        <option value="network" data-i18n="optKindNetwork">
+                          Rede Credenciada
+                        </option>
+                        <option value="vendor" data-i18n="optKindVendor">
+                          Fornecedores
+                        </option>
+                      </select>
+                      <div style="height: 10px"></div>
+                      <div class="muted" data-i18n="lblProf">
+                        Profissional (aprovado)
+                      </div>
+                      <select id="profSel"></select>
+                    </div>
+                  </div>
+                  <div class="sp"></div>
+                  <div class="row">
+                    <button class="primary" id="btnLogin" data-i18n="btnLogin">
+                      Entrar
+                    </button>
+                    <button id="btnDemoPwd" data-i18n="btnShowPwd">
+                      Mostrar senhas demo
+                    </button>
+                  </div>
+                  <div class="sp"></div>
+                  <div class="muted" id="demoPwd" style="display: none"></div>
+                </div>
 
-            <div
-              id="extLinkArea"
-              style="
-                margin-top: 20px;
-                text-align: center;
-                border-top: 1px solid var(--line);
-                padding-top: 15px;
-              "
-            >
-              <button class="small" onclick="goExternal()">
-                Não tenho cadastro (1º Acesso)
-              </button>
-            </div>
+                <div id="externoIntro" style="display: none">
+                  <div class="muted" data-i18n="extIntro">
+                    O médico realiza cadastro e envia documentos. Após
+                    aprovação, libera a área interna.
+                  </div>
+                  <div class="sp"></div>
+                  <button class="primary" id="btnGoExt" data-i18n="btnGoExt">
+                    Ir para 1º acesso
+                  </button>
+                </div>
 
-            <div id="sessRestore" style="display: none; margin-top: 20px">
-              <div class="divider"></div>
-              <div class="row" style="justify-content: space-between">
-                <div class="muted" id="sessText"></div>
-                <div class="row">
-                  <button
-                    class="small"
-                    id="btnSessContinue"
-                    data-i18n="btnContinue"
-                  >
-                    Continuar
-                  </button>
-                  <button
-                    class="small danger"
-                    id="btnSessReset"
-                    data-i18n="btnSwitch"
-                  >
-                    Trocar
-                  </button>
+                <div id="sessRestore" style="display: none">
+                  <div class="divider"></div>
+                  <div class="row" style="justify-content: space-between">
+                    <div class="muted" id="sessText"></div>
+                    <div class="row">
+                      <button
+                        class="small"
+                        id="btnSessContinue"
+                        data-i18n="btnContinue"
+                      >
+                        Continuar
+                      </button>
+                      <button
+                        class="small danger"
+                        id="btnSessReset"
+                        data-i18n="btnSwitch"
+                      >
+                        Trocar
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1458,31 +1446,8 @@
     </div>
 
     <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyC8JtU3sPU0fsaGto540oDKVPIj2zwx5sc",
-        authDomain: "rgr-saude.firebaseapp.com",
-        projectId: "rgr-saude",
-        storageBucket: "rgr-saude.firebasestorage.app",
-        messagingSenderId: "1053656570474",
-        appId: "1:1053656570474:web:139db120469a1684810813",
-      };
-
-      // --- CORREÇÃO AQUI ---
-      // Inicializa o Firebase corretamente usando o objeto global
-      if (typeof firebase !== "undefined") {
-        firebase.initializeApp(firebaseConfig);
-        var db = firebase.firestore();
-        var auth = firebase.auth();
-        console.log("🔥 Firebase Conectado com sucesso!");
-      } else {
-        console.error(
-          "Erro: A biblioteca do Firebase não foi carregada no <head>.",
-        );
-      }
-
       /* ===================== Storage ===================== */
       const KEY = "viargr_demo_v19";
-
       const defaultDB = () => {
         const now = new Date().toISOString();
         return {
@@ -1713,25 +1678,8 @@
           return defaultDB();
         }
       }
-      // NOVA FUNÇÃO: Salva na Nuvem
-      async function saveDB() {
-        // Salva localmente para garantir velocidade (cache)
-        localStorage.setItem("rgr_db", JSON.stringify(DB));
-
-        // Salva na nuvem em segundo plano (sem travar a tela)
-        if (db) {
-          db.collection("sistema")
-            .doc("v1")
-            .set({
-              profs: DB.profs || [],
-              units: DB.units || [],
-              schedule: DB.schedule || [],
-              accounts: DB.accounts || [],
-              users: DB.users || [],
-              cadastros: DB.cadastros || [],
-            })
-            .catch((err) => console.error("Erro ao sincronizar nuvem:", err));
-        }
+      function saveDB() {
+        localStorage.setItem(KEY, JSON.stringify(DB));
       }
       let DB = loadDB();
       /* ===================== Debug guard ===================== */
@@ -6347,167 +6295,44 @@
           $("profCol").style.display = "none";
         }
       }
-      /* --- SISTEMA DE AUTENTICAÇÃO E TOKEN (NOVO) --- */
-
-      // 1. Variável para controlar qual aba está selecionada
-      let loginRole = "prof";
-
-      // 2. Função para trocar as abas visualmente
-      function setLoginTab(role) {
-        loginRole = role;
-        // Atualiza visual das abas
-        document
-          .querySelectorAll("#viewLogin .tab")
-          .forEach((t) => t.classList.remove("active"));
-        document.getElementById("tabL_" + role).classList.add("active");
-
-        // Limpa campos
-        $("lUser").value = "";
-        $("lPass").value = "";
-
-        // Muda placeholders para ajudar o usuário
-        if (role === "prof") {
-          $("lUser").placeholder = "WhatsApp ou CPF";
-          $("loginFooter").textContent = "Acesso para Médicos e Enfermeiros.";
-          $("extLinkArea").style.display = "block";
-        } else {
-          $("lUser").placeholder = "Usuário do Sistema";
-          $("loginFooter").textContent = "Acesso Administrativo.";
-          $("extLinkArea").style.display = "none";
+      function doLogin() {
+        if (currentRole === "externo") {
+          goExternal();
+          return;
         }
-      }
-
-      // 3. A Função de Login Segura
-      async function doSecureLogin() {
-        const u = $("lUser").value.trim();
-        const p = $("lPass").value.trim();
-
-        if (!u || !p) {
-          toast("Preencha usuário e senha.");
+        if (currentRole === "prof") {
+          const pid = $("profSel").value;
+          if (!pid) {
+            toast(t("msgPickProf"));
+            return;
+          }
+          goInternal("prof", pid);
+          return;
+        }
+        const pwd = $("pwd").value.trim();
+        if (!pwd) {
+          toast(t("msgNeedPwd"));
           return;
         }
 
-        let foundUser = null;
+        const p = pwd.toLowerCase();
+        const okAdmin = p === "rgr1234" || p === "admin123" || p === "1234";
+        const okGestor =
+          p === "gestor1234" || p === "gestor123" || p === "1234";
+        const ok =
+          currentRole === "admin"
+            ? okAdmin
+            : currentRole === "gestor"
+              ? okGestor
+              : okAdmin || okGestor;
 
-        if (loginRole === "prof") {
-          // Para PROFISSIONAIS: Busca na lista de contas aprovadas
-          // Verifica se DB.accounts existe
-          const acc = (DB.accounts || []).find((a) => a.user === u);
-
-          if (acc) {
-            // Valida senha (Texto simples ou Hash)
-            let isValid = false;
-            if (acc.pass && acc.pass === p) isValid = true;
-            else if (acc.passwordHash && (await sha256(p)) === acc.passwordHash)
-              isValid = true;
-
-            if (isValid) {
-              // Pega dados do perfil profissional para compor o token
-              const profData = DB.profs.find((pr) => pr.id === acc.profId);
-              foundUser = {
-                id: acc.profId,
-                role: "prof",
-                name: profData ? profData.name : u,
-                authTime: Date.now(),
-              };
-
-              // Lógica de trocar senha no primeiro acesso
-              if (acc.mustChangePwd) {
-                const newP = prompt(
-                  "⚠️ Primeiro Acesso: Defina uma nova senha segura:",
-                );
-                if (newP && newP.length >= 4) {
-                  acc.passwordHash = await sha256(newP);
-                  delete acc.pass;
-                  acc.mustChangePwd = false;
-                  saveDB();
-                } else {
-                  toast("Senha inválida. Login cancelado.");
-                  return;
-                }
-              }
-            }
-          }
-        } else {
-          // Para ADMIN e GESTOR: Busca na tabela DB.users (que criamos no Passo 1)
-          const sysUser = (DB.users || []).find(
-            (x) => x.role === loginRole && x.user === u,
-          );
-
-          if (sysUser && sysUser.pass === p) {
-            foundUser = {
-              id: sysUser.id,
-              role: sysUser.role,
-              name: sysUser.name,
-              authTime: Date.now(),
-            };
-          }
+        if (!ok) {
+          toast(t("msgBadPwd"));
+          return;
         }
-
-        // 4. Resultado da Validação
-        if (foundUser) {
-          generateAndSaveToken(foundUser);
-        } else {
-          toast("🚫 Acesso Negado. Verifique suas credenciais.");
-        }
+        goInternal(currentRole);
       }
 
-      // 5. Gerador de Token
-      function generateAndSaveToken(userObj) {
-        // Cria um payload JSON
-        const payload = JSON.stringify(userObj);
-
-        // Cria um "Token" (Codifica em Base64 para simular um JWT)
-        // Em um servidor real, isso seria assinado com criptografia.
-        const token = btoa(payload);
-
-        // Salva na Sessão (sessionStorage limpa quando fecha o navegador, localStorage mantem)
-        localStorage.setItem("rgr_token", token);
-
-        toast("✅ Token Gerado! Entrando...");
-
-        // Carrega o sistema
-        loadSessionFromToken();
-      }
-
-      // 6. Carrega Sessão pelo Token (Coloque chamada para isso no boot)
-      function loadSessionFromToken() {
-        const token = localStorage.getItem("rgr_token");
-        if (!token) return false;
-
-        try {
-          // Decodifica o token
-          const userObj = JSON.parse(atob(token));
-
-          // Define a sessão global
-          session = {
-            role: userObj.role,
-            profId: userObj.id, // Se for admin, isso é o ID do admin
-            name: userObj.name,
-          };
-
-          // Atualiza UI
-          currentRole = session.role;
-          $("sessionBadge").textContent = session.name;
-          $("sessionBadge").style.display = "inline-block";
-          $("btnLogoutTop").style.display = "inline-block";
-
-          // Entra no painel
-          goInternal(session.role);
-          return true;
-        } catch (e) {
-          console.error("Token inválido", e);
-          logout();
-          return false;
-        }
-      }
-
-      // 7. Atualizar o Logout para destruir o token
-      window.logout = function () {
-        localStorage.removeItem("rgr_token");
-        session = null;
-        goHome();
-      };
       function demoPwd() {
         const d = $("demoPwd");
         d.style.display = d.style.display === "none" ? "" : "none";
@@ -6711,218 +6536,152 @@
       }
 
       /* ===================== Boot ===================== */
-      async function boot() {
-        console.log("🚀 Iniciando sistema...");
+      function boot() {
+        $("langSel").value = DB.lang || "pt";
+        $("langSel").addEventListener("change", () => {
+          DB.lang = $("langSel").value;
+          saveDB();
 
-        // 1. Firebase Sync
-        const localData = localStorage.getItem("rgr_db");
-        if (localData) {
-          try {
-            DB = JSON.parse(localData);
-          } catch (e) {
-            console.error(e);
-          }
-        }
-
-        if (typeof db !== "undefined") {
-          db.collection("sistema")
-            .doc("v1")
-            .onSnapshot((doc) => {
-              if (doc.exists) {
-                const data = doc.data();
-                DB.profs = data.profs || [];
-                DB.units = data.units || [];
-                DB.schedule = data.schedule || [];
-                DB.accounts = data.accounts || [];
-                DB.users = data.users || [];
-                DB.cadastros = data.cadastros || [];
-                console.log("☁️ Dados sincronizados!");
-
-                if (session && typeof renderInternalBody === "function") {
-                  const activeTab = document.querySelector(".tab.active");
-                  renderInternalBody(
-                    activeTab ? activeTab.dataset.key : "schedule",
-                  );
-                }
-              }
-            });
-        }
-
-        // 2. Garantir Admins
-        if (!DB.users) DB.users = [];
-        if (!DB.users.find((u) => u.role === "admin")) {
-          DB.users.push({
-            id: "admin_master",
-            role: "admin",
-            user: "admin",
-            pass: "rgr1234",
-            name: "Administrador Master",
-          });
-        }
-        if (!DB.users.find((u) => u.role === "gestor")) {
-          DB.users.push({
-            id: "gestor_01",
-            role: "gestor",
-            user: "gestor",
-            pass: "1234",
-            name: "Gerente de Operações",
-          });
-        }
-
-        // 3. Configurações Visuais
-        const langEl = $("langSel");
-        if (langEl) {
-          langEl.value = DB.lang || "pt";
-          langEl.addEventListener("change", () => {
-            DB.lang = langEl.value;
-            applyI18n();
-            saveDB();
-          });
-        }
-
-        // Preenche listas do cadastro externo
-        if (typeof fillExternalLists === "function") fillExternalLists();
-        if (typeof fillExternalProfession === "function")
+          // Rebuild lists that have localized labels
+          fillExternalLists();
           fillExternalProfession();
-        if (typeof updateExternalKind === "function") updateExternalKind();
-        if (typeof renderExternalStatus === "function") renderExternalStatus();
+          updateExternalKind();
+          renderExternalStatus();
+          renderProfSelect();
 
+          // Re-render internal if visible (many labels are built at render time)
+          if ($("viewInternal").style.display !== "none") {
+            renderInternalTabs();
+          } else {
+            // External/home: just update static text
+            applyI18n();
+          }
+          applyI18n();
+          toast(L() === "pt" ? "Idioma atualizado" : "Language updated");
+        });
+
+        document.querySelectorAll("#roleTabs .tab").forEach((el) => {
+          el.onclick = () => setRole(el.dataset.role);
+        });
+        setRole("admin");
+        $("btnLogin").onclick = doLogin;
+        $("btnDemoPwd").onclick = demoPwd;
+        $("btnGoExt").onclick = goExternal;
+        $("btnHome").onclick = () => {
+          show("home");
+          setSession(null);
+          renderHomeKPIs();
+          renderProfSelect();
+          renderSessionRestore();
+          applyI18n();
+        };
+        $("btnLogout").onclick = goHome;
+
+        fillExternalLists();
+        fillExternalProfession();
         if ($("extKind"))
-          $("extKind").addEventListener("change", updateExternalKind);
+          $("extKind").addEventListener("change", () => {
+            updateExternalKind();
+          });
+        if ($("profCatSel"))
+          $("profCatSel").addEventListener("change", () => {
+            renderProfSelect();
+          });
+        updateExternalKind();
+        renderExternalStatus();
+        bindFileName("doc1File", "doc1Name", "doc1Ok", true);
+        bindFileName("doc2Front", "doc2FrontName", "doc2Ok", true);
+        bindFileName("doc2Back", "doc2BackName", "doc2Ok", true);
+        bindFileName("doc3File", "doc3Name", "doc3Ok", true);
+        bindFileName("doc4File", "doc4Name", null, false);
 
-        // Binds de Arquivos
-        if (typeof bindFileName === "function") {
-          bindFileName("doc1File", "doc1Name", "doc1Ok", true);
-          bindFileName("doc2Front", "doc2FrontName", "doc2Ok", true);
-          bindFileName("doc2Back", "doc2BackName", "doc2Ok", true);
-          bindFileName("doc3File", "doc3Name", "doc3Ok", true);
-          bindFileName("doc4File", "doc4Name", null, false);
-        }
+        $("btnSend").onclick = externalSubmit;
+        $("btnClear").onclick = () => {
+          clearExternal();
+          toast("OK");
+        };
+        $("btnBackHome1").onclick = () => {
+          show("home");
+          renderHomeKPIs();
+          renderProfSelect();
+          renderSessionRestore();
+          applyI18n();
+        };
 
-        // Botões Globais
-        // Nota: btnGoExt e btnLogin agora usam onclick no HTML, não precisa bindar aqui
-
-        if ($("btnSend")) $("btnSend").onclick = externalSubmit;
-        if ($("btnClear"))
-          $("btnClear").onclick = () => {
-            clearExternal();
-            toast("Limpo.");
-          };
-        if ($("btnLogout")) $("btnLogout").onclick = logout;
-
-        const goHomeAction = () => goHome();
-        if ($("btnHome")) $("btnHome").onclick = goHomeAction;
-        if ($("btnBackHome1")) $("btnBackHome1").onclick = goHomeAction;
-
-        // 4. Inicializa
+        renderProfSelect();
+        renderHomeKPIs();
+        renderSessionRestore();
+        setSession(null);
         applyI18n();
-
-        if (typeof loadSessionFromToken === "function") {
-          loadSessionFromToken();
-        } else {
-          goHome();
-        }
       }
 
-      // --- LÓGICA PWA ---
+      // --- LÓGICA DE INSTALAÇÃO PWA (UNIVERSAL) ---
       let deferredPrompt;
+
+      // 1. Detecta se é iPhone/iPad (iOS)
       const isIos = /iphone|ipad|ipod/.test(
         window.navigator.userAgent.toLowerCase(),
       );
       const isInStandaloneMode =
         "standalone" in window.navigator && window.navigator.standalone;
 
+      // 2. Lógica Principal
       window.addEventListener("beforeinstallprompt", (e) => {
+        // ANDROID / CHROME PC
         e.preventDefault();
         deferredPrompt = e;
         showInstallBanner();
       });
 
-      if (isIos && !isInStandaloneMode) showInstallBanner(true);
+      // Se for iPhone e AINDA NÃO estiver instalado
+      if (isIos && !isInStandaloneMode) {
+        showInstallBanner(true); // true = modo iOS
+      }
 
       function showInstallBanner(isIosMode = false) {
         const banner = document.getElementById("installBanner");
         const btn = document.getElementById("btnInstallAction");
+
         if (!banner) return;
+
+        // Mostra o banner
         banner.style.display = "block";
 
         if (isIosMode) {
-          if (btn) btn.style.display = "none";
+          // No iPhone não dá para instalar por botão, tem que ensinar o usuário
+          if (btn) btn.style.display = "none"; // Esconde o botão de clique
+
+          // Adiciona texto de instrução para iPhone
           const textDiv = banner.querySelector("div[style*='color: white']");
-          if (textDiv)
-            textDiv.innerHTML += `<div style="margin-top:8px; font-size:11px; background:rgba(255,255,255,0.2); padding:5px; border-radius:4px;">Para instalar: Toque em <b>Compartilhar</b> <span style="font-size:16px">⎋</span> e depois em <b>"Adicionar à Tela de Início"</b> ⊕</div>`;
+          if (textDiv) {
+            textDiv.innerHTML += `
+        <div style="margin-top:8px; font-size:11px; background:rgba(255,255,255,0.2); padding:5px; border-radius:4px;">
+           Para instalar: Toque em <b>Compartilhar</b> <span style="font-size:16px">⎋</span> e depois em <b>"Adicionar à Tela de Início"</b> ⊕
+        </div>
+      `;
+          }
         } else {
-          if (btn)
+          // No Android/PC, configura o clique do botão
+          if (btn) {
             btn.onclick = async () => {
               if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === "accepted") banner.style.display = "none";
+                if (outcome === "accepted") {
+                  banner.style.display = "none";
+                }
                 deferredPrompt = null;
               }
             };
+          }
         }
       }
 
+      // Se o app for instalado com sucesso, esconde tudo
       window.addEventListener("appinstalled", () => {
         const banner = document.getElementById("installBanner");
         if (banner) banner.style.display = "none";
       });
-
-      // Tenta restaurar sessão via token
-      const restored = loadSessionFromToken();
-
-      if (!restored) {
-        goHome(); // Se não tem token, vai pro login
-      }
-      // --- FUNÇÃO TEMPORÁRIA DE MIGRAÇÃO ---
-      async function migrarParaNuvem() {
-        if (
-          !confirm(
-            "Isso vai apagar o banco da nuvem e subir seus dados locais. Continuar?",
-          )
-        )
-          return;
-
-        console.log("Subindo dados...");
-
-        // 1. Salva a lista de Profissionais
-        // Vamos salvar o objeto inteiro DB como um documento mestre por enquanto (Método Rápido)
-        // Futuramente podemos separar em coleções, mas para MVP isso funciona igual ao seu localStorage
-
-        try {
-          await db
-            .collection("sistema")
-            .doc("v1")
-            .set({
-              profs: DB.profs || [],
-              units: DB.units || [],
-              schedule: DB.schedule || [],
-              accounts: DB.accounts || [],
-              users: DB.users || [], // Admins e Gestores
-              cadastros: DB.cadastros || [], // Fila de espera
-            });
-          alert(
-            "✅ Sucesso! Seus dados locais agora estão no Google (Firestore).",
-          );
-        } catch (e) {
-          alert("Erro ao subir: " + e.message);
-          console.error(e);
-        }
-      }
-      if (typeof firebase !== "undefined") {
-        boot();
-      } else {
-        console.error("Firebase SDK não carregou. Verifique sua conexão.");
-        alert("Erro: Firebase não carregado.");
-      }
-
-      // PWA Worker
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("./sw.js").catch(() => {});
-        });
-      }
       boot();
 
       /* ===================== viaRGR Platform Enhancements (v19.12.3) ===================== */
