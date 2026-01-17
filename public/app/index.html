@@ -1704,12 +1704,11 @@
       }
       /* ===================== SALVAR NA NUVEM ===================== */
       function saveDB() {
-        // 1. Mantém salvamento local (backup/velocidade)
+        // 1. Salva local
         localStorage.setItem(KEY, JSON.stringify(DB));
 
-        // 2. Envia para o Firebase (se estiver conectado)
+        // 2. Tenta salvar na nuvem e GRITA se der erro
         if (typeof db !== "undefined") {
-          // Salvamos tudo dentro de um único documento chamado 'v1' na coleção 'sistema'
           db.collection("sistema")
             .doc("v1")
             .set({
@@ -1722,11 +1721,18 @@
               availability: DB.availability || [],
               payRules: DB.payRules || {},
               market: DB.market || {},
-              audit: DB.audit || [],
               meta: { lastUpdate: new Date().toISOString() },
             })
-            .then(() => console.log("☁️ Dados salvos na nuvem!"))
-            .catch((err) => console.error("Erro ao salvar na nuvem:", err));
+            .then(() => {
+              // Sucesso silencioso (opcional: console.log)
+              console.log("Salvo na nuvem");
+            })
+            .catch((err) => {
+              // ERRO VISÍVEL NO CELULAR
+              alert("ERRO DE CONEXÃO: " + err.message);
+            });
+        } else {
+          alert("ERRO: Firebase não foi iniciado.");
         }
       }
       let DB = loadDB();
