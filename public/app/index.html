@@ -604,6 +604,13 @@
         .topbar {
           padding: 10px;
         }
+        #inTabs {
+          display: none !important;
+        }
+        #viewInternal h1 {
+          font-size: 18px;
+          margin-top: 10px;
+        }
       }
     </style>
   </head>
@@ -3081,14 +3088,19 @@
       /* ===================== Internal views ===================== */
       function renderInternalTabs() {
         const tabs = $("inTabs");
+        const mobLinks = $("mobLinks");
+
         tabs.innerHTML = "";
+        if (mobLinks) mobLinks.innerHTML = "";
+
         const role = session.role;
         const list =
           role === "prof"
             ? [
                 { k: "schedule", t: "tabSchedule" },
                 { k: "offers", t: "tabOffers" },
-              ]
+                { k: "passport", t: "tabPassport" },
+              ] // Adicionei Passport para médicos verem perfil
             : [
                 { k: "schedule", t: "tabSchedule" },
                 { k: "units", t: "tabUnits" },
@@ -3105,11 +3117,13 @@
               ];
 
         list.forEach((item, idx) => {
+          // 1. Cria a aba normal (Desktop)
           const el = document.createElement("div");
           el.className = "tab" + (idx === 0 ? " active" : "");
           el.dataset.key = item.k;
           el.textContent = t(item.t);
           el.onclick = () => {
+            // Ativa aba Desktop
             [...tabs.querySelectorAll(".tab")].forEach((x) =>
               x.classList.remove("active"),
             );
@@ -3118,7 +3132,27 @@
             applyI18n();
           };
           tabs.appendChild(el);
+
+          // 2. Cria o botão no Menu Mobile (Sincronizado)
+          if (mobLinks) {
+            const btn = document.createElement("button");
+            btn.className = "small"; // Estilo de botão
+            btn.style.width = "100%";
+            btn.style.marginBottom = "8px";
+            btn.style.textAlign = "left";
+            btn.style.justifyContent = "flex-start";
+            btn.textContent = t(item.t);
+            btn.onclick = () => {
+              // Ao clicar no menu, fecha o menu e carrega a tela
+              $("mobNav").classList.remove("open");
+              renderInternalBody(item.k);
+              applyI18n();
+            };
+            mobLinks.appendChild(btn);
+          }
         });
+
+        // Carrega a primeira aba por padrão
         renderInternalBody(list[0].k);
       }
 
