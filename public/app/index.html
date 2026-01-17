@@ -1467,13 +1467,18 @@
         appId: "1:1053656570474:web:139db120469a1684810813",
       };
 
-      // CORREÇÃO AQUI: Usando o namespace global 'firebase'
-      firebase.initializeApp(firebaseConfig);
-
-      const db = firebase.firestore();
-      const auth = firebase.auth();
-
-      console.log("🔥 Firebase Conectado!");
+      // --- CORREÇÃO AQUI ---
+      // Inicializa o Firebase corretamente usando o objeto global
+      if (typeof firebase !== "undefined") {
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        var auth = firebase.auth();
+        console.log("🔥 Firebase Conectado com sucesso!");
+      } else {
+        console.error(
+          "Erro: A biblioteca do Firebase não foi carregada no <head>.",
+        );
+      }
 
       /* ===================== Storage ===================== */
       const KEY = "viargr_demo_v19";
