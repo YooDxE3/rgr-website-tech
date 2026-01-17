@@ -7,6 +7,9 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <title>viaRGR — Demo Integrada (Calendário + Idiomas)</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#0B1220" />
     <style>
@@ -1464,6 +1467,26 @@
     </div>
 
     <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyC8JtU3sPU0fsaGto540oDKVPIj2zwx5sc",
+
+        authDomain: "rgr-saude.firebaseapp.com",
+
+        projectId: "rgr-saude",
+
+        storageBucket: "rgr-saude.firebasestorage.app",
+
+        messagingSenderId: "1053656570474",
+
+        appId: "1:1053656570474:web:139db120469a1684810813",
+      };
+
+      const app = initializeApp(firebaseConfig);
+
+      const db = firebase.firestore();
+      const auth = firebase.auth();
+
+      console.log("🔥 Firebase Conectado!");
       /* ===================== Storage ===================== */
       const KEY = "viargr_demo_v19";
       const defaultDB = () => {
@@ -1696,8 +1719,25 @@
           return defaultDB();
         }
       }
-      function saveDB() {
-        localStorage.setItem(KEY, JSON.stringify(DB));
+      // NOVA FUNÇÃO: Salva na Nuvem
+      async function saveDB() {
+        // Salva localmente para garantir velocidade (cache)
+        localStorage.setItem("rgr_db", JSON.stringify(DB));
+
+        // Salva na nuvem em segundo plano (sem travar a tela)
+        if (db) {
+          db.collection("sistema")
+            .doc("v1")
+            .set({
+              profs: DB.profs || [],
+              units: DB.units || [],
+              schedule: DB.schedule || [],
+              accounts: DB.accounts || [],
+              users: DB.users || [],
+              cadastros: DB.cadastros || [],
+            })
+            .catch((err) => console.error("Erro ao sincronizar nuvem:", err));
+        }
       }
       let DB = loadDB();
       /* ===================== Debug guard ===================== */
@@ -6677,109 +6717,145 @@
       }
 
       /* ===================== Boot ===================== */
-      function boot() {
-        $("langSel").value = DB.lang || "pt";
-        $("langSel").addEventListener("change", () => {
-          DB.lang = $("langSel").value;
-          saveDB();
-          if (!DB.users) DB.users = [];
+      async function boot() {
+        console.log("🚀 Iniciando sistema...");
 
-          const adminExists = DB.users.find((u) => u.role === "admin");
-          if (!adminExists) {
-            DB.users.push({
-              id: "admin_master",
-              role: "admin",
-              user: "admin", // Login
-              pass: "rgr1234", // Senha Padrão
-              name: "Administrador Master",
-            });
-            console.log("Admin padrão criado.");
+        // ============================================================
+        // 1. CARREGAMENTO DE DADOS (Lógica Nova - Firebase)
+        // ============================================================
+
+        // Tenta carregar do cache local primeiro
+        const localData = localStorage.getItem("rgr_db");
+        if (localData) {
+          try {
+            DB = JSON.parse(localData);
+          } catch (e) {
+            console.error(e);
           }
+        }
 
-          // Verifica se já existe o GESTOR PADRÃO.
-          const gestorExists = DB.users.find((u) => u.role === "gestor");
-          if (!gestorExists) {
-            DB.users.push({
-              id: "gestor_01",
-              role: "gestor",
-              user: "gestor",
-              pass: "1234",
-              name: "Gerente de Operações",
+        // Conecta no Firebase (Tempo Real)
+        if (typeof db !== "undefined") {
+          db.collection("sistema")
+            .doc("v1")
+            .onSnapshot((doc) => {
+              if (doc.exists) {
+                const data = doc.data();
+                DB.profs = data.profs || [];
+                DB.units = data.units || [];
+                DB.schedule = data.schedule || [];
+                DB.accounts = data.accounts || [];
+                DB.users = data.users || [];
+                DB.cadastros = data.cadastros || [];
+                console.log("☁️ Dados sincronizados da nuvem!");
+
+                // Atualiza tela se estiver logado
+                if (session) {
+                  const activeTab = document.querySelector(".tab.active");
+                  const key = activeTab ? activeTab.dataset.key : "schedule";
+                  // Função de segurança para não quebrar se a função de render não existir
+                  if (typeof renderInternalBody === "function")
+                    renderInternalBody(key);
+                }
+              }
             });
-          }
-          saveDB();
+        }
 
-          // Rebuild lists that have localized labels
-          fillExternalLists();
-          fillExternalProfession();
-          updateExternalKind();
-          renderExternalStatus();
-          renderProfSelect();
+        // ============================================================
+        // 2. GARANTIA DE USUÁRIOS (Lógica Nova)
+        // ============================================================
+        if (!DB.users) DB.users = [];
 
-          // Re-render internal if visible (many labels are built at render time)
-          if ($("viewInternal").style.display !== "none") {
-            renderInternalTabs();
-          } else {
-            // External/home: just update static text
+        if (!DB.users.find((u) => u.role === "admin")) {
+          DB.users.push({
+            id: "admin_master",
+            role: "admin",
+            user: "admin",
+            pass: "rgr1234",
+            name: "Administrador Master",
+          });
+        }
+        if (!DB.users.find((u) => u.role === "gestor")) {
+          DB.users.push({
+            id: "gestor_01",
+            role: "gestor",
+            user: "gestor",
+            pass: "1234",
+            name: "Gerente de Operações",
+          });
+        }
+
+        // ============================================================
+        // 3. CONFIGURAÇÃO VISUAL E BOTÕES (Do seu código Antigo)
+        // ============================================================
+
+        // Idioma
+        const langEl = $("langSel");
+        if (langEl) {
+          langEl.value = DB.lang || "pt";
+          langEl.addEventListener("change", () => {
+            DB.lang = langEl.value;
             applyI18n();
-          }
-          applyI18n();
-          toast(L() === "pt" ? "Idioma atualizado" : "Language updated");
-        });
+            saveDB();
+          });
+        }
 
-        document.querySelectorAll("#roleTabs .tab").forEach((el) => {
-          el.onclick = () => setRole(el.dataset.role);
-        });
-        setRole("admin");
-        $("btnLogin").onclick = doLogin;
-        $("btnDemoPwd").onclick = demoPwd;
-        $("btnGoExt").onclick = goExternal;
-        $("btnHome").onclick = () => {
-          show("home");
-          setSession(null);
-          renderHomeKPIs();
-          renderProfSelect();
-          renderSessionRestore();
-          applyI18n();
-        };
-        $("btnLogout").onclick = goHome;
+        // Preenche listas externas (Estados, Profissões)
+        if (typeof fillExternalLists === "function") fillExternalLists();
+        if (typeof fillExternalProfession === "function")
+          fillExternalProfession();
+        if (typeof updateExternalKind === "function") updateExternalKind();
+        if (typeof renderExternalStatus === "function") renderExternalStatus();
 
-        fillExternalLists();
-        fillExternalProfession();
+        // Listeners de mudança em selects externos
         if ($("extKind"))
-          $("extKind").addEventListener("change", () => {
-            updateExternalKind();
-          });
-        if ($("profCatSel"))
-          $("profCatSel").addEventListener("change", () => {
-            renderProfSelect();
-          });
-        updateExternalKind();
-        renderExternalStatus();
-        bindFileName("doc1File", "doc1Name", "doc1Ok", true);
-        bindFileName("doc2Front", "doc2FrontName", "doc2Ok", true);
-        bindFileName("doc2Back", "doc2BackName", "doc2Ok", true);
-        bindFileName("doc3File", "doc3Name", "doc3Ok", true);
-        bindFileName("doc4File", "doc4Name", null, false);
+          $("extKind").addEventListener("change", updateExternalKind);
+        // (Removemos profCatSel pois o login novo não usa, mas se o cadastro usar, mantemos)
 
-        $("btnSend").onclick = externalSubmit;
-        $("btnClear").onclick = () => {
-          clearExternal();
-          toast("OK");
-        };
-        $("btnBackHome1").onclick = () => {
-          show("home");
-          renderHomeKPIs();
-          renderProfSelect();
-          renderSessionRestore();
-          applyI18n();
-        };
+        // Binds de Arquivos (Uploads no Cadastro) - CRUCIAL
+        if (typeof bindFileName === "function") {
+          bindFileName("doc1File", "doc1Name", "doc1Ok", true);
+          bindFileName("doc2Front", "doc2FrontName", "doc2Ok", true);
+          bindFileName("doc2Back", "doc2BackName", "doc2Ok", true);
+          bindFileName("doc3File", "doc3Name", "doc3Ok", true);
+          bindFileName("doc4File", "doc4Name", null, false);
+        }
 
-        renderProfSelect();
-        renderHomeKPIs();
-        renderSessionRestore();
-        setSession(null);
+        // Botões de Ação
+        // Nota: btnLogin não precisa mais de onclick aqui pois já está no HTML novo (doSecureLogin)
+
+        if ($("btnGoExt")) $("btnGoExt").onclick = goExternal;
+        if ($("btnSend")) $("btnSend").onclick = externalSubmit;
+
+        if ($("btnClear"))
+          $("btnClear").onclick = () => {
+            clearExternal();
+            toast("Limpo.");
+          };
+
+        if ($("btnLogout")) $("btnLogout").onclick = logout; // Usando a nova função logout
+
+        // Botões de "Voltar para Home"
+        const goHomeAction = () => {
+          goHome();
+        };
+        if ($("btnHome")) $("btnHome").onclick = goHomeAction;
+        if ($("btnBackHome1")) $("btnBackHome1").onclick = goHomeAction;
+
+        // ============================================================
+        // 4. INICIALIZAÇÃO FINAL (Lógica Nova de Token)
+        // ============================================================
+
         applyI18n();
+
+        // Tenta restaurar sessão via Token
+        if (typeof loadSessionFromToken === "function") {
+          // Se tiver token válido, ele entra sozinho.
+          // Se não, ele já está na Home.
+          loadSessionFromToken();
+        } else {
+          goHome();
+        }
       }
 
       // --- LÓGICA DE INSTALAÇÃO PWA (UNIVERSAL) ---
@@ -6855,6 +6931,41 @@
 
       if (!restored) {
         goHome(); // Se não tem token, vai pro login
+      }
+      // --- FUNÇÃO TEMPORÁRIA DE MIGRAÇÃO ---
+      async function migrarParaNuvem() {
+        if (
+          !confirm(
+            "Isso vai apagar o banco da nuvem e subir seus dados locais. Continuar?",
+          )
+        )
+          return;
+
+        console.log("Subindo dados...");
+
+        // 1. Salva a lista de Profissionais
+        // Vamos salvar o objeto inteiro DB como um documento mestre por enquanto (Método Rápido)
+        // Futuramente podemos separar em coleções, mas para MVP isso funciona igual ao seu localStorage
+
+        try {
+          await db
+            .collection("sistema")
+            .doc("v1")
+            .set({
+              profs: DB.profs || [],
+              units: DB.units || [],
+              schedule: DB.schedule || [],
+              accounts: DB.accounts || [],
+              users: DB.users || [], // Admins e Gestores
+              cadastros: DB.cadastros || [], // Fila de espera
+            });
+          alert(
+            "✅ Sucesso! Seus dados locais agora estão no Google (Firestore).",
+          );
+        } catch (e) {
+          alert("Erro ao subir: " + e.message);
+          console.error(e);
+        }
       }
       boot();
 
