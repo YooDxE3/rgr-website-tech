@@ -5655,15 +5655,26 @@
         return { txt: t("extStatusReceived"), cls: "badge bWarn" };
       }
       /* ========= TEAM MANAGEMENT (NOVO) ========= */
+      /* ========= TEAM MANAGEMENT (V2 - Completo) ========= */
       function renderTeam() {
         const rows = DB.profs
           .map(
             (p) => `
     <tr>
-      <td><b>${p.name}</b><div class="muted">${p.spec || "—"}</div></td>
-      <td>${p.wpp}</td>
       <td>
-        <button class="small danger" onclick="deleteProf('${p.id}')">Excluir</button>
+        <b>${p.name}</b>
+        <div class="muted">${p.spec || "—"}</div>
+      </td>
+      <td>
+        <div>${p.wpp}</div>
+        <div class="muted" style="font-size:11px">${p.email || ""}</div>
+      </td>
+      <td>
+        <div class="row" style="gap:5px; flex-wrap:nowrap">
+          <button class="small" onclick="viewProf('${p.id}')" title="Ver Detalhes">👁️</button>
+          <button class="small" onclick="editProf('${p.id}')" title="Editar">✏️</button>
+          <button class="small danger" onclick="deleteProf('${p.id}')" title="Excluir">🗑️</button>
+        </div>
       </td>
     </tr>
   `,
@@ -5673,15 +5684,156 @@
         return `
   <div class="card"><div class="cardin">
     <h2>Gerenciar Equipe</h2>
-    <div class="muted">Lista completa de profissionais aprovados.</div>
+    <div class="muted">Visualizar, editar ou remover profissionais.</div>
     <div class="sp"></div>
     <div class="tableWrap">
       <table class="table">
-        <thead><tr><th>Nome/Esp.</th><th>Contato</th><th>Ação</th></tr></thead>
-        <tbody>${rows || '<tr><td colspan="3" class="muted">Nenhum profissional.</td></tr>'}</tbody>
+        <thead><tr><th>Profissional</th><th>Contato/Login</th><th>Ações</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="3" class="muted">Nenhum profissional cadastrado.</td></tr>'}</tbody>
       </table>
     </div>
-  </div></div>`;
+  </div></div>
+  
+  <div id="teamModalAnchor"></div>
+  `;
+      }
+
+      // Função auxiliar para abrir o Modal (Edição ou Visualização)
+      function openProfModal(id, isReadOnly) {
+        const p = DB.profs.find((x) => x.id === id);
+        if (!p) return;
+
+        const modalHtml = `
+  <div class="modalOverlay" id="teamOverlay" style="display:flex">
+    <div class="modal">
+      <div class="card"><div class="cardin">
+        <div class="row" style="justify-content:space-between">
+          <h2>${isReadOnly ? "Ficha do Profissional" : "Editar Dados"}</h2>
+          <button class="small danger" onclick="closeTeamModal()">Fechar</button>
+        </div>
+        <div class="divider"></div>
+        
+        <div class="two">
+          <div>
+            <div class="muted">Nome Completo</div>
+            <input id="edName" value="${p.name}" ${isReadOnly ? "disabled" : ""}>
+          </div>
+          <div>
+            <div class="muted">Especialidade</div>
+            <select id="edSpec" ${isReadOnly ? "disabled" : ""}>
+               ${SPECIALTIES.map((s) => `<option value="${s}" ${s === p.spec ? "selected" : ""}>${specLabel(s)}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+        <div class="sp"></div>
+        
+        <div class="two">
+          <div>
+            <div class="muted">WhatsApp (Login)</div>
+            <input id="edWpp" value="${p.wpp}" ${isReadOnly ? "disabled" : ""}>
+          </div>
+          <div>
+            <div class="muted">E-mail</div>
+            <input id="edEmail" value="${p.email || ""}" ${isReadOnly ? "disabled" : ""}>
+          </div>
+        </div>
+        <div class="sp"></div>
+
+        <div class="two">
+          <div>
+            <div class="muted">Categoria</div>
+            <select id="edKind" ${isReadOnly ? "disabled" : ""}>
+              <option value="health" ${p.kind === "health" ? "selected" : ""}>Saúde</option>
+              <option value="network" ${p.kind === "network" ? "selected" : ""}>Rede</option>
+              <option value="vendor" ${p.kind === "vendor" ? "selected" : ""}>Fornecedor</option>
+            </select>
+          </div>
+          <div>
+            <div class="muted">Profissão/Cargo</div>
+            <input id="edProf" value="${p.profession || ""}" ${isReadOnly ? "disabled" : ""}>
+          </div>
+        </div>
+
+        <div class="sp"></div>
+        ${
+          !isReadOnly
+            ? `
+          <div class="row" style="justify-content:flex-end">
+            <button class="primary" onclick="saveProfEdit('${p.id}')">Salvar Alterações</button>
+          </div>
+        `
+            : `<div class="muted" style="text-align:center">Modo apenas leitura</div>`
+        }
+      </div></div>
+    </div>
+  </div>`;
+
+        const anchor = document.getElementById("teamModalAnchor");
+        if (anchor) anchor.innerHTML = modalHtml;
+      }
+
+      window.viewProf = (id) => {
+        openProfModal(id, true);
+      };
+      window.editProf = (id) => {
+        openProfModal(id, false);
+      };
+      window.closeTeamModal = () => {
+        const anchor = document.getElementById("teamModalAnchor");
+        if (anchor) anchor.innerHTML = "";
+      };
+
+      window.saveProfEdit = (id) => {
+        const p = DB.profs.find((x) => x.id === id);
+        if (!p) return;
+
+        const newWpp = document.getElementById("edWpp").value.trim();
+        const oldWpp = p.wpp;
+
+        // Atualiza dados básicos
+        p.name = document.getElementById("edName").value.trim();
+        p.spec = document.getElementById("edSpec").value;
+        p.wpp = newWpp;
+        p.email = document.getElementById("edEmail").value.trim();
+        p.kind = document.getElementById("edKind").value;
+        p.profession = document.getElementById("edProf").value.trim();
+
+        // SE O WHATSAPP MUDOU, ATUALIZAR O LOGIN NA CONTA DE ACESSO
+        if (newWpp !== oldWpp && DB.accounts) {
+          const acc = DB.accounts.find((a) => a.profId === id);
+          if (acc) {
+            acc.user = newWpp; // Atualiza o login
+            // Opcional: acc.mustChangePwd = true; // Forçar troca de senha se mudou o número?
+          }
+        }
+
+        saveDB();
+        toast("Dados atualizados com sucesso!");
+        closeTeamModal();
+        renderInternalBody("team");
+      };
+
+      window.deleteProf = (id) => {
+        if (
+          !confirm(
+            "⚠️ Tem certeza absoluta?\n\nIsso apagará o acesso deste profissional e pode afetar históricos de escala.",
+          )
+        )
+          return;
+
+        // Remove da lista de profissionais
+        DB.profs = DB.profs.filter((p) => p.id !== id);
+        // Remove da conta de acesso (Login)
+        if (DB.accounts)
+          DB.accounts = DB.accounts.filter((a) => a.profId !== id);
+
+        saveDB();
+        toast("Profissional excluído.");
+        renderInternalBody("team");
+      };
+
+      function bindTeam() {
+        /* Ações já vinculadas no HTML */
       }
 
       window.deleteProf = (id) => {
