@@ -715,6 +715,45 @@
       <div id="viewHome" class="grid g2">
         <div class="card">
           <div class="cardin">
+            <div
+              id="installBanner"
+              style="
+                display: none;
+                background: linear-gradient(135deg, #0070f3, #00c6ff);
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 4px 15px rgba(0, 112, 243, 0.3);
+              "
+            >
+              <div
+                class="row"
+                style="justify-content: space-between; align-items: center"
+              >
+                <div style="color: white">
+                  <b style="font-size: 15px">Instalar viaRGR</b>
+                  <div style="font-size: 12px; opacity: 0.9; margin-top: 2px">
+                    Adicione à sua tela inicial para acesso rápido.
+                  </div>
+                </div>
+                <button
+                  id="btnInstallAction"
+                  style="
+                    background: white;
+                    color: #0070f3;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    font-weight: 800;
+                    font-size: 13px;
+                    cursor: pointer;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                  "
+                >
+                  📲 Instalar
+                </button>
+              </div>
+            </div>
             <h1 data-i18n="homeTitle">Entrar no viaRGR</h1>
             <div class="sub" data-i18n="homeSub">
               Escolha o tipo de acesso. O médico inicia na área externa (1º
@@ -6577,28 +6616,45 @@
       }
 
       // --- PWA INSTALL LOGIC ---
+      // --- LÓGICA DE INSTALAÇÃO PWA (Atualizada) ---
       let deferredPrompt;
+
       window.addEventListener("beforeinstallprompt", (e) => {
+        // 1. Impede que o Chrome mostre o banner padrão feio automaticamente
         e.preventDefault();
         deferredPrompt = e;
-        // Cria botão flutuante se não existir
-        if (!document.getElementById("btnInstallApp")) {
-          const btn = document.createElement("button");
-          btn.id = "btnInstallApp";
-          btn.className = "primary";
-          btn.style.cssText =
-            "position:fixed; bottom:20px; right:20px; z-index:999; box-shadow:0 4px 12px rgba(0,0,0,0.5); display:flex; align-items:center; gap:8px";
-          btn.innerHTML = "📲 Instalar App";
+
+        // 2. Mostra o NOSSO banner bonito na tela inicial
+        const banner = document.getElementById("installBanner");
+        if (banner) banner.style.display = "block";
+
+        // 3. Configura o clique do botão
+        const btn = document.getElementById("btnInstallAction");
+        if (btn) {
           btn.onclick = async () => {
             if (deferredPrompt) {
+              // Dispara o prompt nativo do celular
               deferredPrompt.prompt();
+
+              // Espera a escolha do usuário
               const { outcome } = await deferredPrompt.userChoice;
-              if (outcome === "accepted") btn.style.display = "none";
+              console.log(`Resultado da instalação: ${outcome}`);
+
+              // Se aceitou, esconde o banner
+              if (outcome === "accepted") {
+                banner.style.display = "none";
+              }
               deferredPrompt = null;
             }
           };
-          document.body.appendChild(btn);
         }
+      });
+
+      // Se o app já foi instalado com sucesso, esconde o banner para sempre
+      window.addEventListener("appinstalled", () => {
+        const banner = document.getElementById("installBanner");
+        if (banner) banner.style.display = "none";
+        console.log("App instalado com sucesso!");
       });
       boot();
 
