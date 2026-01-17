@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
+  // 1. Força o Next.js a gerar apenas arquivos HTML/CSS/JS (sem servidor)
+  output: 'export',
+
+  // 2. Desativa a otimização de imagem (necessário para exportação estática no Cloudflare)
+  images: {
+    unoptimized: true,
+  },
 };
-export default nextConfig;
+
+export default nextConfig; // Se for .js, use module.exports = nextConfig
