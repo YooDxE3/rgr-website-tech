@@ -6615,46 +6615,72 @@
         applyI18n();
       }
 
-      // --- PWA INSTALL LOGIC ---
-      // --- LÓGICA DE INSTALAÇÃO PWA (Atualizada) ---
+      // --- LÓGICA DE INSTALAÇÃO PWA (UNIVERSAL) ---
       let deferredPrompt;
 
+      // 1. Detecta se é iPhone/iPad (iOS)
+      const isIos = /iphone|ipad|ipod/.test(
+        window.navigator.userAgent.toLowerCase(),
+      );
+      const isInStandaloneMode =
+        "standalone" in window.navigator && window.navigator.standalone;
+
+      // 2. Lógica Principal
       window.addEventListener("beforeinstallprompt", (e) => {
-        // 1. Impede que o Chrome mostre o banner padrão feio automaticamente
+        // ANDROID / CHROME PC
         e.preventDefault();
         deferredPrompt = e;
-
-        // 2. Mostra o NOSSO banner bonito na tela inicial
-        const banner = document.getElementById("installBanner");
-        if (banner) banner.style.display = "block";
-
-        // 3. Configura o clique do botão
-        const btn = document.getElementById("btnInstallAction");
-        if (btn) {
-          btn.onclick = async () => {
-            if (deferredPrompt) {
-              // Dispara o prompt nativo do celular
-              deferredPrompt.prompt();
-
-              // Espera a escolha do usuário
-              const { outcome } = await deferredPrompt.userChoice;
-              console.log(`Resultado da instalação: ${outcome}`);
-
-              // Se aceitou, esconde o banner
-              if (outcome === "accepted") {
-                banner.style.display = "none";
-              }
-              deferredPrompt = null;
-            }
-          };
-        }
+        showInstallBanner();
       });
 
-      // Se o app já foi instalado com sucesso, esconde o banner para sempre
+      // Se for iPhone e AINDA NÃO estiver instalado
+      if (isIos && !isInStandaloneMode) {
+        showInstallBanner(true); // true = modo iOS
+      }
+
+      function showInstallBanner(isIosMode = false) {
+        const banner = document.getElementById("installBanner");
+        const btn = document.getElementById("btnInstallAction");
+
+        if (!banner) return;
+
+        // Mostra o banner
+        banner.style.display = "block";
+
+        if (isIosMode) {
+          // No iPhone não dá para instalar por botão, tem que ensinar o usuário
+          if (btn) btn.style.display = "none"; // Esconde o botão de clique
+
+          // Adiciona texto de instrução para iPhone
+          const textDiv = banner.querySelector("div[style*='color: white']");
+          if (textDiv) {
+            textDiv.innerHTML += `
+        <div style="margin-top:8px; font-size:11px; background:rgba(255,255,255,0.2); padding:5px; border-radius:4px;">
+           Para instalar: Toque em <b>Compartilhar</b> <span style="font-size:16px">⎋</span> e depois em <b>"Adicionar à Tela de Início"</b> ⊕
+        </div>
+      `;
+          }
+        } else {
+          // No Android/PC, configura o clique do botão
+          if (btn) {
+            btn.onclick = async () => {
+              if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === "accepted") {
+                  banner.style.display = "none";
+                }
+                deferredPrompt = null;
+              }
+            };
+          }
+        }
+      }
+
+      // Se o app for instalado com sucesso, esconde tudo
       window.addEventListener("appinstalled", () => {
         const banner = document.getElementById("installBanner");
         if (banner) banner.style.display = "none";
-        console.log("App instalado com sucesso!");
       });
       boot();
 
