@@ -1702,8 +1702,32 @@
           return defaultDB();
         }
       }
+      /* ===================== SALVAR NA NUVEM ===================== */
       function saveDB() {
+        // 1. Mantém salvamento local (backup/velocidade)
         localStorage.setItem(KEY, JSON.stringify(DB));
+
+        // 2. Envia para o Firebase (se estiver conectado)
+        if (typeof db !== "undefined") {
+          // Salvamos tudo dentro de um único documento chamado 'v1' na coleção 'sistema'
+          db.collection("sistema")
+            .doc("v1")
+            .set({
+              profs: DB.profs || [],
+              units: DB.units || [],
+              schedule: DB.schedule || [],
+              cadastros: DB.cadastros || [],
+              accounts: DB.accounts || [],
+              offers: DB.offers || [],
+              availability: DB.availability || [],
+              payRules: DB.payRules || {},
+              market: DB.market || {},
+              audit: DB.audit || [],
+              meta: { lastUpdate: new Date().toISOString() },
+            })
+            .then(() => console.log("☁️ Dados salvos na nuvem!"))
+            .catch((err) => console.error("Erro ao salvar na nuvem:", err));
+        }
       }
       let DB = loadDB();
       /* ===================== Debug guard ===================== */
