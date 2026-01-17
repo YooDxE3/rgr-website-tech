@@ -4720,10 +4720,16 @@
               `<option value="${u.id}" ${u.id === currentUnit ? "selected" : ""}>${u.name} (${u.uf})</option>`,
           )
           .join("");
+        const currentSpec = window.tempSpecFilter || "";
+
+        // 2. Reconstrói a lista marcando com 'selected' a opção correta
         const specOpt = SPECIALTIES.filter(
           (x) => x !== "Sem especialidade registrada",
         )
-          .map((s) => `<option value="${s}">${specLabel(s)}</option>`)
+          .map(
+            (s) =>
+              `<option value="${s}" ${s === currentSpec ? "selected" : ""}>${specLabel(s)}</option>`,
+          )
           .join("");
         const tplOpt = DB.timeTemplates
           .map(
