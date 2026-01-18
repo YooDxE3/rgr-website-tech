@@ -1669,6 +1669,7 @@
                 DB.shifts || DB.schedule,
                 cloudData.schedule || cloudData.shifts,
               ),
+              users: merge(DB.users, cloudData.users),
               cadastros: merge(DB.cadastros, cloudData.cadastros),
               accounts: merge(DB.accounts, cloudData.accounts),
               offers: merge(DB.offers, cloudData.offers),
@@ -5716,49 +5717,162 @@
           return { txt: t("extStatusReview"), cls: "badge bWarn" };
         return { txt: t("extStatusReceived"), cls: "badge bWarn" };
       }
-      /* ========= TEAM MANAGEMENT (NOVO) ========= */
-      /* ========= TEAM MANAGEMENT (V2 - Completo) ========= */
+      /* ===================== GERENCIAR EQUIPE (ADMINS + PROFS) ===================== */
       function renderTeam() {
-        const rows = DB.profs
+        // 1. Tabela de Usuários do Sistema (Admins/Gestores)
+        const userRows = (DB.users || [])
+          .map(
+            (u) => `
+      <tr>
+        <td><b>${u.name || u.user}</b><div class="muted">Login: ${u.user}</div></td>
+        <td><span class="badge ${u.role === "admin" ? "bGood" : "bWarn"}">${u.role.toUpperCase()}</span></td>
+        <td style="text-align:right">
+          <button class="small danger" onclick="deleteSystemUser('${u.id}')">🗑️</button>
+        </td>
+      </tr>
+    `,
+          )
+          .join("");
+
+        // 2. Tabela de Profissionais (Médicos)
+        const profRows = (DB.profs || [])
           .map(
             (p) => `
-    <tr>
-      <td>
-        <b>${p.name}</b>
-        <div class="muted">${p.spec || "—"}</div>
-      </td>
-      <td>
-        <div>${p.wpp}</div>
-        <div class="muted" style="font-size:11px">${p.email || ""}</div>
-      </td>
-      <td>
-        <div class="row" style="gap:5px; flex-wrap:nowrap">
-          <button class="small" onclick="viewProf('${p.id}')" title="Ver Detalhes">👁️</button>
-          <button class="small" onclick="editProf('${p.id}')" title="Editar">✏️</button>
-          <button class="small danger" onclick="deleteProf('${p.id}')" title="Excluir">🗑️</button>
-        </div>
-      </td>
-    </tr>
-  `,
+      <tr>
+        <td><b>${p.name}</b><div class="muted">${p.spec || "—"}</div></td>
+        <td><div>${p.wpp}</div><div class="muted" style="font-size:11px">${p.email || ""}</div></td>
+        <td style="text-align:right">
+          <button class="small" onclick="editProf('${p.id}')">✏️</button>
+          <button class="small danger" onclick="deleteProf('${p.id}')">🗑️</button>
+        </td>
+      </tr>
+    `,
           )
           .join("");
 
         return `
-  <div class="card"><div class="cardin">
-    <h2>Gerenciar Equipe</h2>
-    <div class="muted">Visualizar, editar ou remover profissionais.</div>
+    <div class="card"><div class="cardin">
+      <div class="row" style="justify-content:space-between; align-items:center">
+        <div>
+          <h2>Usuários do Sistema</h2>
+          <div class="muted">Admins e Gestores que acessam o painel administrativo.</div>
+        </div>
+        <button class="primary small" onclick="openAddUserModal()">+ Novo Admin/Gestor</button>
+      </div>
+      <div class="sp"></div>
+      <div class="tableWrap">
+        <table class="table">
+          <thead><tr><th>Nome/Login</th><th>Perfil</th><th style="text-align:right">Ações</th></tr></thead>
+          <tbody>${userRows || '<tr><td colspan="3" class="muted">Nenhum usuário.</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div></div>
+
     <div class="sp"></div>
-    <div class="tableWrap">
-      <table class="table">
-        <thead><tr><th>Profissional</th><th>Contato/Login</th><th>Ações</th></tr></thead>
-        <tbody>${rows || '<tr><td colspan="3" class="muted">Nenhum profissional cadastrado.</td></tr>'}</tbody>
-      </table>
-    </div>
-  </div></div>
-  
-  <div id="teamModalAnchor"></div>
+
+    <div class="card"><div class="cardin">
+      <h2>Profissionais de Saúde</h2>
+      <div class="muted">Médicos e equipe técnica (via Aprovação ou Cadastro Manual).</div>
+      <div class="sp"></div>
+      <div class="tableWrap">
+        <table class="table">
+          <thead><tr><th>Profissional</th><th>Contato (Login)</th><th style="text-align:right">Ações</th></tr></thead>
+          <tbody>${profRows || '<tr><td colspan="3" class="muted">Nenhum profissional.</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div></div>
+    
+    <div id="teamModalAnchor"></div>
   `;
       }
+
+      /* --- LÓGICA DE USUÁRIOS DO SISTEMA --- */
+
+      // Abrir Modal de Novo Admin
+      window.openAddUserModal = () => {
+        const modalHtml = `
+  <div class="modalOverlay" id="userOverlay" style="display:flex">
+    <div class="modal" style="max-width:400px">
+      <div class="card"><div class="cardin">
+        <h2>Novo Usuário do Sistema</h2>
+        <div class="sp"></div>
+        
+        <div class="muted">Nome de Exibição</div>
+        <input id="newUName" placeholder="Ex: Fulano Silva">
+        <div class="sp"></div>
+
+        <div class="muted">Login (Usuário)</div>
+        <input id="newUUser" placeholder="Ex: Fulano">
+        <div class="sp"></div>
+
+        <div class="muted">Senha</div>
+        <input id="newUPass" type="text" placeholder="Senha de acesso">
+        <div class="sp"></div>
+
+        <div class="muted">Perfil</div>
+        <select id="newURole">
+          <option value="gestor">Gestor</option>
+          <option value="admin">Administrador</option>
+        </select>
+
+        <div class="sp"></div>
+        <div class="row" style="justify-content:flex-end">
+          <button class="small" onclick="document.getElementById('userOverlay').remove()">Cancelar</button>
+          <button class="primary" onclick="saveNewSystemUser()">Salvar</button>
+        </div>
+      </div></div>
+    </div>
+  </div>`;
+
+        const anchor = document.getElementById("teamModalAnchor");
+        if (anchor) anchor.innerHTML = modalHtml;
+      };
+
+      // Salvar Novo Admin
+      window.saveNewSystemUser = () => {
+        const name = $("newUName").value.trim();
+        const user = $("newUUser").value.trim();
+        const pass = $("newUPass").value.trim();
+        const role = $("newURole").value;
+
+        if (!name || !user || !pass) {
+          alert("Preencha todos os campos!");
+          return;
+        }
+
+        // Verifica se já existe
+        if (DB.users.find((u) => u.user.toLowerCase() === user.toLowerCase())) {
+          alert("Este login já está em uso.");
+          return;
+        }
+
+        // Adiciona na lista
+        DB.users.push({
+          id: "u_" + Math.random().toString(16).slice(2),
+          name,
+          user,
+          pass,
+          role,
+        });
+
+        saveDB(); // Salva na nuvem
+        document.getElementById("userOverlay").remove();
+        renderInternalBody("team"); // Atualiza a tela
+        alert(`Usuário ${user} criado com sucesso!`);
+      };
+
+      // Deletar Admin
+      window.deleteSystemUser = (id) => {
+        // Proteção: não deixar deletar a si mesmo (se possível checar sessão)
+        if (
+          !confirm("Tem certeza que deseja remover este acesso administrativo?")
+        )
+          return;
+
+        DB.users = DB.users.filter((u) => u.id !== id);
+        saveDB();
+        renderInternalBody("team");
+      };
 
       // Função auxiliar para abrir o Modal (Edição ou Visualização)
       function openProfModal(id, isReadOnly) {
@@ -6571,6 +6685,7 @@
                 DB.units = data.units || [];
                 DB.shifts = data.schedule || data.shifts || [];
                 DB.schedule = DB.shifts;
+                DB.users = data.users || [];
                 DB.cadastros = data.cadastros || [];
                 DB.accounts = data.accounts || [];
                 DB.offers = data.offers || [];
