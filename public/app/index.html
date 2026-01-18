@@ -3089,6 +3089,12 @@
       }
       function renderProfSelect() {
         const sel = $("profSel");
+
+        // --- TRAVA DE SEGURANÇA ---
+        // Se o elemento não existe na tela (porque mudamos o login), para aqui.
+        if (!sel) return;
+        // --------------------------
+
         const cat =
           $("profCatSel") && $("profCatSel").value
             ? $("profCatSel").value
