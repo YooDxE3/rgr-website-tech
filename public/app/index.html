@@ -683,9 +683,41 @@
           padding: 12px;
         }
       }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .spinning {
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+
+      /* O estilo do balãozinho de status */
+      #cloudStatus {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 10000;
+        background: rgba(15, 22, 36, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        pointer-events: none; /* Não atrapalha cliques */
+      }
     </style>
   </head>
   <body>
+    <div id="cloudStatus">
+      <span id="cIcon">☁️</span> <span id="cText">Online</span>
+    </div>
     <div class="topbar">
       <div class="brand">
         <button class="mobile-menu-btn" id="btnMobMenu">☰</button>
