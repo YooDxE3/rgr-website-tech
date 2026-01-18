@@ -1449,6 +1449,8 @@
     </div>
 
     <script>
+      let db; // <--- ISSO AQUI É O SEGREDO
+      let auth;
       /* ===================== CONEXÃO FIREBASE ===================== */
       const firebaseConfig = {
         apiKey: "AIzaSyC8JtU3sPU0fsaGto540oDKVPIj2zwx5sc",
@@ -1460,14 +1462,13 @@
       };
 
       // Inicializa o Firebase e exporta as variáveis db e auth
-      let db, auth;
       if (typeof firebase !== "undefined") {
         firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
+        db = firebase.firestore(); // Sem 'var' ou 'let' aqui, usa a global
         auth = firebase.auth();
-        console.log("🔥 Firebase Conectado com Sucesso!");
+        alert("Firebase Iniciado!"); // Seu alerta atual
       } else {
-        console.error("❌ Erro: Scripts do Firebase não carregaram.");
+        alert("Erro: Firebase não carregou.");
       }
       /* ============================================================ */
       /* ===================== Storage ===================== */
