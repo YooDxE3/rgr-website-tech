@@ -751,189 +751,89 @@
         <div class="card">
           <div class="cardin">
             <div
-              id="installBanner"
+              style="text-align: center; margin-bottom: 30px; margin-top: 10px"
+            >
+              <h1 style="margin: 0; font-size: 24px">Acesso ao Sistema</h1>
+              <div class="sub">Digite suas credenciais para entrar.</div>
+            </div>
+
+            <div id="loginForm">
+              <div class="muted" style="margin-bottom: 6px">
+                Usuário / Login
+              </div>
+              <input
+                id="lUser"
+                type="text"
+                placeholder="Ex: Andre, Girardi, Adilson..."
+                style="padding: 14px; font-size: 16px"
+              />
+
+              <div class="sp"></div>
+
+              <div class="muted" style="margin-bottom: 6px">Senha</div>
+              <input
+                id="lPass"
+                type="password"
+                placeholder="••••••••"
+                style="padding: 14px; font-size: 16px"
+              />
+
+              <div class="sp"></div>
+              <div class="sp"></div>
+
+              <button
+                class="primary block"
+                id="btnLoginUnified"
+                style="font-size: 16px; padding: 14px; width: 100%"
+              >
+                🔐 Entrar
+              </button>
+            </div>
+
+            <div class="sp"></div>
+
+            <div
               style="
-                display: none;
-                background: linear-gradient(135deg, #0070f3, #00c6ff);
-                border-radius: 12px;
-                padding: 15px;
-                margin-bottom: 15px;
-                box-shadow: 0 4px 15px rgba(0, 112, 243, 0.3);
+                margin-top: 25px;
+                text-align: center;
+                border-top: 1px solid var(--line);
+                padding-top: 20px;
               "
             >
-              <div
-                class="row"
-                style="justify-content: space-between; align-items: center"
-              >
-                <div style="color: white">
-                  <b style="font-size: 15px">Instalar viaRGR</b>
-                  <div style="font-size: 12px; opacity: 0.9; margin-top: 2px">
-                    Adicione à sua tela inicial para acesso rápido.
-                  </div>
-                </div>
-                <button
-                  id="btnInstallAction"
-                  style="
-                    background: white;
-                    color: #0070f3;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 20px;
-                    font-weight: 800;
-                    font-size: 13px;
-                    cursor: pointer;
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                  "
-                >
-                  📲 Instalar
-                </button>
+              <div class="muted" style="margin-bottom: 10px">
+                Não possui acesso?
               </div>
-            </div>
-            <h1 data-i18n="homeTitle">Entrar no viaRGR</h1>
-            <div class="sub" data-i18n="homeSub">
-              Escolha o tipo de acesso. O médico inicia na área externa (1º
-              acesso).
-            </div>
-            <div class="sp"></div>
-            <div class="tabs" id="roleTabs">
-              <div class="tab active" data-role="admin" data-i18n="roleAdmin">
-                Administrador
-              </div>
-              <div class="tab" data-role="gestor" data-i18n="roleGestor">
-                Gestor
-              </div>
-              <div class="tab" data-role="prof" data-i18n="roleProf">
-                Profissional
-              </div>
-              <div class="tab" data-role="externo" data-i18n="roleExt">
-                1º acesso (Cadastro)
-              </div>
-            </div>
-
-            <div class="sp"></div>
-            <div
-              id="loginBox"
-              class="card"
-              style="background: rgba(255, 255, 255, 0.02)"
-            >
-              <div class="cardin">
-                <div class="row" style="justify-content: space-between">
-                  <div>
-                    <h2 data-i18n="loginTitle">Login interno</h2>
-                    <div class="muted" data-i18n="loginHint">
-                      Admin/Gestor entram com senha demo. Profissional entra
-                      após aprovação.
-                    </div>
-                  </div>
-                  <span class="badge" id="roleBadge">ADMIN</span>
-                </div>
-                <div class="sp"></div>
-                <div id="loginForm">
-                  <div class="two">
-                    <div id="pwdCol">
-                      <div class="muted" data-i18n="lblPassword">Senha</div>
-                      <input id="pwd" type="password" placeholder="••••" />
-                    </div>
-                    <div id="profCol">
-                      <div class="muted" data-i18n="lblProfCategory">
-                        Categoria
-                      </div>
-                      <select id="profCatSel">
-                        <option value="health" data-i18n="optKindHealth">
-                          Profissionais de Saúde
-                        </option>
-                        <option value="network" data-i18n="optKindNetwork">
-                          Rede Credenciada
-                        </option>
-                        <option value="vendor" data-i18n="optKindVendor">
-                          Fornecedores
-                        </option>
-                      </select>
-                      <div style="height: 10px"></div>
-                      <div class="muted" data-i18n="lblProf">
-                        Profissional (aprovado)
-                      </div>
-                      <select id="profSel"></select>
-                    </div>
-                  </div>
-                  <div class="sp"></div>
-                  <div class="row">
-                    <button class="primary" id="btnLogin" data-i18n="btnLogin">
-                      Entrar
-                    </button>
-                    <button id="btnDemoPwd" data-i18n="btnShowPwd">
-                      Mostrar senhas demo
-                    </button>
-                  </div>
-                  <div class="sp"></div>
-                  <div class="muted" id="demoPwd" style="display: none"></div>
-                </div>
-
-                <div id="externoIntro" style="display: none">
-                  <div class="muted" data-i18n="extIntro">
-                    O médico realiza cadastro e envia documentos. Após
-                    aprovação, libera a área interna.
-                  </div>
-                  <div class="sp"></div>
-                  <button class="primary" id="btnGoExt" data-i18n="btnGoExt">
-                    Ir para 1º acesso
-                  </button>
-                </div>
-
-                <div id="sessRestore" style="display: none">
-                  <div class="divider"></div>
-                  <div class="row" style="justify-content: space-between">
-                    <div class="muted" id="sessText"></div>
-                    <div class="row">
-                      <button
-                        class="small"
-                        id="btnSessContinue"
-                        data-i18n="btnContinue"
-                      >
-                        Continuar
-                      </button>
-                      <button
-                        class="small danger"
-                        id="btnSessReset"
-                        data-i18n="btnSwitch"
-                      >
-                        Trocar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <button class="small" id="btnGoRegister" style="width: 100%">
+                Realizar Cadastro (1º Acesso)
+              </button>
             </div>
           </div>
         </div>
 
         <div class="card">
           <div class="cardin">
-            <h2 data-i18n="homeGuideTitle">Guia rápido</h2>
-            <div class="muted" data-i18n="homeGuideBody">
-              1) Médico entra em 1º acesso, preenche dados e envia documentos
-              (PDF). 2) Admin aprova na área interna. 3) Médico aprovado aparece
-              como Profissional.
+            <h2>Guia rápido</h2>
+            <div class="muted">
+              O sistema detecta automaticamente seu perfil (Admin, Gestor ou
+              Profissional) pelo seu login.
             </div>
             <div class="divider"></div>
             <div class="kpi">
               <div class="k">
                 <div class="v" id="kPending">0</div>
-                <div class="l" data-i18n="kPending">Cadastros pendentes</div>
+                <div class="l">Pendentes</div>
               </div>
               <div class="k">
                 <div class="v" id="kApproved">0</div>
-                <div class="l" data-i18n="kApproved">
-                  Profissionais aprovados
-                </div>
+                <div class="l">Profissionais</div>
               </div>
               <div class="k">
                 <div class="v" id="kUnits">0</div>
-                <div class="l" data-i18n="kUnits">Unidades</div>
+                <div class="l">Unidades</div>
               </div>
               <div class="k">
                 <div class="v" id="kShifts">0</div>
-                <div class="l" data-i18n="kShifts">Plantões</div>
+                <div class="l">Plantões</div>
               </div>
             </div>
           </div>
@@ -6715,15 +6615,55 @@
           toast(L() === "pt" ? "Idioma atualizado" : "Language updated");
         });
 
-        document.querySelectorAll("#roleTabs .tab").forEach((el) => {
-          el.onclick = () => setRole(el.dataset.role);
-        });
-        setRole("admin");
-        $("btnLogin").onclick = doLogin;
-        $("btnDemoPwd").onclick = demoPwd;
+        // --- LÓGICA DO NOVO LOGIN ---
+        if ($("btnLoginUnified")) {
+          $("btnLoginUnified").onclick = async () => {
+            const u = $("lUser").value.trim();
+            const p = $("lPass").value.trim();
 
-        // Botões de Navegação
-        $("btnGoExt").onclick = goExternal;
+            if (!u || !p) {
+              toast("Preencha usuário e senha.");
+              return;
+            }
+
+            // 1. Procura em ADMINS/GESTORES
+            const sysUser = (DB.users || []).find(
+              (x) => x.user.toLowerCase() === u.toLowerCase(),
+            );
+            if (sysUser) {
+              if (sysUser.pass === p) {
+                toast(`Bem-vindo, ${sysUser.name}!`);
+                goInternal(sysUser.role);
+                return;
+              }
+            }
+
+            // 2. Procura em PROFISSIONAIS
+            const acc = (DB.accounts || []).find(
+              (x) => x.user.toLowerCase() === u.toLowerCase(),
+            );
+            if (acc) {
+              // Verifica senha (simples ou hash)
+              let isValid = acc.pass && acc.pass === p;
+              if (!isValid && acc.passwordHash) {
+                isValid = (await sha256(p)) === acc.passwordHash;
+              }
+
+              if (isValid) {
+                toast(`Bem-vindo, Dr(a).!`);
+                goInternal("prof", acc.profId);
+                return;
+              }
+            }
+
+            toast("Usuário ou senha incorretos.");
+          };
+        }
+
+        // Botão de Cadastro (Novo ID)
+        if ($("btnGoRegister")) {
+          $("btnGoRegister").onclick = goExternal;
+        }
         const goHomeAction = () => {
           show("home");
           setSession(null);
