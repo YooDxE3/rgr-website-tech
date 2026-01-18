@@ -3430,6 +3430,8 @@
       <td>${fmtSync(u.lastSync)}</td>
       <td style="text-align:center">${bi}</td>
       <td style="text-align:right">
+        <button class="small" onclick="editUnit('${u.id}')">✏️</button>
+        <button class="small danger" onclick="deleteUnit('${u.id}')">🗑️</button>
         <button class="small btnCfg" data-unit="${u.id}">${t("btnConfigure")}</button>
       </td>
     </tr>`;
@@ -3476,7 +3478,8 @@
     </div>
 
     <div class="sp"></div>
-    <div id="unitForm" style="display:none">
+    <div id="unitForm" style="display:none; border: 1px solid var(--accent); border-radius:12px; padding:10px;">
+      <h3 id="unitFormTitle" style="margin-top:0">Nova Unidade</h3>
       <div class="two">
         <div><div class="muted">${t("unitName")}</div><input id="uName" placeholder="Ex: UPA Centro"/></div>
         <div><div class="muted">${t("unitType")}</div><select id="uType">${typeOpt}</select></div>
@@ -3489,6 +3492,7 @@
         <div><div class="muted">${t("unitSubtype")}</div><input id="uSub" placeholder="Ex: Urgência"/></div>
         <div><div class="muted">${t("unitsSys")}</div><select id="uSys">${sysOpt}</select></div>
       </div>
+      <div class="sp"></div>
       <div class="row">
         <button class="primary" id="btnSaveUnit" data-i18n="unitSave">${t("unitSave")}</button>
         <button id="btnCancelUnit">Cancelar</button>
@@ -3501,6 +3505,7 @@
       function bindUnits() {
         const uf = $("uUF"),
           city = $("uCity");
+        let editingId = null; // Controla se estamos editando ou criando
 
         function fillCities() {
           const ufv = uf.value || "SC";
@@ -3511,10 +3516,14 @@
         }
 
         function showForm(on) {
-          $("unitForm").style.display = on ? "" : "none";
+          $("unitForm").style.display = on ? "block" : "none";
+          if (!on) editingId = null;
         }
 
+        // Criar Nova
         $("btnAddUnit").onclick = () => {
+          editingId = null;
+          $("unitFormTitle").textContent = "Nova Unidade";
           showForm(true);
           uf.value = uf.value || "SC";
           fillCities();
@@ -3523,7 +3532,36 @@
           $("uSys").value = "Tasy";
         };
 
+        // Cancelar
         $("btnCancelUnit").onclick = () => showForm(false);
+
+        // Editar (Global)
+        window.editUnit = (id) => {
+          const u = DB.units.find((x) => x.id === id);
+          if (!u) return;
+          editingId = id;
+          $("unitFormTitle").textContent = "Editar Unidade";
+          showForm(true);
+          $("uName").value = u.name;
+          $("uType").value = u.type;
+          $("uSys").value = u.system || "Tasy";
+          $("uSub").value = u.subtype || "";
+          $("uUF").value = u.uf || "SC";
+          fillCities();
+          $("uCity").value = u.city || "";
+          // Rola até o formulário
+          location.href = "#unitForm";
+        };
+
+        // Excluir (Global)
+        window.deleteUnit = (id) => {
+          if (!confirm("Tem certeza? Isso pode afetar escalas vinculadas."))
+            return;
+          DB.units = DB.units.filter((x) => x.id !== id);
+          saveDB();
+          renderInternalBody("units");
+          toast("Unidade excluída.");
+        };
 
         uf.onchange = fillCities;
         fillCities();
@@ -3541,28 +3579,46 @@
             return;
           }
 
-          DB.units.unshift({
-            id: uid("u"),
-            name,
-            type,
-            uf: ufv,
-            city: cityv,
-            subtype: sub,
-            system: sys,
-            integrationMode: "Export/CSV",
-            integrationStatus: "pendente",
-            lastSync: null,
-            biEnabled: false,
-            biTool: null,
-            createdAt: nowISO(),
-          });
-          saveDB();
-          toast("OK");
+          if (editingId) {
+            // ATUALIZAR
+            const u = DB.units.find((x) => x.id === editingId);
+            if (u) {
+              u.name = name;
+              u.type = type;
+              u.uf = ufv;
+              u.city = cityv;
+              u.subtype = sub;
+              u.system = sys;
+              saveDB();
+              toast("Unidade atualizada.");
+            }
+          } else {
+            // CRIAR NOVA
+            DB.units.unshift({
+              id: uid("u"),
+              name,
+              type,
+              uf: ufv,
+              city: cityv,
+              subtype: sub,
+              system: sys,
+              integrationMode: "Export/CSV",
+              integrationStatus: "pendente",
+              lastSync: null,
+              biEnabled: false,
+              biTool: null,
+              createdAt: nowISO(),
+            });
+            saveDB();
+            toast("Unidade criada.");
+          }
+
+          showForm(false);
           renderInternalBody("units");
           applyI18n();
         };
 
-        // configure integration
+        // configure integration button
         document.querySelectorAll(".btnCfg").forEach((btn) => {
           btn.onclick = () => {
             const id = btn.dataset.unit;
@@ -4422,12 +4478,19 @@
       }
 
       /* ========= Market (Network & Vendors) ========= */
-      /* ========= Market (Rede & Fornecedores) ========= */
       function renderMarket() {
-        // Inicialização segura
+        // Inicialização segura + Auto-correção de IDs (se faltar)
         if (!DB.market) DB.market = {};
         if (!DB.market.network) DB.market.network = [];
         if (!DB.market.vendors) DB.market.vendors = [];
+
+        // Garante que todo item tenha ID
+        DB.market.network.forEach((x) => {
+          if (!x.id) x.id = uid("n");
+        });
+        DB.market.vendors.forEach((x) => {
+          if (!x.id) x.id = uid("v");
+        });
 
         // Cards da Rede Credenciada
         const nCards = DB.market.network.length
@@ -4441,6 +4504,11 @@
                   <span class="badge bGood">SLA ${x.sla || "—"}</span>
                 </div>
                 <div class="muted">${x.type} • ${x.city || "—"}</div>
+                <div class="sp"></div>
+                <div class="row" style="justify-content:flex-end; gap:6px">
+                   <button class="small" onclick="editNetworkItem('${x.id}')">✏️</button>
+                   <button class="small danger" onclick="delNetworkItem('${x.id}')">🗑️</button>
+                </div>
               </div>
             </div>`,
               )
@@ -4459,6 +4527,11 @@
                   <span class="badge ${x.status === "ativo" ? "bGood" : "bWarn"}">${x.status}</span>
                 </div>
                 <div class="muted">${x.cat} • ${x.contact || "—"}</div>
+                <div class="sp"></div>
+                <div class="row" style="justify-content:flex-end; gap:6px">
+                   <button class="small" onclick="editVendorItem('${x.id}')">✏️</button>
+                   <button class="small danger" onclick="delVendorItem('${x.id}')">🗑️</button>
+                </div>
               </div>
             </div>`,
               )
@@ -4475,7 +4548,7 @@
       <div>
         <div class="row" style="justify-content:space-between; margin-bottom:10px">
           <h3 style="margin:0">Rede Credenciada</h3>
-          <button class="small" id="btnNAdd">+ Adicionar</button>
+          <button class="small primary" id="btnNAdd">+ Adicionar</button>
         </div>
         <div class="grid">${nCards}</div>
       </div>
@@ -4483,7 +4556,7 @@
       <div>
         <div class="row" style="justify-content:space-between; margin-bottom:10px">
           <h3 style="margin:0">Fornecedores</h3>
-          <button class="small" id="btnVAdd">+ Adicionar</button>
+          <button class="small primary" id="btnVAdd">+ Adicionar</button>
         </div>
         <div class="grid">${vCards}</div>
       </div>
@@ -4493,8 +4566,11 @@
     <div id="marketForm"></div>
   </div></div>`;
       }
+
       function bindMarket() {
         const wrap = $("marketForm");
+
+        // --- ADD NETWORK ---
         $("btnNAdd").onclick = () => {
           wrap.innerHTML = `
       <div class="card"><div class="cardin">
@@ -4507,24 +4583,26 @@
           <div><div class="muted">Cidade</div><input id="nCity"/></div>
           <div><div class="muted">SLA</div><input id="nSla" placeholder="Ex: 2h"/></div>
         </div>
+        <div class="sp"></div>
         <div class="row"><button class="primary" id="btnNSave">Salvar</button><button id="btnNCancel">Cancelar</button></div>
       </div></div>`;
           $("btnNSave").onclick = () => {
             DB.market.network.unshift({
+              id: uid("n"),
               name: $("nName").value.trim(),
               type: $("nType").value.trim(),
               city: $("nCity").value.trim(),
               sla: $("nSla").value.trim(),
             });
             saveDB();
-            toast("OK");
             renderInternalBody("market");
-            applyI18n();
           };
           $("btnNCancel").onclick = () => {
             wrap.innerHTML = "";
           };
         };
+
+        // --- ADD VENDOR ---
         $("btnVAdd").onclick = () => {
           wrap.innerHTML = `
       <div class="card"><div class="cardin">
@@ -4537,21 +4615,96 @@
           <div><div class="muted">Contato</div><input id="vContact" placeholder="Email/Telefone"/></div>
           <div><div class="muted">Status</div><select id="vStatus"><option value="ativo">ativo</option><option value="em análise">em análise</option></select></div>
         </div>
+        <div class="sp"></div>
         <div class="row"><button class="primary" id="btnVSave">Salvar</button><button id="btnVCancel">Cancelar</button></div>
       </div></div>`;
           $("btnVSave").onclick = () => {
             DB.market.vendors.unshift({
+              id: uid("v"),
               name: $("vName").value.trim(),
               cat: $("vCat").value.trim(),
               contact: $("vContact").value.trim(),
               status: $("vStatus").value,
             });
             saveDB();
-            toast("OK");
             renderInternalBody("market");
-            applyI18n();
           };
           $("btnVCancel").onclick = () => {
+            wrap.innerHTML = "";
+          };
+        };
+
+        // --- LOGICA GLOBAL DE EDITAR/EXCLUIR ---
+        window.delNetworkItem = (id) => {
+          if (!confirm("Apagar item?")) return;
+          DB.market.network = DB.market.network.filter((x) => x.id !== id);
+          saveDB();
+          renderInternalBody("market");
+        };
+        window.delVendorItem = (id) => {
+          if (!confirm("Apagar item?")) return;
+          DB.market.vendors = DB.market.vendors.filter((x) => x.id !== id);
+          saveDB();
+          renderInternalBody("market");
+        };
+
+        window.editNetworkItem = (id) => {
+          const item = DB.market.network.find((x) => x.id === id);
+          if (!item) return;
+          wrap.innerHTML = `
+              <div class="card" style="border:1px solid var(--accent)"><div class="cardin">
+                <b>Editar credenciada</b>
+                <div class="two">
+                  <div><div class="muted">Nome</div><input id="eName" value="${item.name}"/></div>
+                  <div><div class="muted">Tipo</div><input id="eType" value="${item.type}"/></div>
+                </div>
+                <div class="two">
+                  <div><div class="muted">Cidade</div><input id="eCity" value="${item.city || ""}"/></div>
+                  <div><div class="muted">SLA</div><input id="eSla" value="${item.sla || ""}"/></div>
+                </div>
+                <div class="sp"></div>
+                <div class="row"><button class="primary" id="btnESave">Atualizar</button><button id="btnECancel">Cancelar</button></div>
+              </div></div>`;
+          $("btnESave").onclick = () => {
+            item.name = $("eName").value.trim();
+            item.type = $("eType").value.trim();
+            item.city = $("eCity").value.trim();
+            item.sla = $("eSla").value.trim();
+            saveDB();
+            renderInternalBody("market");
+          };
+          $("btnECancel").onclick = () => {
+            wrap.innerHTML = "";
+          };
+        };
+
+        window.editVendorItem = (id) => {
+          const item = DB.market.vendors.find((x) => x.id === id);
+          if (!item) return;
+          wrap.innerHTML = `
+              <div class="card" style="border:1px solid var(--accent)"><div class="cardin">
+                <b>Editar fornecedor</b>
+                <div class="two">
+                  <div><div class="muted">Nome</div><input id="evName" value="${item.name}"/></div>
+                  <div><div class="muted">Categoria</div><input id="evCat" value="${item.cat}"/></div>
+                </div>
+                <div class="two">
+                  <div><div class="muted">Contato</div><input id="evContact" value="${item.contact || ""}"/></div>
+                  <div><div class="muted">Status</div><select id="evStatus"><option value="ativo">ativo</option><option value="em análise">em análise</option></select></div>
+                </div>
+                <div class="sp"></div>
+                <div class="row"><button class="primary" id="btnEVSave">Atualizar</button><button id="btnEVCancel">Cancelar</button></div>
+              </div></div>`;
+          $("evStatus").value = item.status;
+          $("btnEVSave").onclick = () => {
+            item.name = $("evName").value.trim();
+            item.cat = $("evCat").value.trim();
+            item.contact = $("evContact").value.trim();
+            item.status = $("evStatus").value;
+            saveDB();
+            renderInternalBody("market");
+          };
+          $("btnEVCancel").onclick = () => {
             wrap.innerHTML = "";
           };
         };
