@@ -3207,21 +3207,34 @@
       function renderSessionRestore() {
         const s = restoreSession();
         const box = $("sessRestore");
+
+        // --- TRAVA DE SEGURANÇA (O QUE FALTAVA) ---
+        if (!box) return;
+        // ------------------------------------------
+
         if (!s) {
           box.style.display = "none";
           return;
         }
         box.style.display = "";
-        $("sessText").textContent = `Sessão detectada: ${s.role.toUpperCase()}`;
-        $("btnSessContinue").onclick = () => {
-          if (s.role === "prof") goInternal("prof", s.profId);
-          else goInternal(s.role);
-        };
-        $("btnSessReset").onclick = () => {
-          localStorage.removeItem("viargr_session_v19");
-          setSession(null);
-          toast("OK");
-        };
+        const sessText = $("sessText");
+        if (sessText)
+          sessText.textContent = `Sessão detectada: ${s.role.toUpperCase()}`;
+
+        if ($("btnSessContinue")) {
+          $("btnSessContinue").onclick = () => {
+            if (s.role === "prof") goInternal("prof", s.profId);
+            else goInternal(s.role);
+          };
+        }
+
+        if ($("btnSessReset")) {
+          $("btnSessReset").onclick = () => {
+            localStorage.removeItem("viargr_session_v19");
+            setSession(null);
+            toast("OK");
+          };
+        }
       }
 
       /* ===================== Internal views ===================== */
@@ -4682,11 +4695,11 @@
           if (b1)
             b1.onclick = () => {
               const box = $("pQrBox");
+              if (!box) return; // 🔒 proteção contra null
               box.style.display = box.style.display === "none" ? "" : "none";
             };
-          const b2 = $("btnPShare");
-          if (b2) b2.onclick = () => toast("Link de compartilhamento (demo)");
         }
+
         if (sel) {
           sel.onchange = () => renderFor(sel.value);
           renderFor(sel.value);
