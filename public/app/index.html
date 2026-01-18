@@ -1451,7 +1451,7 @@
     <script>
       let db; // <--- ISSO AQUI É O SEGREDO
       let auth;
-      
+
       /* ===================== CONEXÃO FIREBASE ===================== */
       const firebaseConfig = {
         apiKey: "AIzaSyC8JtU3sPU0fsaGto540oDKVPIj2zwx5sc",
@@ -1709,8 +1709,16 @@
         // 1. Salva local
         localStorage.setItem(KEY, JSON.stringify(DB));
 
-        // 2. Tenta salvar na nuvem e GRITA se der erro
-        if (typeof db !== "undefined") {
+        // ALERTA DE DEBUG 1: A função foi chamada?
+        // alert("Debug 1: saveDB chamado");
+
+        // 2. Tenta salvar na nuvem
+        if (db) {
+          // Verifica se a variável global existe
+
+          // ALERTA DE DEBUG 2: A conexão existe?
+          // alert("Debug 2: DB conectado. Tentando enviar...");
+
           db.collection("sistema")
             .doc("v1")
             .set({
@@ -1723,18 +1731,21 @@
               availability: DB.availability || [],
               payRules: DB.payRules || {},
               market: DB.market || {},
+              audit: DB.audit || [],
               meta: { lastUpdate: new Date().toISOString() },
             })
             .then(() => {
-              // Sucesso silencioso (opcional: console.log)
+              // SUCESSO
+              // alert("SUCESSO: Salvo na nuvem!");
               console.log("Salvo na nuvem");
             })
             .catch((err) => {
-              // ERRO VISÍVEL NO CELULAR
-              alert("ERRO DE CONEXÃO: " + err.message);
+              // ERRO DO FIREBASE
+              alert("ERRO FIREBASE: " + err.message);
             });
         } else {
-          alert("ERRO: Firebase não foi iniciado.");
+          // ERRO DE ESCOPO (O problema provável)
+          alert("ERRO CRÍTICO: A variável 'db' está vazia/indefinida!");
         }
       }
       let DB = loadDB();
