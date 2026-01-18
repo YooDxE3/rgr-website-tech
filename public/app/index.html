@@ -1705,47 +1705,65 @@
         }
       }
       /* ===================== SALVAR NA NUVEM ===================== */
-      function saveDB() {
-        // 1. Salva local
+      async function saveDB() {
+        // 1. Backup Local
         localStorage.setItem(KEY, JSON.stringify(DB));
 
-        // ALERTA DE DEBUG 1: A função foi chamada?
-        // alert("Debug 1: saveDB chamado");
+        if (typeof db !== "undefined") {
+          const docRef = db.collection("sistema").doc("v1");
 
-        // 2. Tenta salvar na nuvem
-        if (db) {
-          // Verifica se a variável global existe
+          try {
+            // A. Baixa a versão mais recente da nuvem antes de salvar
+            const doc = await docRef.get();
+            const cloudData = doc.exists ? doc.data() : {};
 
-          // ALERTA DE DEBUG 2: A conexão existe?
-          // alert("Debug 2: DB conectado. Tentando enviar...");
+            // B. Função para misturar listas (Local + Nuvem) sem duplicar
+            const merge = (localArr, cloudArr) => {
+              const map = new Map();
+              // 1º Coloca os itens da nuvem (preserva o que o outro device fez)
+              (cloudArr || []).forEach((item) => map.set(item.id, item));
+              // 2º Atualiza com os itens locais (se você editou algo, sua versão ganha)
+              (localArr || []).forEach((item) => map.set(item.id, item));
+              return Array.from(map.values());
+            };
 
-          db.collection("sistema")
-            .doc("v1")
-            .set({
-              profs: DB.profs || [],
-              units: DB.units || [],
-              schedule: DB.schedule || [],
-              cadastros: DB.cadastros || [],
-              accounts: DB.accounts || [],
-              offers: DB.offers || [],
-              availability: DB.availability || [],
-              payRules: DB.payRules || {},
-              market: DB.market || {},
-              audit: DB.audit || [],
+            // C. Prepara o pacote de dados misturado
+            // (Nota: Estou garantindo que 'shifts' e 'schedule' sejam tratados corretamente)
+            const finalData = {
+              profs: merge(DB.profs, cloudData.profs),
+              units: merge(DB.units, cloudData.units),
+              // Garante que a escala não suma (mistura local shifts com cloud schedule/shifts)
+              schedule: merge(
+                DB.shifts || DB.schedule,
+                cloudData.schedule || cloudData.shifts,
+              ),
+              cadastros: merge(DB.cadastros, cloudData.cadastros),
+              accounts: merge(DB.accounts, cloudData.accounts),
+              offers: merge(DB.offers, cloudData.offers),
+              availability: merge(DB.availability, cloudData.availability),
+
+              payRules: DB.payRules || cloudData.payRules || {},
+              market: DB.market || cloudData.market || {},
+              audit: merge(DB.audit, cloudData.audit),
               meta: { lastUpdate: new Date().toISOString() },
-            })
-            .then(() => {
-              // SUCESSO
-              // alert("SUCESSO: Salvo na nuvem!");
-              console.log("Salvo na nuvem");
-            })
-            .catch((err) => {
-              // ERRO DO FIREBASE
-              alert("ERRO FIREBASE: " + err.message);
-            });
-        } else {
-          // ERRO DE ESCOPO (O problema provável)
-          alert("ERRO CRÍTICO: A variável 'db' está vazia/indefinida!");
+            };
+
+            // D. Salva a versão misturada na nuvem
+            await docRef.set(finalData);
+
+            // E. Atualiza o seu visual local com o resultado da mistura
+            // (Assim, se o celular tinha criado algo, aparece no PC agora)
+            DB.profs = finalData.profs;
+            DB.units = finalData.units;
+            DB.shifts = finalData.schedule; // Sincroniza o nome
+            DB.cadastros = finalData.cadastros;
+            // ... atualiza o resto conforme necessário
+
+            console.log("☁️ Salvo com Sucesso (Fusão Realizada)!");
+          } catch (e) {
+            console.error("Erro ao salvar:", e);
+            alert("Erro ao sincronizar: " + e.message);
+          }
         }
       }
       let DB = loadDB();
@@ -6619,7 +6637,8 @@
                 // Atualiza a memória local com o que veio do Google
                 DB.profs = data.profs || [];
                 DB.units = data.units || [];
-                DB.schedule = data.schedule || [];
+                DB.shifts = data.schedule || data.shifts || [];
+                DB.schedule = DB.shifts;
                 DB.cadastros = data.cadastros || [];
                 DB.accounts = data.accounts || [];
                 DB.offers = data.offers || [];
