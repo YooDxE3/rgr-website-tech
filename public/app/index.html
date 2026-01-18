@@ -683,9 +683,41 @@
           padding: 12px;
         }
       }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .spinning {
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+
+      /* O estilo do balãozinho de status */
+      #cloudStatus {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 10000;
+        background: rgba(15, 22, 36, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        pointer-events: none; /* Não atrapalha cliques */
+      }
     </style>
   </head>
   <body>
+    <div id="cloudStatus">
+      <span id="cIcon">☁️</span> <span id="cText">Online</span>
+    </div>
     <div class="topbar">
       <div class="brand">
         <button class="mobile-menu-btn" id="btnMobMenu">☰</button>
@@ -1706,6 +1738,7 @@
       }
       /* ===================== SALVAR NA NUVEM ===================== */
       async function saveDB() {
+        setCloudStatus("syncing");
         // 1. Backup Local
         localStorage.setItem(KEY, JSON.stringify(DB));
 
@@ -1732,7 +1765,6 @@
             const finalData = {
               profs: merge(DB.profs, cloudData.profs),
               units: merge(DB.units, cloudData.units),
-              // Garante que a escala não suma (mistura local shifts com cloud schedule/shifts)
               schedule: merge(
                 DB.shifts || DB.schedule,
                 cloudData.schedule || cloudData.shifts,
@@ -1741,7 +1773,6 @@
               accounts: merge(DB.accounts, cloudData.accounts),
               offers: merge(DB.offers, cloudData.offers),
               availability: merge(DB.availability, cloudData.availability),
-
               payRules: DB.payRules || cloudData.payRules || {},
               market: DB.market || cloudData.market || {},
               audit: merge(DB.audit, cloudData.audit),
@@ -1755,14 +1786,15 @@
             // (Assim, se o celular tinha criado algo, aparece no PC agora)
             DB.profs = finalData.profs;
             DB.units = finalData.units;
-            DB.shifts = finalData.schedule; // Sincroniza o nome
+            DB.shifts = finalData.schedule;
             DB.cadastros = finalData.cadastros;
             // ... atualiza o resto conforme necessário
 
-            console.log("☁️ Salvo com Sucesso (Fusão Realizada)!");
+            setCloudStatus("success"); // <--- 2. FICOU VERDE
+            console.log("☁️ Fusão e Upload OK!");
           } catch (e) {
-            console.error("Erro ao salvar:", e);
-            alert("Erro ao sincronizar: " + e.message);
+            console.error(e);
+            setCloudStatus("error"); // <--- 3. FICOU VERMELHO SE DER RUIM
           }
         }
       }
@@ -6801,6 +6833,38 @@
         const banner = document.getElementById("installBanner");
         if (banner) banner.style.display = "none";
       });
+      /* ===================== CONTROLE VISUAL DA NUVEM ===================== */
+      function setCloudStatus(state) {
+        const box = document.getElementById("cloudStatus");
+        const icon = document.getElementById("cIcon");
+        const text = document.getElementById("cText");
+        if (!box) return;
+
+        if (state === "syncing") {
+          box.style.border = "1px solid #6aa3ff"; // Azul
+          icon.textContent = "🔄";
+          icon.className = "spinning";
+          text.textContent = "Sincronizando...";
+        } else if (state === "success") {
+          box.style.border = "1px solid #37d67a"; // Verde
+          icon.textContent = "✅";
+          icon.className = "";
+          text.textContent = "Salvo";
+          // Volta ao normal depois de 2 segundos
+          setTimeout(() => setCloudStatus("idle"), 2500);
+        } else if (state === "error") {
+          box.style.border = "1px solid #ff5c6a"; // Vermelho
+          icon.textContent = "⚠️";
+          icon.className = "";
+          text.textContent = "Erro / Offline";
+        } else {
+          // IDLE (Parado)
+          box.style.border = "1px solid rgba(255,255,255,0.1)";
+          icon.textContent = "☁️";
+          icon.className = "";
+          text.textContent = "Online";
+        }
+      }
       boot();
 
       /* ===================== viaRGR Platform Enhancements (v19.12.3) ===================== */
