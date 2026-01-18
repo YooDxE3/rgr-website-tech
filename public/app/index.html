@@ -3986,7 +3986,6 @@
         });
 
         if (!DB.payBatches) DB.payBatches = [];
-        saveDB();
 
         const elMonth = $("payMonth");
         const elUnit = $("payUnit");
@@ -4423,39 +4422,71 @@
       }
 
       /* ========= Market (Network & Vendors) ========= */
+      /* ========= Market (Rede & Fornecedores) ========= */
       function renderMarket() {
+        // Inicialização segura
         if (!DB.market) DB.market = {};
         if (!DB.market.network) DB.market.network = [];
         if (!DB.market.vendors) DB.market.vendors = [];
-        const nRows = DB.market.network
-          .map(
-            (x) =>
-              `<tr><td><b>${x.name}</b><div class="muted">${x.type}</div></td><td>${x.city || "—"}</td><td>${x.sla || "—"}</td></tr>`,
-          )
-          .join("");
-        const vRows = DB.market.vendors
-          .map(
-            (x) =>
-              `<tr><td><b>${x.name}</b><div class="muted">${x.cat}</div></td><td>${x.contact || "—"}</td><td>${x.status || "ativo"}</td></tr>`,
-          )
-          .join("");
+
+        // Cards da Rede Credenciada
+        const nCards = DB.market.network.length
+          ? DB.market.network
+              .map(
+                (x) => `
+            <div class="card" style="background:rgba(255,255,255,0.02); border:1px solid var(--line)">
+              <div class="cardin">
+                <div class="row" style="justify-content:space-between">
+                  <b>${x.name}</b>
+                  <span class="badge bGood">SLA ${x.sla || "—"}</span>
+                </div>
+                <div class="muted">${x.type} • ${x.city || "—"}</div>
+              </div>
+            </div>`,
+              )
+              .join("")
+          : `<div class="muted" style="padding:10px">Nenhuma credenciada cadastrada.</div>`;
+
+        // Cards de Fornecedores
+        const vCards = DB.market.vendors.length
+          ? DB.market.vendors
+              .map(
+                (x) => `
+            <div class="card" style="background:rgba(255,255,255,0.02); border:1px solid var(--line)">
+              <div class="cardin">
+                <div class="row" style="justify-content:space-between">
+                  <b>${x.name}</b>
+                  <span class="badge ${x.status === "ativo" ? "bGood" : "bWarn"}">${x.status}</span>
+                </div>
+                <div class="muted">${x.cat} • ${x.contact || "—"}</div>
+              </div>
+            </div>`,
+              )
+              .join("")
+          : `<div class="muted" style="padding:10px">Nenhum fornecedor cadastrado.</div>`;
+
         return `
   <div class="card"><div class="cardin">
     <h2 data-i18n="marketTitle">${t("marketTitle")}</h2>
     <div class="muted" data-i18n="marketHint">${t("marketHint")}</div>
     <div class="sp"></div>
 
-    <div class="two">
-      <div class="card" style="background:rgba(255,255,255,.03)"><div class="cardin">
-        <div class="row" style="justify-content:space-between"><b>Rede credenciada</b><button class="small" id="btnNAdd">Adicionar</button></div>
-        <div class="sp"></div>
-        <div class="tableWrap"><table><thead><tr><th>Nome</th><th>Cidade</th><th>SLA</th></tr></thead><tbody>${nRows || `<tr><td colspan="3" class="muted">—</td></tr>`}</tbody></table></div>
-      </div></div>
-      <div class="card" style="background:rgba(255,255,255,.03)"><div class="cardin">
-        <div class="row" style="justify-content:space-between"><b>Fornecedores</b><button class="small" id="btnVAdd">Adicionar</button></div>
-        <div class="sp"></div>
-        <div class="tableWrap"><table><thead><tr><th>Nome</th><th>Contato</th><th>Status</th></tr></thead><tbody>${vRows || `<tr><td colspan="3" class="muted">—</td></tr>`}</tbody></table></div>
-      </div></div>
+    <div class="two" style="align-items:start">
+      <div>
+        <div class="row" style="justify-content:space-between; margin-bottom:10px">
+          <h3 style="margin:0">Rede Credenciada</h3>
+          <button class="small" id="btnNAdd">+ Adicionar</button>
+        </div>
+        <div class="grid">${nCards}</div>
+      </div>
+
+      <div>
+        <div class="row" style="justify-content:space-between; margin-bottom:10px">
+          <h3 style="margin:0">Fornecedores</h3>
+          <button class="small" id="btnVAdd">+ Adicionar</button>
+        </div>
+        <div class="grid">${vCards}</div>
+      </div>
     </div>
 
     <div class="sp"></div>
@@ -4727,15 +4758,6 @@
         }
       }
 
-      /* ========= Extend Home KPIs for Platform ========= */
-      const _oldRenderHomeKPIs = renderHomeKPIs;
-      renderHomeKPIs = function () {
-        try {
-          _oldRenderHomeKPIs();
-        } catch (e) {}
-        // optional extra metrics (if you add UI later)
-      };
-
       /* ========= Schedule + Calendar ========= */
       function shiftStatus(s) {
         if (s.checkInAt && s.checkOutAt)
@@ -4792,11 +4814,14 @@
         if (role === "prof") {
           const prof = getProf(session.profId);
           if (profScheduleMode === "mine") {
-            list = list.filter((s) => s.profId === prof.id);
+            // CORREÇÃO: Médico só vê seus plantões SE estiverem publicados
+            list = list.filter((s) => s.profId === prof.id && s.published);
           } else {
+            // Escala completa: só publicados
             list = list.filter((s) => s.published && s.spec === prof.spec);
           }
         } else {
+          // Admin/Gestor vê tudo (Rascunhos e Publicados)
           if (unitFilter) list = list.filter((s) => s.unitId === unitFilter);
           if (specFilter) list = list.filter((s) => s.spec === specFilter);
         }
