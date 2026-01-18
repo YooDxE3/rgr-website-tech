@@ -6603,26 +6603,63 @@
       }
 
       /* ===================== Boot ===================== */
+      /* ===================== BOOT (O CÉREBRO CONECTADO) ===================== */
       function boot() {
+        console.log("🚀 Iniciando sistema...");
+
+        // 1. OUVIR A NUVEM (A parte que faltava!)
+        // Assim que algo mudar no banco, essa função roda e atualiza a tela
+        if (typeof db !== "undefined") {
+          db.collection("sistema")
+            .doc("v1")
+            .onSnapshot((doc) => {
+              if (doc.exists) {
+                const data = doc.data();
+
+                // Atualiza a memória local com o que veio do Google
+                DB.profs = data.profs || [];
+                DB.units = data.units || [];
+                DB.schedule = data.schedule || [];
+                DB.cadastros = data.cadastros || [];
+                DB.accounts = data.accounts || [];
+                DB.offers = data.offers || [];
+                DB.availability = data.availability || [];
+                DB.payRules = data.payRules || {};
+                DB.market = data.market || {};
+                DB.audit = data.audit || [];
+
+                console.log("☁️ Sincronizado com a nuvem!");
+
+                // Atualiza a tela se estiver aberta em alguma aba
+                if (
+                  session &&
+                  document.getElementById("viewInternal").style.display !==
+                    "none"
+                ) {
+                  const activeTab = document.querySelector(
+                    "#inTabs .tab.active",
+                  );
+                  if (activeTab) {
+                    // Re-renderiza a aba atual para mostrar o dado novo
+                    renderInternalBody(activeTab.dataset.key);
+                  }
+                }
+                // Atualiza os contadores da Home
+                renderHomeKPIs();
+              }
+            });
+        }
+
+        // 2. CONFIGURAÇÕES VISUAIS (Mantendo o original)
         $("langSel").value = DB.lang || "pt";
         $("langSel").addEventListener("change", () => {
           DB.lang = $("langSel").value;
           saveDB();
-
-          // Rebuild lists that have localized labels
           fillExternalLists();
           fillExternalProfession();
           updateExternalKind();
           renderExternalStatus();
           renderProfSelect();
-
-          // Re-render internal if visible (many labels are built at render time)
-          if ($("viewInternal").style.display !== "none") {
-            renderInternalTabs();
-          } else {
-            // External/home: just update static text
-            applyI18n();
-          }
           applyI18n();
           toast(L() === "pt" ? "Idioma atualizado" : "Language updated");
         });
@@ -6633,8 +6670,10 @@
         setRole("admin");
         $("btnLogin").onclick = doLogin;
         $("btnDemoPwd").onclick = demoPwd;
+
+        // Botões de Navegação
         $("btnGoExt").onclick = goExternal;
-        $("btnHome").onclick = () => {
+        const goHomeAction = () => {
           show("home");
           setSession(null);
           renderHomeKPIs();
@@ -6642,20 +6681,20 @@
           renderSessionRestore();
           applyI18n();
         };
+        $("btnHome").onclick = goHomeAction;
         $("btnLogout").onclick = goHome;
+        $("btnBackHome1").onclick = goHomeAction;
 
+        // Configurações de Cadastro
         fillExternalLists();
         fillExternalProfession();
         if ($("extKind"))
-          $("extKind").addEventListener("change", () => {
-            updateExternalKind();
-          });
+          $("extKind").addEventListener("change", updateExternalKind);
         if ($("profCatSel"))
-          $("profCatSel").addEventListener("change", () => {
-            renderProfSelect();
-          });
+          $("profCatSel").addEventListener("change", renderProfSelect);
         updateExternalKind();
         renderExternalStatus();
+
         bindFileName("doc1File", "doc1Name", "doc1Ok", true);
         bindFileName("doc2Front", "doc2FrontName", "doc2Ok", true);
         bindFileName("doc2Back", "doc2BackName", "doc2Ok", true);
@@ -6667,14 +6706,8 @@
           clearExternal();
           toast("OK");
         };
-        $("btnBackHome1").onclick = () => {
-          show("home");
-          renderHomeKPIs();
-          renderProfSelect();
-          renderSessionRestore();
-          applyI18n();
-        };
 
+        // Inicialização final
         renderProfSelect();
         renderHomeKPIs();
         renderSessionRestore();
