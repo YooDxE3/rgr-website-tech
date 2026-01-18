@@ -3010,7 +3010,15 @@
             el.placeholder = v;
           else el.textContent = v;
         });
-        $("roleBadge").textContent = currentRole.toUpperCase();
+
+        // --- PROTEÇÃO ---
+        // Verifica se o 'roleBadge' existe antes de tentar escrever nele.
+        const badge = $("roleBadge");
+        if (badge) {
+          badge.textContent = currentRole.toUpperCase();
+        }
+        // ----------------
+
         renderHomeKPIs();
         renderProfSelect();
       }
@@ -3191,15 +3199,22 @@
       function goInternal(role, profId = null) {
         session = { role, profId };
         setSession(session);
-        $("whoBadge").textContent =
-          role.toUpperCase() +
-          (profId ? " • " + (getProf(profId)?.name || "") : "");
-        $("inSub").textContent =
-          role === "prof"
-            ? specLabel(getProf(profId)?.spec || "")
-            : role === "admin"
-              ? "Admin"
-              : "Gestor";
+        const who = $("whoBadge");
+        if (who) {
+          who.textContent =
+            role.toUpperCase() +
+            (profId ? " • " + (getProf(profId)?.name || "") : "");
+        }
+
+        const sub = $("inSub");
+        if (sub) {
+          sub.textContent =
+            role === "prof"
+              ? specLabel(getProf(profId)?.spec || "")
+              : role === "admin"
+                ? "Admin"
+                : "Gestor";
+        }
         renderInternalTabs();
         show("internal");
         applyI18n();
@@ -3218,8 +3233,9 @@
         }
         box.style.display = "";
         const sessText = $("sessText");
-        if (sessText)
+        if (sessText) {
           sessText.textContent = `Sessão detectada: ${s.role.toUpperCase()}`;
+        }
 
         if ($("btnSessContinue")) {
           $("btnSessContinue").onclick = () => {
@@ -6919,6 +6935,8 @@
 
         const icon = document.getElementById("cIcon");
         const text = document.getElementById("cText");
+
+        if (text) text.textContent = "Online";
 
         if (state === "syncing") {
           box.style.border = "1px solid #6aa3ff";
