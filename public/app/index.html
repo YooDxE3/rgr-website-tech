@@ -578,6 +578,7 @@
         flex-direction: column;
         gap: 15px;
         border-right: 1px solid var(--line);
+        overflow-y: auto;
       }
       .mobile-nav.open {
         display: flex;
@@ -4423,7 +4424,9 @@
 
       /* ========= Market (Network & Vendors) ========= */
       function renderMarket() {
-        if (!DB.market) DB.market = { network: [], vendors: [] };
+        if (!DB.market) DB.market = {};
+        if (!DB.market.network) DB.market.network = [];
+        if (!DB.market.vendors) DB.market.vendors = [];
         const nRows = DB.market.network
           .map(
             (x) =>
@@ -4612,7 +4615,7 @@
           const demand = Number($("twDemand").value);
           const buffer = Number($("twBuffer").value);
           DB.twin = { demand, buffer };
-          saveDB();
+          // saveDB();
           const risk = buffer < 120 ? "ALTO" : buffer < 135 ? "MÉDIO" : "BAIXO";
           $("twBadge").className =
             "badge " +
@@ -5898,14 +5901,20 @@
 
       // Deletar Admin
       window.deleteSystemUser = (id) => {
-        // Proteção: não deixar deletar a si mesmo (se possível checar sessão)
         if (
           !confirm("Tem certeza que deseja remover este acesso administrativo?")
         )
           return;
 
         DB.users = DB.users.filter((u) => u.id !== id);
-        saveDB();
+
+        // FORÇA A EXCLUSÃO DIRETA NA NUVEM (Bypassa o Merge)
+        if (typeof db !== "undefined") {
+          db.collection("sistema").doc("v1").update({ users: DB.users });
+        } else {
+          saveDB(); // Fallback para LocalStorage
+        }
+
         renderInternalBody("team");
       };
 
@@ -6027,18 +6036,24 @@
       window.deleteProf = (id) => {
         if (
           !confirm(
-            "⚠️ Tem certeza absoluta?\n\nIsso apagará o acesso deste profissional e pode afetar históricos de escala.",
+            "⚠️ Tem certeza absoluta? Isso apagará o acesso deste profissional.",
           )
         )
           return;
 
-        // Remove da lista de profissionais
         DB.profs = DB.profs.filter((p) => p.id !== id);
-        // Remove da conta de acesso (Login)
         if (DB.accounts)
           DB.accounts = DB.accounts.filter((a) => a.profId !== id);
 
-        saveDB();
+        // FORÇA A EXCLUSÃO DIRETA NA NUVEM
+        if (typeof db !== "undefined") {
+          db.collection("sistema")
+            .doc("v1")
+            .update({ profs: DB.profs, accounts: DB.accounts });
+        } else {
+          saveDB();
+        }
+
         toast("Profissional excluído.");
         renderInternalBody("team");
       };
@@ -6046,27 +6061,6 @@
       function bindTeam() {
         /* Ações já vinculadas no HTML */
       }
-
-      window.deleteProf = (id) => {
-        if (
-          !confirm(
-            "Tem certeza? Isso apagará o acesso e o histórico deste profissional.",
-          )
-        )
-          return;
-
-        // Remove da lista de profissionais
-        DB.profs = DB.profs.filter((p) => p.id !== id);
-        // Remove da conta de acesso
-        DB.accounts = DB.accounts
-          ? DB.accounts.filter((a) => a.profId !== id)
-          : [];
-        // (Opcional) Remove dos plantões futuros? Por enquanto mantemos histórico.
-
-        saveDB();
-        toast("Profissional excluído.");
-        renderInternalBody("team");
-      };
 
       function bindTeam() {
         /* Sem binds complexos por enquanto */
