@@ -6895,35 +6895,48 @@
         if (banner) banner.style.display = "none";
       });
       /* ===================== CONTROLE VISUAL DA NUVEM ===================== */
+      /* ===================== CONTROLE VISUAL DA NUVEM ===================== */
       function setCloudStatus(state) {
         const box = document.getElementById("cloudStatus");
+
+        // --- PROTEÇÃO CONTRA ERRO ---
+        // Se não achar a caixinha na tela, cancela a função e não dá erro.
+        if (!box) return;
+        // ----------------------------
+
         const icon = document.getElementById("cIcon");
         const text = document.getElementById("cText");
-        if (!box) return;
 
         if (state === "syncing") {
-          box.style.border = "1px solid #6aa3ff"; // Azul
-          icon.textContent = "🔄";
-          icon.className = "spinning";
-          text.textContent = "Sincronizando...";
+          box.style.border = "1px solid #6aa3ff";
+          if (icon) {
+            icon.textContent = "🔄";
+            icon.className = "spinning";
+          }
+          if (text) text.textContent = "Sincronizando...";
         } else if (state === "success") {
-          box.style.border = "1px solid #37d67a"; // Verde
-          icon.textContent = "✅";
-          icon.className = "";
-          text.textContent = "Salvo";
-          // Volta ao normal depois de 2 segundos
+          box.style.border = "1px solid #37d67a";
+          if (icon) {
+            icon.textContent = "✅";
+            icon.className = "";
+          }
+          if (text) text.textContent = "Salvo";
           setTimeout(() => setCloudStatus("idle"), 2500);
         } else if (state === "error") {
-          box.style.border = "1px solid #ff5c6a"; // Vermelho
-          icon.textContent = "⚠️";
-          icon.className = "";
-          text.textContent = "Erro / Offline";
+          box.style.border = "1px solid #ff5c6a";
+          if (icon) {
+            icon.textContent = "⚠️";
+            icon.className = "";
+          }
+          if (text) text.textContent = "Erro / Offline";
         } else {
-          // IDLE (Parado)
+          // IDLE
           box.style.border = "1px solid rgba(255,255,255,0.1)";
-          icon.textContent = "☁️";
-          icon.className = "";
-          text.textContent = "Online";
+          if (icon) {
+            icon.textContent = "☁️";
+            icon.className = "";
+          }
+          if (text) text.textContent = "Online";
         }
       }
       boot();
