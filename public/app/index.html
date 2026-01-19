@@ -4593,8 +4593,7 @@
         };
       }
 
-      /* ========= Market (Rede & Fornecedores - Versão Pro) ========= */
-      /* ========= Market (Rede & Fornecedores - Com Edição em Modal) ========= */
+      /* ========= Market (Responsivo Mobile) ========= */
       function renderMarket() {
         if (!DB.market) DB.market = {};
         if (!DB.market.network) DB.market.network = [];
@@ -4614,9 +4613,9 @@
                 (x) => `
             <div class="card" style="border-left: 3px solid var(--accent); margin-bottom:10px">
               <div class="cardin">
-                <div class="row" style="justify-content:space-between">
-                  <b>${x.name}</b>
-                  <div style="font-size:10px">${stars(x.rating)}</div>
+                <div class="row" style="justify-content:space-between; flex-wrap:nowrap">
+                  <b style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${x.name}</b>
+                  <div style="font-size:10px; min-width:60px; text-align:right">${stars(x.rating)}</div>
                 </div>
                 <div class="muted" style="font-size:12px; margin-top:4px">
                    🏥 ${x.type} • 📍 ${x.city || "N/D"}
@@ -4632,7 +4631,7 @@
             </div>`,
               )
               .join("")
-          : `<div class="muted" style="padding:20px; text-align:center; border:1px dashed var(--line); border-radius:10px">Nenhum parceiro encontrado.</div>`;
+          : `<div class="muted" style="padding:20px; text-align:center; border:1px dashed var(--line); border-radius:10px">Nenhum parceiro.</div>`;
 
         // --- Renderiza Fornecedores ---
         const vList = DB.market.vendors.filter((x) =>
@@ -4648,8 +4647,8 @@
                 return `
             <div class="card" style="border-left: 3px solid var(--good); margin-bottom:10px">
               <div class="cardin">
-                <div class="row" style="justify-content:space-between">
-                  <b>${x.name}</b>
+                <div class="row" style="justify-content:space-between; flex-wrap:nowrap">
+                  <b style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${x.name}</b>
                   <span class="badge ${sColor}" style="font-size:10px; padding:2px 6px">${x.status.toUpperCase()}</span>
                 </div>
                 <div class="muted" style="font-size:12px; margin-top:4px">
@@ -4663,17 +4662,31 @@
             </div>`;
               })
               .join("")
-          : `<div class="muted" style="padding:20px; text-align:center; border:1px dashed var(--line); border-radius:10px">Nenhum fornecedor encontrado.</div>`;
+          : `<div class="muted" style="padding:20px; text-align:center; border:1px dashed var(--line); border-radius:10px">Nenhum fornecedor.</div>`;
+
+        // Estilos Mobile Injetados
+        const styles = `
+        <style>
+            @media (max-width: 768px) {
+                .market-header { flex-direction: column !important; align-items: stretch !important; gap: 15px; }
+                .market-search { width: 100% !important; }
+                .market-search input { width: 100% !important; padding: 12px; }
+                .market-kpi { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+                .market-col-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+                .market-grid { grid-template-columns: 1fr !important; display:flex; flex-direction:column; gap:25px; }
+            }
+        </style>`;
 
         return `
+  ${styles}
   <div class="card"><div class="cardin">
-    <div class="row" style="justify-content:space-between; align-items:center">
+    <div class="row market-header" style="justify-content:space-between; align-items:center">
         <div>
             <h2 data-i18n="marketTitle">${t("marketTitle")}</h2>
-            <div class="muted" data-i18n="marketHint">Gestão de parceiros, SLAs e cadeia de suprimentos.</div>
+            <div class="muted" data-i18n="marketHint">Gestão de parceiros e SLAs.</div>
         </div>
-        <div style="position:relative">
-            <input id="mSearch" placeholder="🔍 Buscar parceiro..." value="${term}" style="padding:8px 12px; width:200px">
+        <div class="market-search" style="position:relative">
+            <input id="mSearch" placeholder="🔍 Buscar..." value="${term}" style="padding:8px 12px; width:200px; border-radius:8px">
         </div>
     </div>
 
@@ -4681,30 +4694,30 @@
     <div class="divider"></div>
     <div class="sp"></div>
 
-    <div class="kpi" style="grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:20px">
-        <div class="k" style="padding:10px"><div class="l">Rede Total</div><div class="v">${DB.market.network.length}</div></div>
-        <div class="k" style="padding:10px"><div class="l">Fornecedores</div><div class="v">${DB.market.vendors.length}</div></div>
-        <div class="k" style="padding:10px"><div class="l">Contratos Ativos</div><div class="v" style="color:var(--good)">${DB.market.vendors.filter((v) => v.status === "ativo").length}</div></div>
-        <div class="k" style="padding:10px"><div class="l">Em Análise</div><div class="v" style="color:var(--warn)">${DB.market.vendors.filter((v) => v.status !== "ativo").length}</div></div>
+    <div class="kpi market-kpi" style="grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:20px">
+        <div class="k" style="padding:10px"><div class="l">Rede</div><div class="v">${DB.market.network.length}</div></div>
+        <div class="k" style="padding:10px"><div class="l">Forn.</div><div class="v">${DB.market.vendors.length}</div></div>
+        <div class="k" style="padding:10px"><div class="l">Ativos</div><div class="v" style="color:var(--good)">${DB.market.vendors.filter((v) => v.status === "ativo").length}</div></div>
+        <div class="k" style="padding:10px"><div class="l">Análise</div><div class="v" style="color:var(--warn)">${DB.market.vendors.filter((v) => v.status !== "ativo").length}</div></div>
     </div>
 
-    <div class="grid g2" style="align-items:start; gap:20px">
+    <div class="grid g2 market-grid" style="align-items:start; gap:20px">
       <div>
-        <div class="row" style="justify-content:space-between; margin-bottom:10px; align-items:center">
+        <div class="market-col-head">
           <h3 style="margin:0; color:var(--accent)">🏥 Rede Credenciada</h3>
-          <button class="small primary" id="btnNAdd">+ Parceiro</button>
+          <button class="small primary" id="btnNAdd">+ Adicionar</button>
         </div>
-        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:12px; min-height:200px">
+        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:12px; min-height:100px">
             ${nCards}
         </div>
       </div>
 
       <div>
-        <div class="row" style="justify-content:space-between; margin-bottom:10px; align-items:center">
+        <div class="market-col-head">
           <h3 style="margin:0; color:var(--good)">📦 Fornecedores</h3>
-          <button class="small primary" id="btnVAdd">+ Fornecedor</button>
+          <button class="small primary" id="btnVAdd">+ Adicionar</button>
         </div>
-        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:12px; min-height:200px">
+        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:12px; min-height:100px">
             ${vCards}
         </div>
       </div>
@@ -4719,8 +4732,7 @@
                 <button class="small" onclick="$('editNetworkModal').style.display='none'">✕</button>
             </div>
             <div class="divider"></div>
-            <div class="muted">Nome</div>
-            <input id="edNName">
+            <div class="muted">Nome</div><input id="edNName">
             <div class="sp"></div>
             <div class="two">
                 <div><div class="muted">Tipo</div><input id="edNType"></div>
@@ -4733,7 +4745,7 @@
             </div>
             <div class="sp"></div>
             <div class="row" style="justify-content:flex-end">
-                <button class="primary" id="btnSaveEditN">Salvar Alterações</button>
+                <button class="primary" id="btnSaveEditN">Salvar</button>
             </div>
         </div></div></div>
     </div>
@@ -4745,15 +4757,14 @@
                 <button class="small" onclick="$('editVendorModal').style.display='none'">✕</button>
             </div>
             <div class="divider"></div>
-            <div class="muted">Empresa</div>
-            <input id="edVName">
+            <div class="muted">Empresa</div><input id="edVName">
             <div class="sp"></div>
             <div class="two">
                 <div><div class="muted">Categoria</div><input id="edVCat"></div>
                 <div><div class="muted">Contato</div><input id="edVContact"></div>
             </div>
             <div class="sp"></div>
-            <div class="muted" style="color:var(--accent)">Status Homologação</div>
+            <div class="muted" style="color:var(--accent)">Status</div>
             <select id="edVStatus" style="font-weight:bold">
                 <option value="ativo">✅ Ativo</option>
                 <option value="em análise">⚠️ Em Análise</option>
@@ -4761,7 +4772,7 @@
             </select>
             <div class="sp"></div>
             <div class="row" style="justify-content:flex-end">
-                <button class="primary" id="btnSaveEditV">Salvar Alterações</button>
+                <button class="primary" id="btnSaveEditV">Salvar</button>
             </div>
         </div></div></div>
     </div>
@@ -4778,12 +4789,17 @@
           searchInput.oninput = (e) => {
             window.marketSearch = e.target.value;
             renderInternalBody("market");
-            setTimeout(() => document.getElementById("mSearch")?.focus(), 0);
+            setTimeout(() => {
+              const el = document.getElementById("mSearch");
+              if (el) {
+                el.focus();
+                el.setSelectionRange(el.value.length, el.value.length);
+              }
+            }, 0);
           };
         }
 
-        /* --- CRIAÇÃO (Mantido Modal Dinâmico para economizar HTML) --- */
-
+        // --- CRIAÇÃO ---
         $("btnNAdd").onclick = () => {
           createModal.style.display = "flex";
           createModal.innerHTML = `
@@ -4851,22 +4867,18 @@
           };
         };
 
-        /* --- EDIÇÃO (Usando os Modais Fixos) --- */
+        // --- EDIÇÃO (Usando os Modais Fixos) ---
         let editId = null;
 
-        // 1. REDE CREDENCIADA
         window.openEditNetwork = (id) => {
           const item = DB.market.network.find((x) => x.id === id);
           if (!item) return;
           editId = id;
-
-          // Preenche
           $("edNName").value = item.name;
           $("edNType").value = item.type;
           $("edNCity").value = item.city || "";
           $("edNSla").value = item.sla || "";
           $("edNRating").value = item.rating || 5;
-
           $("editNetworkModal").style.display = "flex";
         };
 
@@ -4884,18 +4896,14 @@
           $("editNetworkModal").style.display = "none";
         };
 
-        // 2. FORNECEDORES (Onde estava o prompt de status)
         window.openEditVendor = (id) => {
           const item = DB.market.vendors.find((x) => x.id === id);
           if (!item) return;
           editId = id;
-
-          // Preenche
           $("edVName").value = item.name;
           $("edVCat").value = item.cat;
           $("edVContact").value = item.contact || "";
-          $("edVStatus").value = item.status; // Dropdown selecionado
-
+          $("edVStatus").value = item.status;
           $("editVendorModal").style.display = "flex";
         };
 
@@ -4905,14 +4913,13 @@
             item.name = $("edVName").value;
             item.cat = $("edVCat").value;
             item.contact = $("edVContact").value;
-            item.status = $("edVStatus").value; // Pega do select
+            item.status = $("edVStatus").value;
             saveDB();
             renderInternalBody("market");
           }
           $("editVendorModal").style.display = "none";
         };
 
-        // --- DELETAR ---
         window.delNetworkItem = (id) => {
           if (confirm("Remover este parceiro?")) {
             DB.market.network = DB.market.network.filter((x) => x.id !== id);
