@@ -4593,7 +4593,7 @@
         };
       }
 
-      /* ========= Market (Rede & Fornecedores - Layout Mobile Corrigido) ========= */
+      /* ========= Market (Layout Mobile 100% Corrigido) ========= */
       function renderMarket() {
         // --- 1. Inicialização de Dados ---
         if (!DB.market) DB.market = {};
@@ -4664,31 +4664,31 @@
               .join("")
           : `<div class="m-empty">Nenhum fornecedor encontrado.</div>`;
 
-        // --- 4. CSS BLINDADO (Mobile First) ---
+        // --- 4. CSS BLINDADO (Mobile Layout Fix) ---
         const styles = `
         <style>
-            /* Container Principal */
+            /* Reset básico para o container */
             .market-view { display: flex; flex-direction: column; gap: 20px; width: 100%; box-sizing: border-box; }
 
-            /* Header */
+            /* Header Desktop */
             .m-head-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
             .m-search-wrap { position: relative; min-width: 250px; }
             .m-search-wrap input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--line); background: rgba(0,0,0,0.2); }
 
-            /* Stats Grid */
+            /* Stats Grid Desktop */
             .m-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
             .m-kpi-box { background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-align: center; }
             .m-kpi-val { font-size: 20px; font-weight: 900; }
             .m-kpi-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
 
-            /* Layout de Colunas (Grid para Desktop, Flex para Mobile) */
+            /* Layout de Colunas Desktop */
             .m-content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
             
-            /* Cabeçalho da Coluna */
-            .m-col-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
+            /* Cabeçalhos das Colunas */
+            .m-col-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 2px; }
             .m-col-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
 
-            /* Card Style */
+            /* Cards */
             .m-card { 
                 background: rgba(255,255,255,0.02); 
                 border: 1px solid var(--line); 
@@ -4696,7 +4696,7 @@
                 padding: 12px; 
                 margin-bottom: 12px; 
                 width: 100%; 
-                box-sizing: border-box; /* Vital para não vazar */
+                box-sizing: border-box;
             }
             .m-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
             .m-title { font-weight: bold; word-break: break-word; line-height: 1.2; font-size: 14px; }
@@ -4707,21 +4707,26 @@
             .v-border { border-left: 3px solid var(--good); }
             .m-empty { padding: 30px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 13px; }
 
-            /* --- MOBILE CORRECTIONS --- */
+            /* --- MOBILE CORRECTIONS (A Mágica acontece aqui) --- */
             @media (max-width: 768px) {
-                /* Header empilhado */
-                .m-head-row { flex-direction: column; align-items: stretch; gap: 15px; }
-                .m-search-wrap { width: 100%; min-width: 0; }
+                /* Força o container a não vazar */
+                .market-view { width: 100%; padding: 0; overflow-x: hidden; }
+
+                /* Header: Título em cima, Busca embaixo (Full Width) */
+                .m-head-row { flex-direction: column; align-items: stretch; gap: 12px; }
+                .m-search-wrap { width: 100%; min-width: unset; } 
                 
-                /* KPIs em 2 colunas */
-                .m-kpi-grid { grid-template-columns: 1fr 1fr; }
+                /* KPIs: 2 colunas para caber na tela */
+                .m-kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
                 
-                /* Colunas de conteúdo empilhadas */
+                /* Conteúdo: Uma coluna embaixo da outra */
                 .m-content-grid { display: flex; flex-direction: column; gap: 30px; }
                 
-                /* Ajuste fino dos cards */
-                .m-card { margin-bottom: 10px; }
-                .m-card-header { flex-wrap: wrap; }
+                /* Ajuste de margens */
+                .m-col-header { margin-bottom: 10px; }
+                
+                /* Garante que o texto do card quebre linha se for longo */
+                .m-title { font-size: 15px; }
             }
         </style>`;
 
@@ -4754,7 +4759,7 @@
           <div>
             <div class="m-col-header">
                 <h3 style="color:var(--accent)">🏥 Rede Credenciada</h3>
-                <button class="small primary" id="btnNAdd" style="min-width:90px">+ Adicionar</button>
+                <button class="small primary" id="btnNAdd" style="white-space:nowrap">+ Adicionar</button>
             </div>
             <div>${nCards}</div>
           </div>
@@ -4762,7 +4767,7 @@
           <div>
             <div class="m-col-header">
                 <h3 style="color:var(--good)">📦 Fornecedores</h3>
-                <button class="small primary" id="btnVAdd" style="min-width:90px">+ Adicionar</button>
+                <button class="small primary" id="btnVAdd" style="white-space:nowrap">+ Adicionar</button>
             </div>
             <div>${vCards}</div>
           </div>
