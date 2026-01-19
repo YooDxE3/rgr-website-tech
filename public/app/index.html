@@ -5144,15 +5144,15 @@
       }
 
       /* ========= Lógica de Exclusão de Plantão (Com Trava de Segurança) ========= */
+      /* ========= Lógica de Exclusão de Plantão (CORRIGIDA - FORÇA BRUTA) ========= */
       window.deleteShift = (id) => {
         const s = DB.shifts.find((x) => x.id === id);
         if (!s) return;
 
-        // 1. A TRAVA DE SEGURANÇA
-        // Se tiver Check-in OU Check-out, proíbe a exclusão.
+        // 1. TRAVA DE SEGURANÇA: Se tiver Check-in/Check-out, não apaga.
         if (s.checkInAt || s.checkOutAt) {
           alert(
-            "⛔ BLOQUEADO: Este plantão já possui registro de ponto (Check-in/Check-out) e não pode ser excluído para garantir a auditoria.",
+            "⛔ BLOQUEADO: Este plantão já possui registro de ponto (Check-in/Check-out) e deve ser mantido para auditoria.",
           );
           return;
         }
@@ -5160,16 +5160,41 @@
         // 2. Confirmação
         if (
           !confirm(
-            "Tem certeza que deseja EXCLUIR este plantão?\nEssa ação não pode ser desfeita.",
+            "Tem certeza que deseja EXCLUIR este plantão?\nEssa ação apaga da nuvem para todos.",
           )
         )
           return;
 
-        // 3. Exclui e Salva
+        // 3. Remove da memória local
         DB.shifts = DB.shifts.filter((x) => x.id !== id);
-        saveDB();
-        toast("Plantão excluído com sucesso.");
+
+        // Atualiza a tela imediatamente (para você ver sumir na hora)
         renderInternalBody("schedule");
+        toast("Excluindo...");
+
+        // 4. O PULO DO GATO: Atualização Direta no Firebase (Sem usar saveDB/merge)
+        if (typeof db !== "undefined") {
+          // Manda a lista nova (já sem o plantão) direto para o banco
+          // Nota: No seu banco, a lista de plantões chama 'schedule' ou 'shifts'.
+          // O saveDB usa 'schedule', então vamos garantir atualizando ambos se necessário,
+          // mas focando no 'schedule' que é o padrão do seu saveDB.
+          db.collection("sistema")
+            .doc("v1")
+            .update({
+              schedule: DB.shifts, // Atualiza a lista principal
+              shifts: DB.shifts, // Garante compatibilidade se houver duplicidade
+            })
+            .then(() => {
+              toast("Plantão excluído permanentemente.");
+            })
+            .catch((err) => {
+              console.error(err);
+              toast("Erro ao sincronizar exclusão.");
+            });
+        } else {
+          // Fallback para teste offline
+          saveDB();
+        }
       };
 
       function renderSchedule() {
