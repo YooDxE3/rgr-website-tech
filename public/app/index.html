@@ -3431,12 +3431,16 @@
                   ? "bWarn"
                   : "bBad";
             const bi = u.biEnabled ? "✅" : "—";
+            // Mostra ícone de Pin se tiver GPS configurado
+            const gpsIcon =
+              u.lat && u.lon ? "📍" : "<span style='opacity:0.3'>📍</span>";
+
             return `<tr>
       <td><b>${u.name}</b><div class="muted">${u.uf} • ${u.city}</div></td>
       <td>${unitTypeLabel(u.type)}<div class="muted">${u.subtype || ""}</div></td>
       <td>${u.system || "—"}</td>
-      <td><span class="badge ${badge}">${String(intStatus).toUpperCase()}</span><div class="muted">${u.integrationMode || "—"}</div></td>
-      <td>${fmtSync(u.lastSync)}</td>
+      <td><span class="badge ${badge}">${String(intStatus).toUpperCase()}</span></td>
+      <td>${gpsIcon} <span class="muted" style="font-size:11px">${u.radiusM || 200}m</span></td>
       <td style="text-align:center">${bi}</td>
       <td style="text-align:right">
         <button class="small" onclick="editUnit('${u.id}')">✏️</button>
@@ -3477,7 +3481,7 @@
             <th data-i18n="unitType">${t("unitType")}</th>
             <th data-i18n="unitsSys">${t("unitsSys")}</th>
             <th data-i18n="unitsInt">${t("unitsInt")}</th>
-            <th data-i18n="unitsLastSync">${t("unitsLastSync")}</th>
+            <th>Geolocalização</th>
             <th data-i18n="unitsBI">${t("unitsBI")}</th>
             <th></th>
           </tr>
@@ -3487,21 +3491,60 @@
     </div>
 
     <div class="sp"></div>
-    <div id="unitForm" style="display:none; border: 1px solid var(--accent); border-radius:12px; padding:10px;">
+    
+    <div id="unitForm" style="display:none; border: 1px solid var(--accent); border-radius:12px; padding:15px; background:rgba(255,255,255,0.02)">
       <h3 id="unitFormTitle" style="margin-top:0">Nova Unidade</h3>
+      
       <div class="two">
         <div><div class="muted">${t("unitName")}</div><input id="uName" placeholder="Ex: UPA Centro"/></div>
         <div><div class="muted">${t("unitType")}</div><select id="uType">${typeOpt}</select></div>
       </div>
+      
       <div class="two">
         <div><div class="muted">${t("unitUF")}</div><select id="uUF">${ufOpt}</select></div>
         <div><div class="muted">${t("unitCity")}</div><select id="uCity"></select></div>
       </div>
+      
       <div class="two">
         <div><div class="muted">${t("unitSubtype")}</div><input id="uSub" placeholder="Ex: Urgência"/></div>
         <div><div class="muted">${t("unitsSys")}</div><select id="uSys">${sysOpt}</select></div>
       </div>
+
       <div class="sp"></div>
+      <div class="divider"></div>
+      
+      <div class="muted" style="margin-bottom:8px">📍 Configuração de Check-in (GPS)</div>
+      
+      <div class="row" style="gap:10px; align-items:flex-end">
+         <div style="flex-grow:1">
+            <div class="muted">Endereço Completo (Rua, Número, Bairro, Cidade)</div>
+            <input id="uAddr" placeholder="Ex: Av. Paulista, 1000, São Paulo"/>
+         </div>
+         <button class="primary" id="btnGeoSearch" style="margin-bottom:2px">🔍 Localizar GPS</button>
+      </div>
+
+      <div class="sp"></div>
+
+      <div class="kpi">
+         <div class="k">
+            <div class="l">Latitude</div>
+            <input id="uLat" disabled style="border:none; background:transparent; font-weight:bold; color:var(--accent)" placeholder="—">
+         </div>
+         <div class="k">
+            <div class="l">Longitude</div>
+            <input id="uLon" disabled style="border:none; background:transparent; font-weight:bold; color:var(--accent)" placeholder="—">
+         </div>
+         <div class="k" style="border-color:var(--good)">
+            <div class="l">Raio Permitido (metros)</div>
+            <input id="uRadius" type="number" value="200" style="border:none; background:transparent; font-weight:bold; color:var(--good)">
+         </div>
+      </div>
+      <div class="muted" style="margin-top:5px; font-size:11px">O check-in só será permitido se o profissional estiver dentro deste raio do local.</div>
+
+      <div class="sp"></div>
+      <div class="divider"></div>
+      <div class="sp"></div>
+
       <div class="row">
         <button class="primary" id="btnSaveUnit" data-i18n="unitSave">${t("unitSave")}</button>
         <button id="btnCancelUnit">Cancelar</button>
@@ -3529,6 +3572,37 @@
           if (!on) editingId = null;
         }
 
+        // --- FUNÇÃO DE GEOCODING (Busca GPS pelo Endereço) ---
+        $("btnGeoSearch").onclick = async () => {
+          const addr = $("uAddr").value.trim();
+          if (!addr) {
+            toast("Digite um endereço para buscar.");
+            return;
+          }
+
+          toast("🔍 Buscando coordenadas...");
+
+          try {
+            // Usa API gratuita do OpenStreetMap (Nominatim)
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&limit=1`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data && data.length > 0) {
+              const place = data[0];
+              $("uLat").value = place.lat;
+              $("uLon").value = place.lon;
+              toast("✅ Local encontrado!");
+            } else {
+              toast("❌ Endereço não encontrado. Tente ser mais específico.");
+            }
+          } catch (e) {
+            console.error(e);
+            toast("Erro ao conectar no serviço de mapas.");
+          }
+        };
+        // -----------------------------------------------------
+
         // Criar Nova
         $("btnAddUnit").onclick = () => {
           editingId = null;
@@ -3539,6 +3613,12 @@
           $("uName").value = "";
           $("uSub").value = "";
           $("uSys").value = "Tasy";
+
+          // Limpa Geo
+          $("uAddr").value = "";
+          $("uLat").value = "";
+          $("uLon").value = "";
+          $("uRadius").value = "200";
         };
 
         // Cancelar
@@ -3558,17 +3638,21 @@
           $("uUF").value = u.uf || "SC";
           fillCities();
           $("uCity").value = u.city || "";
+
+          // Preenche Geo existente
+          $("uAddr").value = u.address || "";
+          $("uLat").value = u.lat || "";
+          $("uLon").value = u.lon || "";
+          $("uRadius").value = u.radiusM || "200";
+
           location.href = "#unitForm";
         };
 
-        // --- CORREÇÃO AQUI: EXCLUSÃO FORÇADA ---
-        // --- EXCLUSÃO EM CASCATA (UNIDADE + PLANTÕES) ---
+        // EXCLUSÃO EM CASCATA
         window.deleteUnit = (id) => {
-          // 1. Conta quantos plantões serão afetados para avisar o usuário
           const shiftsAffected = DB.shifts.filter(
             (s) => s.unitId === id,
           ).length;
-
           const msg =
             shiftsAffected > 0
               ? `⚠️ ATENÇÃO: Essa unidade tem ${shiftsAffected} plantões criados.\n\nAo excluir a unidade, TODOS os plantões dela também serão apagados.\n\nDeseja continuar?`
@@ -3576,33 +3660,26 @@
 
           if (!confirm(msg)) return;
 
-          // 2. Remove a Unidade (Local)
           DB.units = DB.units.filter((x) => x.id !== id);
-
-          // 3. Remove os Plantões Vinculados (O Cascade acontece aqui)
           DB.shifts = DB.shifts.filter((s) => s.unitId !== id);
 
-          // 4. Atualiza a tela imediatamente
           renderInternalBody("units");
           toast(`Unidade e ${shiftsAffected} plantões excluídos.`);
 
-          // 5. Manda a atualização completa para o Firebase
           if (typeof db !== "undefined") {
             db.collection("sistema")
               .doc("v1")
               .update({
-                units: DB.units, // Salva a lista de unidades limpa
-                schedule: DB.shifts, // Salva a lista de plantões limpa (schedule é o nome no banco)
+                units: DB.units,
+                schedule: DB.shifts,
               })
               .catch((err) => {
                 console.error(err);
-                toast("Erro ao excluir na nuvem.");
               });
           } else {
-            saveDB(); // Fallback offline
+            saveDB();
           }
         };
-        // ---------------------------------------
 
         uf.onchange = fillCities;
         fillCities();
@@ -3614,6 +3691,12 @@
           const cityv = $("uCity").value;
           const sub = $("uSub").value.trim();
           const sys = $("uSys").value;
+
+          // Pega dados Geo
+          const addr = $("uAddr").value.trim();
+          const lat = $("uLat").value;
+          const lon = $("uLon").value;
+          const rad = parseInt($("uRadius").value) || 200;
 
           if (!name) {
             toast("Informe o nome");
@@ -3629,6 +3712,12 @@
               u.city = cityv;
               u.subtype = sub;
               u.system = sys;
+              // Salva Geo
+              u.address = addr;
+              u.lat = lat;
+              u.lon = lon;
+              u.radiusM = rad;
+
               saveDB();
               toast("Unidade atualizada.");
             }
@@ -3641,6 +3730,12 @@
               city: cityv,
               subtype: sub,
               system: sys,
+              // Salva Geo
+              address: addr,
+              lat,
+              lon,
+              radiusM: rad,
+
               integrationMode: "Export/CSV",
               integrationStatus: "pendente",
               lastSync: null,
