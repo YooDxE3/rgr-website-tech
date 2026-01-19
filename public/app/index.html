@@ -3574,7 +3574,9 @@
 
         // --- FUNÇÃO DE GEOCODING (Busca GPS pelo Endereço) ---
         $("btnGeoSearch").onclick = async () => {
+          // 1. Pega o endereço digitado
           const addr = $("uAddr").value.trim();
+
           if (!addr) {
             toast("Digite um endereço para buscar.");
             return;
@@ -3582,9 +3584,14 @@
 
           toast("🔍 Buscando coordenadas...");
 
+          // 2. TRUQUE: Cria uma versão "limpa" só para a pesquisa
+          // Se tiver "627/701", ele transforma em "627" para o mapa entender.
+          const searchAddr = addr.replace(/(\d+)[/-]\d+/, "$1");
+
           try {
-            // Usa API gratuita do OpenStreetMap (Nominatim)
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&limit=1`;
+            // Usa a versão LIMPA (searchAddr) na URL
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddr)}&limit=1`;
+
             const res = await fetch(url);
             const data = await res.json();
 
