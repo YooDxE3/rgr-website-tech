@@ -4099,12 +4099,12 @@
         };
       }
 
-      /* ========= Payments (Mobile-Ready Enterprise) ========= */
+      /* ========= Payments (Layout Limpo / Full Width) ========= */
       function renderPay() {
         const batchMonth = window.payFilterMonth || isoMonth(nowISO());
         const unitId = window.payFilterUnit || "";
 
-        // Helpers de cálculo para o render (Preview)
+        // Helpers
         function parseHM(hm) {
           const [h, m] = String(hm || "0:0")
             .split(":")
@@ -4122,7 +4122,7 @@
           return g === 0 || g === 6;
         }
 
-        // Busca Lote
+        // Busca Lote Fechado
         const closedBatch = (DB.payBatches || []).find(
           (b) => b.month === batchMonth && b.unitId === unitId,
         );
@@ -4142,7 +4142,7 @@
             )
             .join("");
 
-        // Lógica de Exibição (Preview ou Fechado)
+        // Lógica de Dados (Mantida a mesma, apenas preparada para exibição)
         if (isClosed) {
           displayItems = Array.isArray(closedBatch.items)
             ? closedBatch.items
@@ -4150,7 +4150,7 @@
           totalVal = closedBatch.totalValue || 0;
           totalHours = closedBatch.totalHours || 0;
         } else {
-          // Preview em tempo real
+          // Preview
           const rules = DB.payRules || {
             baseHour: 120,
             nightMult: 1.2,
@@ -4158,7 +4158,6 @@
             holidayMult: 1.5,
             useCheckIO: true,
           };
-
           const rawShifts = DB.shifts.filter(
             (s) =>
               s.month === batchMonth &&
@@ -4201,168 +4200,169 @@
           totalHours = displayItems.reduce((a, b) => a + b.hours, 0);
         }
 
+        // Renderiza Linhas da Tabela
         const rows = displayItems
           .map((item, idx) => {
             const prof = getProf(item.profId);
             const isPaid = item.status === "PAGO";
-            const rowClass = isPaid
-              ? "style='background:rgba(55, 214, 122, 0.1)'"
+            const rowStyle = isPaid
+              ? "background:rgba(55, 214, 122, 0.08)"
               : "";
-            const hPlan = item.hoursPlanned || item.hours;
-            const delta = Math.abs(item.hours - hPlan);
-            const alertIcon =
-              delta > 0.5 ? `<span style="cursor:help">⚠️</span>` : "";
 
+            // Botões de Ação
             const nfBtn = item.hasInvoice
-              ? `<button class="small" onclick="uploadInvoice('${idx}')" style="color:var(--good); min-width:40px">📎</button>`
-              : `<button class="small" onclick="uploadInvoice('${idx}')" style="opacity:0.5; min-width:40px">➕</button>`;
+              ? `<button class="small" onclick="uploadInvoice('${idx}')" title="Ver Nota Fiscal" style="color:var(--good); border-color:var(--good)">📎</button>`
+              : `<button class="small" onclick="uploadInvoice('${idx}')" title="Anexar NF" style="opacity:0.4">📎</button>`;
 
-            const recBtn = `<button class="small" onclick="viewReceipt('${idx}')">📄</button>`;
+            const recBtn = `<button class="small" onclick="viewReceipt('${idx}')" title="Extrato Detalhado">📄</button>`;
 
+            // Badge Status
             const stBadge = isPaid
               ? `<span class="badge bGood">PAGO</span>`
-              : `<span class="badge bWarn">PEND.</span>`;
+              : `<span class="badge bWarn">PENDENTE</span>`;
 
-            const actionBtns = isPaid
-              ? `<button class="small" onclick="togglePayStatus('${idx}')">Desfazer</button>`
-              : `<button class="small primary" onclick="approvePay('${idx}')">Pagar</button>`;
+            // Botão Principal (Pagar/Desfazer)
+            const mainAction = isPaid
+              ? `<button class="small" onclick="togglePayStatus('${idx}')" style="min-width:80px">Desfazer</button>`
+              : `<button class="small primary" onclick="approvePay('${idx}')" style="min-width:80px">Pagar</button>`;
 
-            return `<tr ${rowClass}>
+            return `<tr style="${rowStyle}">
                 <td>
-                    <div style="font-weight:bold; white-space:nowrap">${prof ? prof.name : "Desconhecido"}</div>
-                    <div class="muted" style="font-size:10px">${prof?.pixKey || "Sem PIX"}</div>
+                    <div style="font-weight:bold; font-size:14px">${prof ? prof.name : "Desconhecido"}</div>
+                    <div class="muted" style="font-size:11px">${prof?.pixKey || "Sem Chave PIX"}</div>
                 </td>
-                <td>${item.hours.toFixed(1)}h ${alertIcon}</td>
-                <td>R$ ${item.value.toFixed(0)}</td>
-                <td style="color:var(--bad); font-size:11px">-${item.taxValue ? item.taxValue.toFixed(0) : "0"}</td>
-                <td style="font-weight:bold; color:var(--good)">R$ ${item.netValue ? item.netValue.toFixed(0) : item.value.toFixed(0)}</td>
+                <td style="text-align:center">${item.hours.toFixed(1)}h</td>
+                <td style="text-align:right">R$ ${item.value.toFixed(2)}</td>
+                <td style="text-align:right; color:var(--bad)">-${item.taxValue ? item.taxValue.toFixed(2) : "0.00"}</td>
+                <td style="text-align:right; font-weight:bold; color:var(--good); font-size:14px">R$ ${item.netValue ? item.netValue.toFixed(2) : item.value.toFixed(2)}</td>
                 <td style="text-align:center">${nfBtn}</td>
                 <td style="text-align:center">${recBtn}</td>
-                <td>${stBadge}</td>
-                <td style="text-align:right">
-                    <div class="row" style="justify-content:flex-end; gap:5px; flex-wrap:nowrap">
-                        ${actionBtns}
-                    </div>
-                </td>
+                <td style="text-align:center">${stBadge}</td>
+                <td style="text-align:right">${mainAction}</td>
             </tr>`;
           })
           .join("");
 
-        // CSS Injetado para Mobile Específico dessa tela
-        const mobileStyles = `
-        <style>
-            @media (max-width: 768px) {
-                .pay-grid { grid-template-columns: 1fr !important; display:flex; flex-direction:column-reverse; }
-                .pay-rules-box { display:none; }
-                .pay-rules-box.open { display:block; animation: fadeIn 0.3s; }
-                .pay-header-row { flex-direction:column; align-items:stretch !important; gap:10px; }
-                .pay-kpi-row { flex-direction:row; justify-content:space-between; font-size:13px; }
-            }
-        </style>`;
-
         return `
-    ${mobileStyles}
     <div class="card"><div class="cardin">
-        <div class="row pay-header-row" style="justify-content:space-between; align-items:center">
-            <h2 data-i18n="payTitle">${t("payTitle")}</h2>
-            <div class="row" style="gap:10px">
-                <button class="small" id="btnToggleRules" style="border:1px solid var(--accent)">⚙️ Regras</button>
-                <div class="badge" style="font-size:12px">${isClosed ? "🔒 FECHADO" : "🔓 PREVIEW"}</div>
+        <div class="row" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px">
+            <div>
+                <h2 data-i18n="payTitle">${t("payTitle")}</h2>
+                <div class="muted">Gestão financeira e fechamento de folha.</div>
+            </div>
+            
+            <div style="background:rgba(255,255,255,0.05); padding:8px 16px; border-radius:12px; border:1px solid var(--line); display:flex; gap:15px; align-items:center">
+                <div>
+                    <div class="muted" style="font-size:10px; text-transform:uppercase">Total Previsto</div>
+                    <div style="font-size:18px; font-weight:900; color:var(--good)">R$ ${totalVal.toFixed(2)}</div>
+                </div>
+                <div style="height:25px; width:1px; background:var(--line)"></div>
+                <div>
+                    <div class="muted" style="font-size:10px; text-transform:uppercase">Horas</div>
+                    <div style="font-size:14px; font-weight:bold">${totalHours.toFixed(1)}h</div>
+                </div>
             </div>
         </div>
+
+        <div class="sp"></div>
+        <div class="divider"></div>
         <div class="sp"></div>
 
-        <div class="card" style="background:rgba(255,255,255,0.02); padding:10px">
-            <div class="row pay-header-row" style="gap:15px; align-items:flex-end">
-                <div style="flex:1">
-                    <div class="muted">Mês</div>
-                    <input type="month" id="payMonth" value="${batchMonth}" style="font-weight:bold; min-width:140px">
+        <div class="row" style="background:rgba(255,255,255,0.02); padding:10px; border-radius:12px; border:1px solid var(--line); justify-content:space-between; gap:10px">
+            <div class="row" style="gap:10px; flex-grow:1">
+                <div style="min-width:150px">
+                    <div class="muted" style="margin-bottom:2px">Mês</div>
+                    <input type="month" id="payMonth" value="${batchMonth}" style="font-weight:bold; border:none; background:rgba(0,0,0,0.2)">
                 </div>
-                <div style="flex:1">
-                    <div class="muted">Unidade</div>
-                    <select id="payUnit" style="min-width:140px">${unitOpt}</select>
+                <div style="min-width:200px">
+                    <div class="muted" style="margin-bottom:2px">Unidade</div>
+                    <select id="payUnit" style="border:none; background:rgba(0,0,0,0.2)">${unitOpt}</select>
                 </div>
+            </div>
+
+            <div class="row" style="gap:10px">
+                <button class="small" id="btnOpenRules" style="border:1px solid var(--accent); color:var(--accent)">⚙️ Configurar Regras</button>
                 ${
                   !isClosed
-                    ? `<button class="primary" id="btnGenBatch" style="min-width:140px">🔒 Fechar Folha</button>`
-                    : `<button class="danger" onclick="deleteBatch()" style="min-width:140px">🗑️ Reabrir</button>`
+                    ? `<button class="primary" id="btnGenBatch" style="box-shadow:0 4px 12px rgba(106,163,255,0.3)">🔒 Fechar Folha</button>`
+                    : `<div class="row"><button class="small" onclick="exportPay('csv')">CSV</button><button class="small" onclick="exportPay('cnab')">PIX</button><button class="danger small" onclick="deleteBatch()">Reabrir</button></div>`
                 }
             </div>
         </div>
 
         <div class="sp"></div>
 
-        <div class="grid g2 pay-grid" style="grid-template-columns: 280px 1fr; gap:20px">
-            
-            <div id="payRulesBox" class="card pay-rules-box" style="height:fit-content; border:1px solid var(--line)">
-                <div class="cardin">
-                    <h3>Parâmetros</h3>
-                    <div class="sp"></div>
-                    <div class="two">
-                        <div><div class="muted">Hora Base (R$)</div><input id="payRate" type="number" value="120" ${isClosed ? "disabled" : ""}></div>
-                        <div><div class="muted">Imposto (%)</div><input id="payTaxRate" type="number" value="0" ${isClosed ? "disabled" : ""}></div>
-                    </div>
-                    <div class="sp"></div>
-                    <div class="muted">Adicionais</div>
-                    <div class="row" style="justify-content:space-between; margin-top:5px">
-                        <span class="muted">Noturno</span><input id="payMultN" type="number" value="1.2" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
-                    </div>
-                    <div class="row" style="justify-content:space-between; margin-top:5px">
-                        <span class="muted">Feriado</span><input id="payMultF" type="number" value="1.5" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
-                    </div>
-                    <div class="row" style="justify-content:space-between; margin-top:5px">
-                        <span class="muted">Fim de Semana</span><input id="payMultW" type="number" value="1.15" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
-                    </div>
-                    <div class="sp"></div>
-                    <div class="muted">Fonte de Horas</div>
-                    <select id="paySource" ${isClosed ? "disabled" : ""} style="width:100%">
-                        <option value="real">Real (Check-in)</option>
-                        <option value="planned">Planejado (Escala)</option>
-                    </select>
-                    <div class="sp"></div>
-                    ${!isClosed ? `<button id="btnSimulate" style="width:100%; margin-top:10px">🔄 Recalcular</button>` : ""}
-                </div>
-            </div>
-
-            <div style="min-width:0"> <div class="row pay-kpi-row" style="align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px">
-                    <div class="muted">
-                        Total: <b style="color:var(--text); font-size:16px">R$ ${totalVal.toFixed(2)}</b> <span style="opacity:0.5">(${totalHours.toFixed(0)}h)</span>
-                    </div>
-                    <div class="row">
-                        <button class="small" onclick="exportPay('csv')">CSV</button>
-                        <button class="small" onclick="exportPay('cnab')">PIX</button>
-                    </div>
-                 </div>
-
-                 <div class="tableWrap" style="max-height:60vh; overflow-y:auto; border:1px solid var(--line); border-radius:8px">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Profissional</th>
-                                <th>Horas</th>
-                                <th>Bruto</th>
-                                <th>Desc.</th>
-                                <th>Líq.</th>
-                                <th style="text-align:center">NF</th>
-                                <th style="text-align:center">Doc</th>
-                                <th>Status</th>
-                                <th style="text-align:right">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rows.length ? rows : `<tr><td colspan="9" class="muted" style="text-align:center; padding:20px">Sem dados.</td></tr>`}
-                        </tbody>
-                    </table>
-                 </div>
-            </div>
+        <div class="tableWrap" style="min-height:300px">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width:25%">Profissional</th>
+                        <th style="text-align:center">Horas</th>
+                        <th style="text-align:right">Bruto</th>
+                        <th style="text-align:right">Desc.</th>
+                        <th style="text-align:right">Líquido</th>
+                        <th style="text-align:center; width:50px">NF</th>
+                        <th style="text-align:center; width:50px">Doc</th>
+                        <th style="text-align:center">Status</th>
+                        <th style="text-align:right; width:100px">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows.length ? rows : `<tr><td colspan="9" class="muted" style="text-align:center; padding:40px">Nenhum registro encontrado para este filtro.</td></tr>`}
+                </tbody>
+            </table>
         </div>
     </div></div>
+
+    <div class="modalOverlay" id="rulesModal" style="display:none; z-index:900">
+        <div class="modal" style="max-width:450px">
+            <div class="card"><div class="cardin">
+                <div class="row" style="justify-content:space-between">
+                    <h2>⚙️ Parâmetros de Pagamento</h2>
+                    <button class="small" onclick="$('rulesModal').style.display='none'">✕</button>
+                </div>
+                <div class="divider"></div>
+                
+                <div class="two">
+                    <div><div class="muted">Valor Hora Base (R$)</div><input id="payRate" type="number" value="120" ${isClosed ? "disabled" : ""}></div>
+                    <div><div class="muted">Imposto Retido (%)</div><input id="payTaxRate" type="number" value="0" ${isClosed ? "disabled" : ""}></div>
+                </div>
+                <div class="sp"></div>
+                
+                <div class="muted" style="margin-bottom:5px">Multiplicadores</div>
+                <div class="docItem">
+                    <div class="row" style="justify-content:space-between; margin-bottom:5px">
+                        <span>Noturno</span><input id="payMultN" type="number" value="1.2" style="width:70px; text-align:right" step="0.1" ${isClosed ? "disabled" : ""}>
+                    </div>
+                    <div class="row" style="justify-content:space-between; margin-bottom:5px">
+                        <span>Fim de Semana</span><input id="payMultW" type="number" value="1.15" style="width:70px; text-align:right" step="0.1" ${isClosed ? "disabled" : ""}>
+                    </div>
+                    <div class="row" style="justify-content:space-between">
+                        <span>Feriado</span><input id="payMultF" type="number" value="1.5" style="width:70px; text-align:right" step="0.1" ${isClosed ? "disabled" : ""}>
+                    </div>
+                </div>
+
+                <div class="sp"></div>
+                <div class="muted">Fonte de Dados</div>
+                <select id="paySource" ${isClosed ? "disabled" : ""} style="width:100%">
+                    <option value="real">Real (Check-in/out Realizado)</option>
+                    <option value="planned">Planejado (Escala Teórica)</option>
+                </select>
+
+                <div class="sp"></div>
+                <div class="divider"></div>
+                <div class="row" style="justify-content:flex-end">
+                    <button class="primary" id="btnSaveRules">Aplicar & Recalcular</button>
+                </div>
+            </div></div>
+        </div>
+    </div>
     
     <div id="receiptModalOverlay" class="modalOverlay" style="display:none; z-index:999"></div>
     `;
       }
       function bindPay() {
-        // --- HELPERS (Replicados para garantir escopo) ---
+        // --- 1. HELPERS ---
         function parseHM(hm) {
           const [h, m] = String(hm || "0:0")
             .split(":")
@@ -4381,7 +4381,7 @@
           return g === 0 || g === 6;
         }
 
-        // --- ELEMENTOS E LISTENERS ---
+        // --- 2. LISTENERS DE FILTRO ---
         const mInput = $("payMonth");
         const uInput = $("payUnit");
 
@@ -4396,22 +4396,32 @@
             renderInternalBody("pay");
           };
 
-        // Toggle Regras (Mobile)
-        const btnRules = $("btnToggleRules");
+        // --- 3. CONTROLE DO MODAL DE REGRAS ---
+        const btnRules = $("btnOpenRules");
         if (btnRules) {
           btnRules.onclick = () => {
-            const box = $("payRulesBox");
-            if (box) box.classList.toggle("open");
+            $("rulesModal").style.display = "flex";
           };
         }
 
-        // --- CÁLCULO CORE ---
+        const btnSaveRules = $("btnSaveRules");
+        if (btnSaveRules) {
+          btnSaveRules.onclick = () => {
+            $("rulesModal").style.display = "none";
+            renderInternalBody("pay"); // Recalcula ao fechar
+            toast("Regras aplicadas.");
+          };
+        }
+
+        // --- 4. LÓGICA DE CÁLCULO ---
         function calculateCurrentData() {
+          // Pega valores dos inputs (mesmo que estejam no modal escondido, eles existem no DOM)
           const rate = parseFloat($("payRate")?.value || 120);
           const taxRate = parseFloat($("payTaxRate")?.value || 0);
           const multN = parseFloat($("payMultN")?.value || 1.2);
           const multW = parseFloat($("payMultW")?.value || 1.15);
           const useReal = $("paySource")?.value === "real";
+
           const month = window.payFilterMonth || isoMonth(nowISO());
           const unit = window.payFilterUnit;
 
@@ -4424,17 +4434,20 @@
           rawShifts.forEach((s) => {
             if (!map[s.profId])
               map[s.profId] = { profId: s.profId, hours: 0, value: 0 };
+
             let h = hoursBetween(s.start, s.end);
             if (useReal && s.checkInAt && s.checkOutAt) {
               const rs = s.checkInAt.slice(11, 16);
               const re = s.checkOutAt.slice(11, 16);
               h = hoursBetween(rs, re);
             }
+
             let mult = 1.0;
             const sH = parseHM(s.start),
               eH = parseHM(s.end);
             const isNight = sH >= 19 || eH <= 7 || eH < sH;
             const isWk = isWeekend(s.date);
+
             if (isWk) mult = Math.max(mult, multW);
             if (isNight) mult = Math.max(mult, multN);
 
@@ -4454,21 +4467,16 @@
           });
         }
 
-        // --- BOTÕES DE AÇÃO ---
-        const btnSim = $("btnSimulate");
-        if (btnSim)
-          btnSim.onclick = () => {
-            renderInternalBody("pay");
-            toast("Recalculado.");
-          };
-
+        // --- 5. BOTÃO FECHAR FOLHA ---
         const btnGen = $("btnGenBatch");
         if (btnGen)
           btnGen.onclick = () => {
-            if (!confirm("Fechar a folha e congelar valores?")) return;
+            if (!confirm("Deseja fechar a folha e gerar os pagamentos?"))
+              return;
             const data = calculateCurrentData();
             const totalV = data.reduce((a, b) => a + b.value, 0);
             const totalH = data.reduce((a, b) => a + b.hours, 0);
+
             const batch = {
               id: uid("batch"),
               month: window.payFilterMonth || isoMonth(nowISO()),
@@ -4478,13 +4486,14 @@
               totalHours: totalH,
               items: data,
             };
+
             DB.payBatches.push(batch);
             saveDB();
             renderInternalBody("pay");
-            toast("Folha fechada!");
+            toast("✅ Folha fechada com sucesso!");
           };
 
-        // --- FUNÇÕES GLOBAIS (PARA ONCLICK NA TABELA) ---
+        // --- 6. FUNÇÕES GLOBAIS DE TABELA ---
         window.uploadInvoice = (idx) => {
           const batch = DB.payBatches.find(
             (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
@@ -4495,34 +4504,8 @@
             batch.items[idx].hasInvoice = true;
             saveDB();
             renderInternalBody("pay");
-            toast("NF Anexada");
-          }, 500);
-        };
-
-        window.viewReceipt = (idx) => {
-          const batch = DB.payBatches.find(
-            (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
-          );
-          if (!batch) return;
-          const item = batch.items[idx];
-          const prof = getProf(item.profId);
-          const html = `
-                <div class="modal" style="width:350px; background:#fff; color:#000; font-family:monospace; padding:20px;">
-                    <h3 style="text-align:center; border-bottom:1px dashed #000; padding-bottom:10px">RECIBO</h3>
-                    <div>${prof ? prof.name : "N/D"}</div>
-                    <div>Ref: ${batch.month}</div>
-                    <hr>
-                    <div style="display:flex; justify-content:space-between"><span>Bruto:</span><span>R$ ${item.value.toFixed(2)}</span></div>
-                    <div style="display:flex; justify-content:space-between; color:red"><span>Imposto:</span><span>- R$ ${item.taxValue.toFixed(2)}</span></div>
-                    <hr>
-                    <div style="display:flex; justify-content:space-between; font-weight:bold"><span>LÍQUIDO:</span><span>R$ ${item.netValue.toFixed(2)}</span></div>
-                    <div style="margin-top:20px; text-align:center"><button onclick="document.getElementById('receiptModalOverlay').style.display='none'">Fechar</button></div>
-                </div>`;
-          const ov = document.getElementById("receiptModalOverlay");
-          if (ov) {
-            ov.innerHTML = html;
-            ov.style.display = "flex";
-          }
+            toast("Nota Fiscal anexada.");
+          }, 600);
         };
 
         window.approvePay = (idx) => {
@@ -4533,6 +4516,7 @@
           batch.items[idx].status = "PAGO";
           saveDB();
           renderInternalBody("pay");
+          toast("Pago!");
         };
 
         window.togglePayStatus = (idx) => {
@@ -4547,11 +4531,44 @@
         };
 
         window.deleteBatch = () => {
-          if (!confirm("Reabrir mês? O fechamento será excluído.")) return;
+          if (!confirm("Reabrir o mês excluirá o fechamento atual. Continuar?"))
+            return;
           const m = window.payFilterMonth || isoMonth(nowISO());
           DB.payBatches = DB.payBatches.filter((b) => b.month !== m);
           saveDB();
           renderInternalBody("pay");
+          toast("Mês reaberto.");
+        };
+
+        window.viewReceipt = (idx) => {
+          const batch = DB.payBatches.find(
+            (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
+          );
+          if (!batch) return;
+          const item = batch.items[idx];
+          const prof = getProf(item.profId);
+
+          const html = `
+                <div class="modal" style="width:350px; background:#fff; color:#000; padding:20px; font-family:monospace">
+                    <div style="text-align:center; border-bottom:1px dashed #000; margin-bottom:10px">
+                        <b>RECIBO DE PAGAMENTO</b><br>${batch.month}
+                    </div>
+                    <div><b>Prof:</b> ${prof ? prof.name : "-"}</div>
+                    <div style="margin-top:10px">
+                        <div style="display:flex; justify-content:space-between"><span>Bruto:</span><span>R$ ${item.value.toFixed(2)}</span></div>
+                        <div style="display:flex; justify-content:space-between; color:red"><span>Impostos:</span><span>- R$ ${item.taxValue.toFixed(2)}</span></div>
+                        <div style="border-top:1px solid #000; margin-top:5px; padding-top:5px; display:flex; justify-content:space-between; font-weight:bold">
+                            <span>LÍQUIDO:</span><span>R$ ${item.netValue.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:20px; text-align:center"><button onclick="document.getElementById('receiptModalOverlay').style.display='none'">Fechar</button></div>
+                </div>`;
+
+          const ov = document.getElementById("receiptModalOverlay");
+          if (ov) {
+            ov.innerHTML = html;
+            ov.style.display = "flex";
+          }
         };
 
         window.exportPay = (type) => {
@@ -4562,16 +4579,14 @@
             toast("Feche a folha primeiro.");
             return;
           }
-
-          let csv = "Nome,Horas,Valor,Pix\n";
+          let csv = "Nome,Horas,Valor,Pix,Status\n";
           batch.items.forEach((i) => {
             const p = getProf(i.profId);
-            csv += `${p ? p.name : "?"},${i.hours},${i.netValue},${p ? p.pixKey : ""}\n`;
+            csv += `${p ? p.name : "?"},${i.hours},${i.netValue},${p ? p.pixKey : ""},${i.status}\n`;
           });
-
           const a = document.createElement("a");
           a.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-          a.download = `pgto_${type}.csv`;
+          a.download = `folha_${batch.month}.csv`;
           document.body.appendChild(a);
           a.click();
           a.remove();
