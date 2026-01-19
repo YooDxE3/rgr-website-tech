@@ -4593,236 +4593,274 @@
         };
       }
 
-      /* ========= Market (Network & Vendors) ========= */
+      /* ========= Market (Rede & Fornecedores - Versão Pro) ========= */
       function renderMarket() {
-        // Inicialização segura + Auto-correção de IDs (se faltar)
+        // Garante a estrutura de dados
         if (!DB.market) DB.market = {};
         if (!DB.market.network) DB.market.network = [];
         if (!DB.market.vendors) DB.market.vendors = [];
 
-        // Garante que todo item tenha ID
-        DB.market.network.forEach((x) => {
-          if (!x.id) x.id = uid("n");
-        });
-        DB.market.vendors.forEach((x) => {
-          if (!x.id) x.id = uid("v");
-        });
+        // Filtro de busca (simples)
+        const term = window.marketSearch || "";
 
-        // Cards da Rede Credenciada
-        const nCards = DB.market.network.length
-          ? DB.market.network
+        // Função auxiliar para desenhar estrelas
+        const stars = (n) =>
+          "⭐".repeat(Math.min(5, Math.max(0, Math.round(n || 0))));
+
+        // Renderiza Rede
+        const nList = DB.market.network.filter((x) =>
+          x.name.toLowerCase().includes(term.toLowerCase()),
+        );
+        const nCards = nList.length
+          ? nList
               .map(
                 (x) => `
-            <div class="card" style="background:rgba(255,255,255,0.02); border:1px solid var(--line)">
+            <div class="card" style="border-left: 3px solid var(--accent); margin-bottom:10px">
               <div class="cardin">
                 <div class="row" style="justify-content:space-between">
                   <b>${x.name}</b>
-                  <span class="badge bGood">SLA ${x.sla || "—"}</span>
+                  <div style="font-size:10px">${stars(x.rating)}</div>
                 </div>
-                <div class="muted">${x.type} • ${x.city || "—"}</div>
-                <div class="sp"></div>
-                <div class="row" style="justify-content:flex-end; gap:6px">
-                   <button class="small" onclick="editNetworkItem('${x.id}')">✏️</button>
-                   <button class="small danger" onclick="delNetworkItem('${x.id}')">🗑️</button>
+                <div class="muted" style="font-size:12px; margin-top:4px">
+                   🏥 ${x.type} • 📍 ${x.city || "N/D"}
+                </div>
+                <div class="row" style="margin-top:8px; justify-content:space-between; align-items:center">
+                   <div class="badge" style="font-size:10px">SLA: ${x.sla || "N/A"}</div>
+                   <div class="row" style="gap:5px">
+                      <button class="small" onclick="editNetworkItem('${x.id}')">✏️</button>
+                      <button class="small danger" onclick="delNetworkItem('${x.id}')">🗑️</button>
+                   </div>
                 </div>
               </div>
             </div>`,
               )
               .join("")
-          : `<div class="muted" style="padding:10px">Nenhuma credenciada cadastrada.</div>`;
+          : `<div class="muted" style="padding:10px; text-align:center; border:1px dashed var(--line); border-radius:10px">Nenhum parceiro encontrado.</div>`;
 
-        // Cards de Fornecedores
-        const vCards = DB.market.vendors.length
-          ? DB.market.vendors
-              .map(
-                (x) => `
-            <div class="card" style="background:rgba(255,255,255,0.02); border:1px solid var(--line)">
+        // Renderiza Fornecedores
+        const vList = DB.market.vendors.filter((x) =>
+          x.name.toLowerCase().includes(term.toLowerCase()),
+        );
+        const vCards = vList.length
+          ? vList
+              .map((x) => {
+                const statusColor =
+                  x.status === "ativo"
+                    ? "bGood"
+                    : x.status === "bloqueado"
+                      ? "bBad"
+                      : "bWarn";
+                return `
+            <div class="card" style="border-left: 3px solid var(--good); margin-bottom:10px">
               <div class="cardin">
                 <div class="row" style="justify-content:space-between">
                   <b>${x.name}</b>
-                  <span class="badge ${x.status === "ativo" ? "bGood" : "bWarn"}">${x.status}</span>
+                  <span class="badge ${statusColor}" style="font-size:10px; padding:2px 6px">${x.status.toUpperCase()}</span>
                 </div>
-                <div class="muted">${x.cat} • ${x.contact || "—"}</div>
-                <div class="sp"></div>
-                <div class="row" style="justify-content:flex-end; gap:6px">
+                <div class="muted" style="font-size:12px; margin-top:4px">
+                   📦 ${x.cat} • 📞 ${x.contact || "—"}
+                </div>
+                <div class="row" style="margin-top:8px; justify-content:flex-end; gap:5px">
                    <button class="small" onclick="editVendorItem('${x.id}')">✏️</button>
                    <button class="small danger" onclick="delVendorItem('${x.id}')">🗑️</button>
                 </div>
               </div>
-            </div>`,
-              )
+            </div>`;
+              })
               .join("")
-          : `<div class="muted" style="padding:10px">Nenhum fornecedor cadastrado.</div>`;
+          : `<div class="muted" style="padding:10px; text-align:center; border:1px dashed var(--line); border-radius:10px">Nenhum fornecedor encontrado.</div>`;
 
         return `
   <div class="card"><div class="cardin">
-    <h2 data-i18n="marketTitle">${t("marketTitle")}</h2>
-    <div class="muted" data-i18n="marketHint">${t("marketHint")}</div>
-    <div class="sp"></div>
-
-    <div class="two" style="align-items:start">
-      <div>
-        <div class="row" style="justify-content:space-between; margin-bottom:10px">
-          <h3 style="margin:0">Rede Credenciada</h3>
-          <button class="small primary" id="btnNAdd">+ Adicionar</button>
+    <div class="row" style="justify-content:space-between; align-items:center">
+        <div>
+            <h2 data-i18n="marketTitle">${t("marketTitle")}</h2>
+            <div class="muted" data-i18n="marketHint">Gestão de parceiros, SLAs e cadeia de suprimentos.</div>
         </div>
-        <div class="grid">${nCards}</div>
-      </div>
-
-      <div>
-        <div class="row" style="justify-content:space-between; margin-bottom:10px">
-          <h3 style="margin:0">Fornecedores</h3>
-          <button class="small primary" id="btnVAdd">+ Adicionar</button>
+        
+        <div style="position:relative">
+            <input id="mSearch" placeholder="🔍 Buscar parceiro..." value="${term}" style="padding:8px 12px; width:200px">
         </div>
-        <div class="grid">${vCards}</div>
-      </div>
     </div>
 
     <div class="sp"></div>
-    <div id="marketForm"></div>
+    <div class="divider"></div>
+    <div class="sp"></div>
+
+    <div class="kpi" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap:10px; margin-bottom:20px">
+        <div class="k" style="padding:10px"><div class="l">Rede Credenciada</div><div class="v">${DB.market.network.length}</div></div>
+        <div class="k" style="padding:10px"><div class="l">Fornecedores</div><div class="v">${DB.market.vendors.length}</div></div>
+        <div class="k" style="padding:10px"><div class="l">Contratos Ativos</div><div class="v" style="color:var(--good)">${DB.market.vendors.filter((v) => v.status === "ativo").length}</div></div>
+        <div class="k" style="padding:10px"><div class="l">Em Homologação</div><div class="v" style="color:var(--warn)">${DB.market.vendors.filter((v) => v.status !== "ativo").length}</div></div>
+    </div>
+
+    <div class="grid g2" style="align-items:start; gap:20px">
+      <div>
+        <div class="row" style="justify-content:space-between; margin-bottom:10px; align-items:center">
+          <h3 style="margin:0; color:var(--accent)">🏥 Rede Credenciada</h3>
+          <button class="small primary" id="btnNAdd">+ Parceiro</button>
+        </div>
+        <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; min-height:200px">
+            ${nCards}
+        </div>
+      </div>
+
+      <div>
+        <div class="row" style="justify-content:space-between; margin-bottom:10px; align-items:center">
+          <h3 style="margin:0; color:var(--good)">📦 Fornecedores</h3>
+          <button class="small primary" id="btnVAdd">+ Fornecedor</button>
+        </div>
+        <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; min-height:200px">
+            ${vCards}
+        </div>
+      </div>
+    </div>
+
+    <div id="marketModalOverlay" class="modalOverlay" style="display:none; z-index:900"></div>
+
   </div></div>`;
       }
 
       function bindMarket() {
-        const wrap = $("marketForm");
+        const modal = $("marketModalOverlay");
+
+        // Busca em tempo real
+        const searchInput = $("mSearch");
+        if (searchInput) {
+          searchInput.oninput = (e) => {
+            window.marketSearch = e.target.value;
+            renderInternalBody("market");
+            // Mantém o foco após o render (truque simples)
+            setTimeout(() => document.getElementById("mSearch")?.focus(), 0);
+          };
+        }
 
         // --- ADD NETWORK ---
         $("btnNAdd").onclick = () => {
-          wrap.innerHTML = `
-      <div class="card"><div class="cardin">
-        <b>Nova credenciada</b>
-        <div class="two">
-          <div><div class="muted">Nome</div><input id="nName"/></div>
-          <div><div class="muted">Tipo</div><input id="nType" placeholder="Clínica, laboratório..."/></div>
-        </div>
-        <div class="two">
-          <div><div class="muted">Cidade</div><input id="nCity"/></div>
-          <div><div class="muted">SLA</div><input id="nSla" placeholder="Ex: 2h"/></div>
-        </div>
-        <div class="sp"></div>
-        <div class="row"><button class="primary" id="btnNSave">Salvar</button><button id="btnNCancel">Cancelar</button></div>
-      </div></div>`;
-          $("btnNSave").onclick = () => {
+          modal.style.display = "flex";
+          modal.innerHTML = `
+            <div class="modal" style="max-width:400px"><div class="card"><div class="cardin">
+                <h3>Nova Credenciada</h3>
+                <div class="sp"></div>
+                <div class="muted">Nome da Clínica/Lab</div>
+                <input id="nName" placeholder="Ex: Laboratório X">
+                <div class="sp"></div>
+                <div class="two">
+                    <div><div class="muted">Tipo</div><select id="nType"><option>Laboratório</option><option>Clínica Imagem</option><option>Hospital</option><option>Outro</option></select></div>
+                    <div><div class="muted">Cidade</div><input id="nCity"></div>
+                </div>
+                <div class="sp"></div>
+                <div class="two">
+                    <div><div class="muted">SLA (Horas)</div><input id="nSla" placeholder="Ex: 24h"></div>
+                    <div><div class="muted">Avaliação (1-5)</div><input id="nRating" type="number" min="1" max="5" value="5"></div>
+                </div>
+                <div class="sp"></div>
+                <div class="row" style="justify-content:flex-end">
+                    <button id="btnCancelM" class="small">Cancelar</button>
+                    <button id="btnSaveM" class="primary">Salvar</button>
+                </div>
+            </div></div></div>`;
+
+          $("btnCancelM").onclick = () => (modal.style.display = "none");
+          $("btnSaveM").onclick = () => {
             DB.market.network.unshift({
               id: uid("n"),
-              name: $("nName").value.trim(),
-              type: $("nType").value.trim(),
-              city: $("nCity").value.trim(),
-              sla: $("nSla").value.trim(),
+              name: $("nName").value || "Sem nome",
+              type: $("nType").value,
+              city: $("nCity").value,
+              sla: $("nSla").value,
+              rating: $("nRating").value,
             });
             saveDB();
+            modal.style.display = "none";
             renderInternalBody("market");
-          };
-          $("btnNCancel").onclick = () => {
-            wrap.innerHTML = "";
+            toast("Parceiro adicionado.");
           };
         };
 
         // --- ADD VENDOR ---
         $("btnVAdd").onclick = () => {
-          wrap.innerHTML = `
-      <div class="card"><div class="cardin">
-        <b>Novo fornecedor</b>
-        <div class="two">
-          <div><div class="muted">Nome</div><input id="vName"/></div>
-          <div><div class="muted">Categoria</div><input id="vCat" placeholder="EPI, TI, limpeza..."/></div>
-        </div>
-        <div class="two">
-          <div><div class="muted">Contato</div><input id="vContact" placeholder="Email/Telefone"/></div>
-          <div><div class="muted">Status</div><select id="vStatus"><option value="ativo">ativo</option><option value="em análise">em análise</option></select></div>
-        </div>
-        <div class="sp"></div>
-        <div class="row"><button class="primary" id="btnVSave">Salvar</button><button id="btnVCancel">Cancelar</button></div>
-      </div></div>`;
-          $("btnVSave").onclick = () => {
+          modal.style.display = "flex";
+          modal.innerHTML = `
+            <div class="modal" style="max-width:400px"><div class="card"><div class="cardin">
+                <h3>Novo Fornecedor</h3>
+                <div class="sp"></div>
+                <div class="muted">Empresa</div>
+                <input id="vName" placeholder="Ex: MedSul Distribuidora">
+                <div class="sp"></div>
+                <div class="two">
+                    <div><div class="muted">Categoria</div><input id="vCat" placeholder="Ex: Medicamentos"></div>
+                    <div><div class="muted">Contato</div><input id="vContact" placeholder="Tel/Email"></div>
+                </div>
+                <div class="sp"></div>
+                <div class="muted">Status Homologação</div>
+                <select id="vStatus">
+                    <option value="ativo">Ativo</option>
+                    <option value="em análise">Em Análise</option>
+                    <option value="bloqueado">Bloqueado</option>
+                </select>
+                <div class="sp"></div>
+                <div class="row" style="justify-content:flex-end">
+                    <button id="btnCancelV" class="small">Cancelar</button>
+                    <button id="btnSaveV" class="primary">Salvar</button>
+                </div>
+            </div></div></div>`;
+
+          $("btnCancelV").onclick = () => (modal.style.display = "none");
+          $("btnSaveV").onclick = () => {
             DB.market.vendors.unshift({
               id: uid("v"),
-              name: $("vName").value.trim(),
-              cat: $("vCat").value.trim(),
-              contact: $("vContact").value.trim(),
+              name: $("vName").value || "Sem nome",
+              cat: $("vCat").value,
+              contact: $("vContact").value,
               status: $("vStatus").value,
             });
             saveDB();
+            modal.style.display = "none";
             renderInternalBody("market");
-          };
-          $("btnVCancel").onclick = () => {
-            wrap.innerHTML = "";
+            toast("Fornecedor adicionado.");
           };
         };
 
-        // --- LOGICA GLOBAL DE EDITAR/EXCLUIR ---
+        // --- GLOBAL ACTIONS ---
         window.delNetworkItem = (id) => {
-          if (!confirm("Apagar item?")) return;
-          DB.market.network = DB.market.network.filter((x) => x.id !== id);
-          saveDB();
-          renderInternalBody("market");
+          if (confirm("Remover este parceiro?")) {
+            DB.market.network = DB.market.network.filter((x) => x.id !== id);
+            saveDB();
+            renderInternalBody("market");
+          }
         };
         window.delVendorItem = (id) => {
-          if (!confirm("Apagar item?")) return;
-          DB.market.vendors = DB.market.vendors.filter((x) => x.id !== id);
-          saveDB();
-          renderInternalBody("market");
+          if (confirm("Remover este fornecedor?")) {
+            DB.market.vendors = DB.market.vendors.filter((x) => x.id !== id);
+            saveDB();
+            renderInternalBody("market");
+          }
         };
 
+        // Simulação de edição rápida (poderia abrir o modal preenchido)
         window.editNetworkItem = (id) => {
           const item = DB.market.network.find((x) => x.id === id);
           if (!item) return;
-          wrap.innerHTML = `
-              <div class="card" style="border:1px solid var(--accent)"><div class="cardin">
-                <b>Editar credenciada</b>
-                <div class="two">
-                  <div><div class="muted">Nome</div><input id="eName" value="${item.name}"/></div>
-                  <div><div class="muted">Tipo</div><input id="eType" value="${item.type}"/></div>
-                </div>
-                <div class="two">
-                  <div><div class="muted">Cidade</div><input id="eCity" value="${item.city || ""}"/></div>
-                  <div><div class="muted">SLA</div><input id="eSla" value="${item.sla || ""}"/></div>
-                </div>
-                <div class="sp"></div>
-                <div class="row"><button class="primary" id="btnESave">Atualizar</button><button id="btnECancel">Cancelar</button></div>
-              </div></div>`;
-          $("btnESave").onclick = () => {
-            item.name = $("eName").value.trim();
-            item.type = $("eType").value.trim();
-            item.city = $("eCity").value.trim();
-            item.sla = $("eSla").value.trim();
+          const newName = prompt("Editar nome:", item.name);
+          if (newName) {
+            item.name = newName;
             saveDB();
             renderInternalBody("market");
-          };
-          $("btnECancel").onclick = () => {
-            wrap.innerHTML = "";
-          };
+          }
         };
-
         window.editVendorItem = (id) => {
           const item = DB.market.vendors.find((x) => x.id === id);
           if (!item) return;
-          wrap.innerHTML = `
-              <div class="card" style="border:1px solid var(--accent)"><div class="cardin">
-                <b>Editar fornecedor</b>
-                <div class="two">
-                  <div><div class="muted">Nome</div><input id="evName" value="${item.name}"/></div>
-                  <div><div class="muted">Categoria</div><input id="evCat" value="${item.cat}"/></div>
-                </div>
-                <div class="two">
-                  <div><div class="muted">Contato</div><input id="evContact" value="${item.contact || ""}"/></div>
-                  <div><div class="muted">Status</div><select id="evStatus"><option value="ativo">ativo</option><option value="em análise">em análise</option></select></div>
-                </div>
-                <div class="sp"></div>
-                <div class="row"><button class="primary" id="btnEVSave">Atualizar</button><button id="btnEVCancel">Cancelar</button></div>
-              </div></div>`;
-          $("evStatus").value = item.status;
-          $("btnEVSave").onclick = () => {
-            item.name = $("evName").value.trim();
-            item.cat = $("evCat").value.trim();
-            item.contact = $("evContact").value.trim();
-            item.status = $("evStatus").value;
+          const newSt = prompt(
+            "Novo status (ativo/bloqueado/em análise):",
+            item.status,
+          );
+          if (newSt) {
+            item.status = newSt.toLowerCase();
             saveDB();
             renderInternalBody("market");
-          };
-          $("btnEVCancel").onclick = () => {
-            wrap.innerHTML = "";
-          };
+          }
         };
       }
 
