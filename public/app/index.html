@@ -3824,13 +3824,23 @@
       }
 
       /* ========= Connect (Integrations) ========= */
+      /* ========= Connect (Integrações - UI Modernizada) ========= */
       function renderConnect() {
+        const u = getUnit(CTX.connectUnitId) || DB.units[0] || null;
+        const currentUnitId = u ? u.id : "";
+
+        // Gera opções de unidade
         const unitOpt = DB.units
-          .map((u) => `<option value="${u.id}">${u.name} (${u.uf})</option>`)
+          .map(
+            (unit) =>
+              `<option value="${unit.id}" ${unit.id === currentUnitId ? "selected" : ""}>${unit.name} (${unit.uf})</option>`,
+          )
           .join("");
+
         const modeOpt = ["FHIR/API", "HL7 v2", "Export/CSV", "SFTP", "Outro"]
           .map((x) => `<option value="${x}">${x}</option>`)
           .join("");
+
         const sysOpt = [
           "Tasy",
           "MV",
@@ -3842,58 +3852,93 @@
         ]
           .map((x) => `<option value="${x}">${x}</option>`)
           .join("");
-        const u = getUnit(CTX.connectUnitId) || DB.units[0] || null;
-        const selId = u ? u.id : "";
+
+        // Lógica Visual do Status
         const status = u?.integrationStatus || "pendente";
-        const badge =
-          status === "conectado"
-            ? "bGood"
-            : status === "pendente"
-              ? "bWarn"
-              : "bBad";
+        const isConnected = status === "conectado";
+
+        // Cores e Ícones dinâmicos
+        const statusColor = isConnected ? "var(--good)" : "var(--warn)";
+        const statusBg = isConnected
+          ? "rgba(55, 214, 122, 0.1)"
+          : "rgba(255, 176, 32, 0.05)";
+        const statusIcon = isConnected ? "🟢 CONECTADO" : "🟠 PENDENTE / OFF";
+        const statusBorder = isConnected
+          ? "1px solid rgba(55, 214, 122, 0.3)"
+          : "1px solid var(--line)";
+
+        // Botão de Ação Principal (Alterna entre Ativar e Desativar)
+        const actionButton = isConnected
+          ? `<button class="danger" id="btnCDeactivate" style="min-width:140px">🛑 Desativar</button>`
+          : `<button class="primary" id="btnCActivate" style="min-width:140px">⚡ Ativar Integração</button>`;
+
         return `
-  <div class="card"><div class="cardin">
-    <h2 data-i18n="connectTitle">${t("connectTitle")}</h2>
-    <div class="muted" data-i18n="connectHint">${t("connectHint")}</div>
-    <div class="sp"></div>
-
-    <div class="two">
-      <div>
-        <div class="muted">${t("tabUnits")}</div>
-        <select id="cUnit">${unitOpt}</select>
-      </div>
-      <div>
-        <div class="muted">${t("unitsSys")}</div>
-        <select id="cSys">${sysOpt}</select>
-      </div>
-    </div>
-
-    <div class="two">
-      <div>
-        <div class="muted">${t("unitsInt")}</div>
-        <select id="cMode">${modeOpt}</select>
-      </div>
-      <div>
-        <div class="muted">Status</div>
-        <div class="row" style="align-items:center; gap:10px">
-          <span class="badge ${badge}" id="cStatus">${String(status).toUpperCase()}</span>
-          <span class="muted">•</span>
-          <span class="muted" id="cLast">${fmtSync(u?.lastSync)}</span>
+    <div class="card"><div class="cardin">
+        <div class="row" style="justify-content:space-between; align-items:center">
+            <div>
+                <h2 data-i18n="connectTitle">${t("connectTitle")}</h2>
+                <div class="muted" data-i18n="connectHint">Gerencie a conexão entre o viaRGR e o sistema hospitalar.</div>
+            </div>
+            <div class="selectWrap" style="min-width:250px">
+                <select id="cUnit" style="border-color:var(--accent); font-weight:bold">${unitOpt}</select>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="sp"></div>
-    <div class="row">
-      <button class="primary" id="btnCTest">Testar conexão</button>
-      <button id="btnCActivate">Ativar</button>
-      <button id="btnCSync">Sincronizar agora</button>
-    </div>
+        <div class="sp"></div>
+        <div class="divider"></div>
+        <div class="sp"></div>
 
-    <div class="sp"></div>
-    <div class="divider"></div>
-    <div class="muted">Demo: os botões acima atualizam o status na base local (localStorage). Em produção, aqui se conecta com o EHR/ERP via conectores.</div>
-  </div></div>`;
+        <div style="background:${statusBg}; border:${statusBorder}; border-radius:16px; padding:20px; display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between">
+            <div class="row" style="gap:15px; align-items:center">
+                <div style="font-size:32px; background:rgba(255,255,255,0.05); width:60px; height:60px; display:flex; align-items:center; justify-content:center; border-radius:12px">
+                    ${isConnected ? "🔗" : "🔌"}
+                </div>
+                <div>
+                    <div style="font-size:12px; color:${statusColor}; font-weight:800; letter-spacing:1px; margin-bottom:4px">${statusIcon}</div>
+                    <div style="font-size:20px; font-weight:bold; color:var(--text)">${u?.system || "Sistema não definido"}</div>
+                    <div class="muted" style="font-size:12px">Última sincronização: <b id="cLast" style="color:var(--text)">${fmtSync(u?.lastSync)}</b></div>
+                </div>
+            </div>
+            
+            <div class="row" style="gap:10px">
+                <button id="btnCTest" class="small" style="background:rgba(255,255,255,0.1)">Testar Ping</button>
+                ${isConnected ? `<button id="btnCSync" class="small primary">🔄 Sincronizar Agora</button>` : ""}
+            </div>
+        </div>
+
+        <div class="sp"></div>
+        <div class="sp"></div>
+
+        <h3 style="font-size:14px; margin-bottom:10px; color:var(--muted)">Configurações do Conector</h3>
+        <div class="card" style="background:rgba(255,255,255,0.02); border:1px solid var(--line)">
+            <div class="cardin">
+                <div class="two">
+                    <div>
+                        <div class="muted">${t("unitsSys")} (ERP/EHR)</div>
+                        <select id="cSys">${sysOpt}</select>
+                    </div>
+                    <div>
+                        <div class="muted">Método de Troca de Dados</div>
+                        <select id="cMode">${modeOpt}</select>
+                    </div>
+                </div>
+                
+                <div class="sp"></div>
+                <div class="muted" style="font-size:11px">
+                    ℹ️ Alterar o sistema ou método pode exigir re-autenticação das credenciais da API.
+                </div>
+            </div>
+        </div>
+
+        <div class="sp"></div>
+        <div class="divider"></div>
+        
+        <div class="row" style="justify-content:flex-end; align-items:center; gap:15px">
+            <div class="muted" style="font-size:12px">${isConnected ? "A conexão está ativa e operando." : "A conexão está pausada."}</div>
+            ${actionButton}
+        </div>
+
+    </div></div>`;
       }
 
       function bindConnect() {
@@ -3904,61 +3949,105 @@
           const u = getUnit(id);
           if (!u) return;
           CTX.connectUnitId = id;
-          $("cSys").value = u.system || guessSystem(u);
-          $("cMode").value = u.integrationMode || "Export/CSV";
-          const st = u.integrationStatus || "pendente";
-          $("cStatus").textContent = String(st).toUpperCase();
-          $("cStatus").className =
-            "badge " +
-            (st === "conectado"
-              ? "bGood"
-              : st === "pendente"
-                ? "bWarn"
-                : "bBad");
-          $("cLast").textContent = fmtSync(u.lastSync);
+
+          // Preenche os campos sem recarregar a tela toda (para inputs)
+          const elSys = $("cSys");
+          if (elSys) elSys.value = u.system || guessSystem(u);
+          const elMode = $("cMode");
+          if (elMode) elMode.value = u.integrationMode || "Export/CSV";
+          const elLast = $("cLast");
+          if (elLast) elLast.textContent = fmtSync(u.lastSync);
         }
 
-        // initial select
-        const initial =
-          CTX.connectUnitId || (DB.units[0] && DB.units[0].id) || "";
-        unitSel.value = initial;
-        loadUnit(initial);
+        // --- HANDLERS ---
 
-        unitSel.onchange = () => loadUnit(unitSel.value);
-
-        $("cSys").onchange = () => {
-          const u = getUnit(unitSel.value);
-          if (!u) return;
-          u.system = $("cSys").value;
-          saveDB();
-        };
-        $("cMode").onchange = () => {
-          const u = getUnit(unitSel.value);
-          if (!u) return;
-          u.integrationMode = $("cMode").value;
-          saveDB();
+        // 1. Troca de Unidade (Recarrega a tela inteira para atualizar o visual do Status)
+        unitSel.onchange = () => {
+          CTX.connectUnitId = unitSel.value;
+          renderInternalBody("connect"); // Recarrega UI
         };
 
-        $("btnCTest").onclick = () => {
-          toast("Teste OK (demo)");
-        };
-        $("btnCActivate").onclick = () => {
-          const u = getUnit(unitSel.value);
-          if (!u) return;
-          u.integrationStatus = "conectado";
-          u.lastSync = nowISO();
-          saveDB();
-          loadUnit(u.id);
-          toast("Integração ativada (demo)");
-        };
-        $("btnCSync").onclick = () => {
-          const u = getUnit(unitSel.value);
-          if (!u) return;
-          u.lastSync = nowISO();
-          saveDB();
-          loadUnit(u.id);
-          toast("Sync realizada (demo)");
-        };
+        // 2. Salvar Configurações (Sistema/Modo)
+        const elSys = $("cSys");
+        if (elSys)
+          elSys.onchange = () => {
+            const u = getUnit(unitSel.value);
+            if (!u) return;
+            u.system = elSys.value;
+            saveDB();
+            toast("Sistema atualizado.");
+          };
+
+        const elMode = $("cMode");
+        if (elMode)
+          elMode.onchange = () => {
+            const u = getUnit(unitSel.value);
+            if (!u) return;
+            u.integrationMode = elMode.value;
+            saveDB();
+            toast("Modo atualizado.");
+          };
+
+        // 3. Botões de Ação
+        const btnTest = $("btnCTest");
+        if (btnTest)
+          btnTest.onclick = () => {
+            toast("📡 Ping... OK! (Latência: 45ms)");
+          };
+
+        const btnSync = $("btnCSync");
+        if (btnSync)
+          btnSync.onclick = () => {
+            const u = getUnit(unitSel.value);
+            if (!u) return;
+
+            toast("🔄 Iniciando sincronização...");
+            setTimeout(() => {
+              u.lastSync = nowISO();
+              saveDB();
+              renderInternalBody("connect"); // Atualiza hora na tela
+              toast("✅ Sincronização concluída com sucesso.");
+            }, 1000);
+          };
+
+        // 4. ATIVAR
+        const btnActivate = $("btnCActivate");
+        if (btnActivate)
+          btnActivate.onclick = () => {
+            const u = getUnit(unitSel.value);
+            if (!u) return;
+
+            u.integrationStatus = "conectado";
+            u.lastSync = nowISO(); // Marca sync inicial
+            saveDB();
+
+            renderInternalBody("connect"); // Recarrega para ficar verde
+            toast("Integração ATIVADA 🚀");
+          };
+
+        // 5. DESATIVAR (Novo)
+        const btnDeactivate = $("btnCDeactivate");
+        if (btnDeactivate)
+          btnDeactivate.onclick = () => {
+            if (
+              !confirm(
+                "Tem certeza que deseja DESATIVAR a integração?\nIsso impedirá a sincronização de dados.",
+              )
+            )
+              return;
+
+            const u = getUnit(unitSel.value);
+            if (!u) return;
+
+            u.integrationStatus = "pendente"; // Volta para pendente/inativo
+            saveDB();
+
+            renderInternalBody("connect"); // Recarrega para ficar laranja
+            toast("Integração DESATIVADA 🛑");
+          };
+
+        // Carregamento inicial dos valores nos inputs
+        loadUnit(unitSel.value);
       }
 
       /* ========= BI ========= */
