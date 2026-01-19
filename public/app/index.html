@@ -713,6 +713,23 @@
         transition: all 0.3s ease;
         pointer-events: none; /* Não atrapalha cliques */
       }
+      /* Adicione isso ao seu <style> se não tiver */
+      .section-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--accent);
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 5px;
+        margin-top: 15px;
+      }
+      .geo-box {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 15px;
+      }
     </style>
   </head>
   <body>
@@ -3419,38 +3436,61 @@
         body.innerHTML = "<div class='card'><div class='cardin'>—</div></div>";
       }
 
-      /* ========= Units ========= */
+      /* ========= Units (UI Renovada com Modal) ========= */
       function renderUnits() {
         const rows = DB.units
           .map((u) => {
             const intStatus = u.integrationStatus || "pendente";
-            const badge =
+            const badgeClass =
               intStatus === "conectado"
                 ? "bGood"
                 : intStatus === "pendente"
                   ? "bWarn"
                   : "bBad";
-            const bi = u.biEnabled ? "✅" : "—";
-            // Mostra ícone de Pin se tiver GPS configurado
+
             const gpsIcon =
-              u.lat && u.lon ? "📍" : "<span style='opacity:0.3'>📍</span>";
+              u.lat && u.lon
+                ? `<span style="color:var(--good)" title="GPS Configurado">📍</span>`
+                : `<span style="opacity:0.2" title="Sem GPS">📍</span>`;
 
             return `<tr>
-      <td><b>${u.name}</b><div class="muted">${u.uf} • ${u.city}</div></td>
-      <td>${unitTypeLabel(u.type)}<div class="muted">${u.subtype || ""}</div></td>
-      <td>${u.system || "—"}</td>
-      <td><span class="badge ${badge}">${String(intStatus).toUpperCase()}</span></td>
-      <td>${gpsIcon} <span class="muted" style="font-size:11px">${u.radiusM || 200}m</span></td>
-      <td style="text-align:center">${bi}</td>
-      <td style="text-align:right">
-        <button class="small" onclick="editUnit('${u.id}')">✏️</button>
-        <button class="small danger" onclick="deleteUnit('${u.id}')">🗑️</button>
-        <button class="small btnCfg" data-unit="${u.id}">${t("btnConfigure")}</button>
-      </td>
-    </tr>`;
+              <td>
+                <div class="row" style="gap:10px">
+                    <div style="background:rgba(255,255,255,0.05); width:40px; height:40px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px">🏥</div>
+                    <div>
+                        <div style="font-weight:bold; font-size:14px">${u.name}</div>
+                        <div class="muted" style="font-size:11px">${u.uf} • ${u.city}</div>
+                    </div>
+                </div>
+              </td>
+              <td>
+                <div style="font-size:13px">${unitTypeLabel(u.type)}</div>
+                <div class="muted" style="font-size:11px">${u.subtype || "—"}</div>
+              </td>
+              <td>
+                <div class="row" style="gap:6px">
+                    <span class="badge" style="background:rgba(255,255,255,0.05); border:none">${u.system || "—"}</span>
+                    <span class="badge ${badgeClass}">${String(intStatus).toUpperCase()}</span>
+                </div>
+              </td>
+              <td>
+                <div class="row" style="align-items:center; gap:6px">
+                    ${gpsIcon}
+                    <span class="muted" style="font-size:12px">${u.radiusM || 200}m</span>
+                </div>
+              </td>
+              <td style="text-align:right">
+                <div class="row" style="justify-content:flex-end; gap:4px">
+                    <button class="small btnCfg" data-unit="${u.id}" title="Configurar Integração">⚙️</button>
+                    <button class="small" onclick="editUnit('${u.id}')" title="Editar Dados">✏️</button>
+                    <button class="small danger" onclick="deleteUnit('${u.id}')" title="Excluir">🗑️</button>
+                </div>
+              </td>
+            </tr>`;
           })
           .join("");
 
+        // Opções para os Selects do Modal
         const ufOpt = Object.keys(UF_CITIES)
           .filter((x) => x)
           .map((uf) => `<option value="${uf}">${uf}</option>`)
@@ -3463,90 +3503,109 @@
           .join("");
 
         return `
-  <div class="card"><div class="cardin">
-    <h2 data-i18n="unitsTitle">${t("unitsTitle")}</h2>
-    <div class="muted" data-i18n="unitsHint">${t("unitsHint")}</div>
-    <div class="sp"></div>
-
-    <div class="row">
-      <button class="primary" id="btnAddUnit" data-i18n="unitAdd">${t("unitAdd")}</button>
-    </div>
-
-    <div class="sp"></div>
-    <div class="tableWrap">
-      <table>
-        <thead>
-          <tr>
-            <th data-i18n="unitName">${t("unitName")}</th>
-            <th data-i18n="unitType">${t("unitType")}</th>
-            <th data-i18n="unitsSys">${t("unitsSys")}</th>
-            <th data-i18n="unitsInt">${t("unitsInt")}</th>
-            <th>Geolocalização</th>
-            <th data-i18n="unitsBI">${t("unitsBI")}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>${rows || `<tr><td colspan="7" class="muted">—</td></tr>`}</tbody>
-      </table>
-    </div>
-
-    <div class="sp"></div>
-    
-    <div id="unitForm" style="display:none; border: 1px solid var(--accent); border-radius:12px; padding:15px; background:rgba(255,255,255,0.02)">
-      <h3 id="unitFormTitle" style="margin-top:0">Nova Unidade</h3>
-      
-      <div class="two">
-        <div><div class="muted">${t("unitName")}</div><input id="uName" placeholder="Ex: UPA Centro"/></div>
-        <div><div class="muted">${t("unitType")}</div><select id="uType">${typeOpt}</select></div>
-      </div>
-      
-      <div class="two">
-        <div><div class="muted">${t("unitUF")}</div><select id="uUF">${ufOpt}</select></div>
-        <div><div class="muted">${t("unitCity")}</div><select id="uCity"></select></div>
-      </div>
-      
-      <div class="two">
-        <div><div class="muted">${t("unitSubtype")}</div><input id="uSub" placeholder="Ex: Urgência"/></div>
-        <div><div class="muted">${t("unitsSys")}</div><select id="uSys">${sysOpt}</select></div>
-      </div>
-
-      <div class="sp"></div> <div class="muted" style="margin-bottom:8px">📍 Configuração de Check-in (GPS)</div>
-      
-      <div class="row" style="gap:10px; align-items:flex-end">
-         <div style="flex-grow:1">
-            <div class="muted">Endereço ou Nome do Local (para busca)</div>
-            <input id="uAddr" placeholder="Ex: Hospital Albert Einstein ou Av. Paulista, 1000"/>
-         </div>
-         <button class="primary" id="btnGeoSearch" style="margin-bottom:2px">🔍 Localizar</button>
+    <div class="card"><div class="cardin">
+      <div class="row" style="justify-content:space-between; align-items:center">
+        <div>
+            <h2 data-i18n="unitsTitle">${t("unitsTitle")}</h2>
+            <div class="muted" data-i18n="unitsHint">Gerencie hospitais, clínicas e postos de atendimento.</div>
+        </div>
+        <button class="primary" id="btnAddUnit" style="box-shadow: 0 4px 12px rgba(106, 163, 255, 0.2)">+ Nova Unidade</button>
       </div>
 
       <div class="sp"></div>
-
-      <div class="kpi">
-         <div class="k">
-            <div class="l">Latitude</div>
-            <input id="uLat" type="text" style="border:none; border-bottom:1px solid var(--line); background:transparent; font-weight:bold; color:var(--text); width:100%" placeholder="-23.0000">
-         </div>
-         <div class="k">
-            <div class="l">Longitude</div>
-            <input id="uLon" type="text" style="border:none; border-bottom:1px solid var(--line); background:transparent; font-weight:bold; color:var(--text); width:100%" placeholder="-46.0000">
-         </div>
-         <div class="k" style="border-color:var(--good)">
-            <div class="l">Raio (metros)</div>
-            <input id="uRadius" type="number" value="200" style="border:none; background:transparent; font-weight:bold; color:var(--good)">
-         </div>
+      
+      <div class="tableWrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="padding-left:10px">Unidade / Local</th>
+              <th>Tipo / Serviço</th>
+              <th>Sistema & Status</th>
+              <th>Geolocalização</th>
+              <th style="text-align:right">Ações</th>
+            </tr>
+          </thead>
+          <tbody>${rows || `<tr><td colspan="5" class="muted" style="text-align:center; padding:20px">Nenhuma unidade cadastrada.</td></tr>`}</tbody>
+        </table>
       </div>
-      <div class="muted" style="margin-top:5px; font-size:11px">
-        Dica: Se a busca automática não for exata, você pode digitar as coordenadas manualmente ou copiar do Google Maps para precisão total.
-      </div>
+    </div></div>
 
-      <div class="sp"></div> <div class="row">
-        <button class="primary" id="btnSaveUnit" data-i18n="unitSave">${t("unitSave")}</button>
-        <button id="btnCancelUnit">Cancelar</button>
-      </div>
-    </div>
+    <div class="modalOverlay" id="unitModal" style="display:none; z-index:200">
+      <div class="modal" style="max-width:600px">
+        <div class="card" style="box-shadow: 0 20px 50px rgba(0,0,0,0.5)">
+            <div class="cardin">
+                <div class="row" style="justify-content:space-between; align-items:center">
+                    <h2 id="unitFormTitle">Nova Unidade</h2>
+                    <button class="small" onclick="closeUnitModal()">✕</button>
+                </div>
+                
+                <div style="max-height:75vh; overflow-y:auto; padding-right:5px">
+                    
+                    <div class="section-title">Dados Gerais</div>
+                    <div class="muted" style="margin-bottom:4px">Nome da Unidade</div>
+                    <input id="uName" placeholder="Ex: Hospital Santa Catarina" style="font-size:16px; font-weight:bold">
+                    
+                    <div class="sp"></div>
+                    <div class="two">
+                        <div><div class="muted">Tipo</div><select id="uType">${typeOpt}</select></div>
+                        <div><div class="muted">Subtipo / Setor</div><input id="uSub" placeholder="Ex: Pronto Socorro"></div>
+                    </div>
 
-  </div></div>`;
+                    <div class="sp"></div>
+                    <div class="two">
+                        <div><div class="muted">Estado (UF)</div><select id="uUF">${ufOpt}</select></div>
+                        <div><div class="muted">Cidade</div><select id="uCity"></select></div>
+                    </div>
+
+                    <div class="section-title">Tecnologia</div>
+                    <div class="two">
+                        <div><div class="muted">Sistema ERP/Prontuário</div><select id="uSys">${sysOpt}</select></div>
+                        <div>
+                            <div class="muted">Integração</div>
+                            <div class="badge" style="margin-top:10px; display:inline-block; width:100%; text-align:center" id="uIntStatus">PENDENTE</div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Check-in & Segurança (GPS)</div>
+                    <div class="geo-box">
+                        <div class="row" style="gap:10px">
+                            <div style="flex-grow:1">
+                                <div class="muted">Buscar Local (Google Maps / OpenStreet)</div>
+                                <input id="uAddr" placeholder="Digite o nome do local ou endereço...">
+                            </div>
+                            <button class="primary" id="btnGeoSearch" style="margin-top:18px">🔍</button>
+                        </div>
+                        
+                        <div class="sp"></div>
+                        <div class="kpi" style="grid-template-columns: 1fr 1fr 1fr">
+                            <div class="k" style="padding:8px">
+                                <div class="l">Latitude</div>
+                                <input id="uLat" placeholder="0.0000" style="border:none; background:transparent; font-weight:bold; width:100%; font-size:13px">
+                            </div>
+                            <div class="k" style="padding:8px">
+                                <div class="l">Longitude</div>
+                                <input id="uLon" placeholder="0.0000" style="border:none; background:transparent; font-weight:bold; width:100%; font-size:13px">
+                            </div>
+                            <div class="k" style="padding:8px; border-color:var(--good)">
+                                <div class="l">Raio (m)</div>
+                                <input id="uRadius" type="number" value="200" style="border:none; background:transparent; font-weight:bold; width:100%; color:var(--good)">
+                            </div>
+                        </div>
+                        <div class="muted" style="margin-top:8px; font-size:11px; text-align:center">
+                            O profissional precisa estar dentro deste raio para realizar o check-in.
+                        </div>
+                    </div>
+
+                </div> <div class="sp"></div>
+                <div class="divider"></div>
+                <div class="row" style="justify-content:flex-end">
+                    <button id="btnCancelUnit" onclick="closeUnitModal()">Cancelar</button>
+                    <button class="primary" id="btnSaveUnit">Salvar Unidade</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>`;
       }
 
       function bindUnits() {
@@ -3554,6 +3613,7 @@
           city = $("uCity");
         let editingId = null;
 
+        // Função para preencher cidades baseada no UF
         function fillCities() {
           const ufv = uf.value || "SC";
           const list = UF_CITIES[ufv] || ["—"];
@@ -3561,141 +3621,39 @@
             .map((c) => `<option value="${c}">${c}</option>`)
             .join("");
         }
-
-        function showForm(on) {
-          $("unitForm").style.display = on ? "block" : "none";
-          if (!on) editingId = null;
-        }
-
-        // --- FUNÇÃO DE GEOCODING (Busca GPS pelo Endereço) ---
-        $("btnGeoSearch").onclick = async () => {
-          let term = $("uAddr").value.trim();
-          if (!term) {
-            toast("Digite um endereço ou nome de local.");
-            return;
-          }
-
-          toast("🔍 Buscando...");
-
-          // Limpeza básica para endereços com barras (ex: 627/701 -> 627)
-          // Mas se o usuário digitou nome (ex: Hospital Einstein), isso não atrapalha.
-          if (term.match(/\d+\/\d+/)) {
-            term = term.replace(/(\d+)[/-]\d+/, "$1");
-          }
-
-          try {
-            // Adiciona 'Brazil' se não tiver, para evitar buscar Einstein na Alemanha
-            if (
-              !term.toLowerCase().includes("brazil") &&
-              !term.toLowerCase().includes("brasil")
-            ) {
-              term += ", Brazil";
-            }
-
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(term)}&limit=1`;
-            const res = await fetch(url);
-            const data = await res.json();
-
-            if (data && data.length > 0) {
-              const place = data[0];
-              $("uLat").value = place.lat;
-              $("uLon").value = place.lon;
-              toast(
-                "✅ Encontrado: " + (place.display_name.slice(0, 30) + "..."),
-              );
-            } else {
-              toast(
-                "❌ Não encontrado. Tente digitar apenas o nome do Hospital.",
-              );
-            }
-          } catch (e) {
-            console.error(e);
-            toast("Erro na busca.");
-          }
-        };
-        // -----------------------------------------------------
-
-        // Criar Nova
-        $("btnAddUnit").onclick = () => {
-          editingId = null;
-          $("unitFormTitle").textContent = "Nova Unidade";
-          showForm(true);
-          uf.value = uf.value || "SC";
-          fillCities();
-          $("uName").value = "";
-          $("uSub").value = "";
-          $("uSys").value = "Tasy";
-
-          // Limpa Geo
-          $("uAddr").value = "";
-          $("uLat").value = "";
-          $("uLon").value = "";
-          $("uRadius").value = "200";
-        };
-
-        // Cancelar
-        $("btnCancelUnit").onclick = () => showForm(false);
-
-        // Editar (Global)
-        window.editUnit = (id) => {
-          const u = DB.units.find((x) => x.id === id);
-          if (!u) return;
-          editingId = id;
-          $("unitFormTitle").textContent = "Editar Unidade";
-          showForm(true);
-          $("uName").value = u.name;
-          $("uType").value = u.type;
-          $("uSys").value = u.system || "Tasy";
-          $("uSub").value = u.subtype || "";
-          $("uUF").value = u.uf || "SC";
-          fillCities();
-          $("uCity").value = u.city || "";
-
-          // Preenche Geo existente
-          $("uAddr").value = u.address || "";
-          $("uLat").value = u.lat || "";
-          $("uLon").value = u.lon || "";
-          $("uRadius").value = u.radiusM || "200";
-
-          location.href = "#unitForm";
-        };
-
-        // EXCLUSÃO EM CASCATA
-        window.deleteUnit = (id) => {
-          const shiftsAffected = DB.shifts.filter(
-            (s) => s.unitId === id,
-          ).length;
-          const msg =
-            shiftsAffected > 0
-              ? `⚠️ ATENÇÃO: Essa unidade tem ${shiftsAffected} plantões criados.\n\nAo excluir a unidade, TODOS os plantões dela também serão apagados.\n\nDeseja continuar?`
-              : "Tem certeza que deseja excluir esta unidade?";
-
-          if (!confirm(msg)) return;
-
-          DB.units = DB.units.filter((x) => x.id !== id);
-          DB.shifts = DB.shifts.filter((s) => s.unitId !== id);
-
-          renderInternalBody("units");
-          toast(`Unidade e ${shiftsAffected} plantões excluídos.`);
-
-          if (typeof db !== "undefined") {
-            db.collection("sistema")
-              .doc("v1")
-              .update({
-                units: DB.units,
-                schedule: DB.shifts,
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          } else {
-            saveDB();
-          }
-        };
-
         uf.onchange = fillCities;
-        fillCities();
 
+        // --- CONTROLE DO MODAL ---
+        window.openUnitModal = (isEdit) => {
+          $("unitModal").style.display = "flex";
+          $("unitFormTitle").textContent = isEdit
+            ? "Editar Unidade"
+            : "Nova Unidade";
+          if (!isEdit) {
+            // Reset form se for nova
+            editingId = null;
+            uf.value = "PR";
+            fillCities();
+            $("uName").value = "";
+            $("uSub").value = "";
+            $("uSys").value = "Tasy";
+            $("uAddr").value = "";
+            $("uLat").value = "";
+            $("uLon").value = "";
+            $("uRadius").value = "200";
+            $("uIntStatus").textContent = "NOVA";
+            $("uIntStatus").className = "badge";
+          }
+        };
+
+        window.closeUnitModal = () => {
+          $("unitModal").style.display = "none";
+        };
+
+        // Botão "Nova Unidade"
+        $("btnAddUnit").onclick = () => openUnitModal(false);
+
+        // Botão "Salvar" dentro do Modal
         $("btnSaveUnit").onclick = () => {
           const name = $("uName").value.trim();
           const type = $("uType").value;
@@ -3704,18 +3662,19 @@
           const sub = $("uSub").value.trim();
           const sys = $("uSys").value;
 
-          // Pega dados Geo
+          // Geo
           const addr = $("uAddr").value.trim();
           const lat = $("uLat").value;
           const lon = $("uLon").value;
           const rad = parseInt($("uRadius").value) || 200;
 
           if (!name) {
-            toast("Informe o nome");
+            toast("Informe o nome da unidade");
             return;
           }
 
           if (editingId) {
+            // ATUALIZAR
             const u = DB.units.find((x) => x.id === editingId);
             if (u) {
               u.name = name;
@@ -3724,16 +3683,15 @@
               u.city = cityv;
               u.subtype = sub;
               u.system = sys;
-              // Salva Geo
               u.address = addr;
               u.lat = lat;
               u.lon = lon;
               u.radiusM = rad;
-
               saveDB();
               toast("Unidade atualizada.");
             }
           } else {
+            // CRIAR
             DB.units.unshift({
               id: uid("u"),
               name,
@@ -3742,12 +3700,10 @@
               city: cityv,
               subtype: sub,
               system: sys,
-              // Salva Geo
               address: addr,
               lat,
               lon,
               radiusM: rad,
-
               integrationMode: "Export/CSV",
               integrationStatus: "pendente",
               lastSync: null,
@@ -3759,15 +3715,108 @@
             toast("Unidade criada.");
           }
 
-          showForm(false);
+          closeUnitModal();
           renderInternalBody("units");
-          applyI18n();
         };
 
+        // --- FUNÇÃO DE GEOCODING (Busca GPS) ---
+        $("btnGeoSearch").onclick = async () => {
+          let term = $("uAddr").value.trim();
+          if (!term) {
+            toast("Digite um nome ou endereço.");
+            return;
+          }
+          toast("🔍 Buscando...");
+
+          // Limpeza simples para números compostos (ex: 600/700 -> 600)
+          if (term.match(/\d+\/\d+/)) term = term.replace(/(\d+)[/-]\d+/, "$1");
+
+          try {
+            if (
+              !term.toLowerCase().includes("brazil") &&
+              !term.toLowerCase().includes("brasil")
+            ) {
+              term += ", Brazil";
+            }
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(term)}&limit=1`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data && data.length > 0) {
+              const place = data[0];
+              $("uLat").value = place.lat;
+              $("uLon").value = place.lon;
+              toast("✅ Encontrado!");
+            } else {
+              toast("❌ Local não encontrado. Tente simplificar.");
+            }
+          } catch (e) {
+            console.error(e);
+            toast("Erro ao conectar no mapa.");
+          }
+        };
+
+        // --- AÇÕES GLOBAIS (Editar/Excluir) ---
+        window.editUnit = (id) => {
+          const u = DB.units.find((x) => x.id === id);
+          if (!u) return;
+          editingId = id;
+          openUnitModal(true); // Abre em modo edição
+
+          // Preenche
+          $("uName").value = u.name;
+          $("uType").value = u.type;
+          $("uSys").value = u.system || "Tasy";
+          $("uSub").value = u.subtype || "";
+          $("uUF").value = u.uf || "SC";
+          fillCities();
+          $("uCity").value = u.city || "";
+
+          $("uAddr").value = u.address || "";
+          $("uLat").value = u.lat || "";
+          $("uLon").value = u.lon || "";
+          $("uRadius").value = u.radiusM || "200";
+
+          const st = u.integrationStatus || "pendente";
+          $("uIntStatus").textContent = st.toUpperCase();
+          $("uIntStatus").className =
+            "badge " + (st === "conectado" ? "bGood" : "bWarn");
+        };
+
+        window.deleteUnit = (id) => {
+          const shiftsAffected = DB.shifts.filter(
+            (s) => s.unitId === id,
+          ).length;
+          const msg =
+            shiftsAffected > 0
+              ? `⚠️ ATENÇÃO: Esta unidade possui ${shiftsAffected} plantões.\nAo excluir, TODOS os plantões dela também serão apagados.\n\nDeseja continuar?`
+              : "Tem certeza que deseja excluir esta unidade?";
+
+          if (!confirm(msg)) return;
+
+          DB.units = DB.units.filter((x) => x.id !== id);
+          DB.shifts = DB.shifts.filter((s) => s.unitId !== id); // Cascade
+
+          renderInternalBody("units");
+          toast("Unidade excluída.");
+
+          if (typeof db !== "undefined") {
+            db.collection("sistema")
+              .doc("v1")
+              .update({
+                units: DB.units,
+                schedule: DB.shifts,
+              })
+              .catch(console.error);
+          } else {
+            saveDB();
+          }
+        };
+
+        // Configurar botões da tabela (Integração)
         document.querySelectorAll(".btnCfg").forEach((btn) => {
           btn.onclick = () => {
-            const id = btn.dataset.unit;
-            setConnectUnit(id);
+            setConnectUnit(btn.dataset.unit);
             gotoTab("connect");
             toast("Abrindo integrações…");
           };
