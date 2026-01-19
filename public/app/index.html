@@ -4593,7 +4593,7 @@
         };
       }
 
-      /* ========= Market (Layout Mobile 100% Corrigido) ========= */
+      /* ========= Market (Rede & Fornecedores - Layout Definitivo v4) ========= */
       function renderMarket() {
         // --- 1. Inicialização de Dados ---
         if (!DB.market) DB.market = {};
@@ -4612,22 +4612,22 @@
           x.name.toLowerCase().includes(term.toLowerCase()),
         );
 
-        // --- 3. Templates HTML dos Cards ---
+        // --- 3. Templates dos Cards ---
         const nCards = nList.length
           ? nList
               .map(
                 (x) => `
             <div class="m-card n-border">
-                <div class="m-card-header">
+                <div class="m-card-top">
                   <div class="m-title">${x.name}</div>
                   <div class="m-stars">${stars(x.rating)}</div>
                 </div>
-                <div class="muted" style="font-size:12px; margin-top:4px">
+                <div class="m-sub">
                    🏥 ${x.type} • 📍 ${x.city || "N/D"}
                 </div>
-                <div class="m-card-footer">
+                <div class="m-card-bot">
                    <div class="badge" style="font-size:10px;">SLA: ${x.sla || "-"}</div>
-                   <div class="row" style="gap:5px">
+                   <div class="m-actions">
                       <button class="small" onclick="openEditNetwork('${x.id}')">✏️</button>
                       <button class="small danger" onclick="delNetworkItem('${x.id}')">🗑️</button>
                    </div>
@@ -4635,7 +4635,7 @@
             </div>`,
               )
               .join("")
-          : `<div class="m-empty">Nenhum parceiro encontrado.</div>`;
+          : `<div class="m-empty">Nenhum parceiro.</div>`;
 
         const vCards = vList.length
           ? vList
@@ -4646,15 +4646,15 @@
 
                 return `
             <div class="m-card v-border">
-                <div class="m-card-header">
+                <div class="m-card-top">
                   <div class="m-title">${x.name}</div>
-                  <span class="badge ${sColor}" style="font-size:10px; padding:2px 6px; height:fit-content">${x.status.toUpperCase()}</span>
+                  <span class="badge ${sColor}" style="font-size:10px; padding:2px 6px">${x.status.toUpperCase()}</span>
                 </div>
-                <div class="muted" style="font-size:12px; margin-top:4px">
+                <div class="m-sub">
                    📦 ${x.cat} • 📞 ${x.contact || "-"}
                 </div>
-                <div class="m-card-footer" style="justify-content:flex-end">
-                   <div class="row" style="gap:5px">
+                <div class="m-card-bot" style="justify-content:flex-end">
+                   <div class="m-actions">
                        <button class="small" onclick="openEditVendor('${x.id}')">✏️</button>
                        <button class="small danger" onclick="delVendorItem('${x.id}')">🗑️</button>
                    </div>
@@ -4662,71 +4662,99 @@
             </div>`;
               })
               .join("")
-          : `<div class="m-empty">Nenhum fornecedor encontrado.</div>`;
+          : `<div class="m-empty">Nenhum fornecedor.</div>`;
 
-        // --- 4. CSS BLINDADO (Mobile Layout Fix) ---
+        // --- 4. CSS Isolado (Mobile First Flexbox) ---
         const styles = `
         <style>
-            /* Reset básico para o container */
-            .market-view { display: flex; flex-direction: column; gap: 20px; width: 100%; box-sizing: border-box; }
+            /* Container Principal */
+            .market-container { display: flex; flex-direction: column; gap: 20px; width: 100%; }
 
-            /* Header Desktop */
-            .m-head-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-            .m-search-wrap { position: relative; min-width: 250px; }
-            .m-search-wrap input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--line); background: rgba(0,0,0,0.2); }
+            /* Header (Título e Busca) */
+            .market-header-row { 
+                display: flex; 
+                flex-wrap: wrap; 
+                justify-content: space-between; 
+                align-items: center; 
+                gap: 15px; 
+            }
+            .market-search-box { flex: 1; min-width: 200px; }
+            .market-search-box input { width: 100%; box-sizing: border-box; }
 
-            /* Stats Grid Desktop */
-            .m-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
-            .m-kpi-box { background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-align: center; }
-            .m-kpi-val { font-size: 20px; font-weight: 900; }
-            .m-kpi-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+            /* KPIs (Estatísticas) */
+            .market-kpi-row { 
+                display: grid; 
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 10px; 
+            }
+            /* Em telas menores que 600px, muda para 2 colunas */
+            @media (max-width: 600px) {
+                .market-kpi-row { grid-template-columns: 1fr 1fr; }
+            }
 
-            /* Layout de Colunas Desktop */
-            .m-content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
-            
-            /* Cabeçalhos das Colunas */
-            .m-col-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 2px; }
-            .m-col-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
-
-            /* Cards */
-            .m-card { 
-                background: rgba(255,255,255,0.02); 
+            .kpi-box { 
+                background: rgba(255,255,255,0.03); 
                 border: 1px solid var(--line); 
                 border-radius: 12px; 
-                padding: 12px; 
-                margin-bottom: 12px; 
-                width: 100%; 
-                box-sizing: border-box;
+                padding: 10px; 
+                text-align: center; 
             }
-            .m-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
-            .m-title { font-weight: bold; word-break: break-word; line-height: 1.2; font-size: 14px; }
-            .m-stars { font-size: 10px; white-space: nowrap; }
-            .m-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+            .kpi-val { font-size: 18px; font-weight: 900; }
+            .kpi-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+
+            /* Layout das Colunas de Conteúdo (Rede vs Fornecedores) */
+            .market-content-row {
+                display: flex;
+                flex-wrap: wrap; /* O segredo: permite quebra de linha */
+                gap: 20px;
+                align-items: flex-start;
+            }
             
+            .market-col {
+                flex: 1;             /* Tenta ocupar espaço igual */
+                min-width: 300px;    /* Se ficar menor que 300px, quebra para linha de baixo */
+                /* No mobile, isso força a ocupar 100% */
+            }
+            
+            @media (max-width: 400px) {
+                .market-col { min-width: 100%; } /* Garante em telas muito pequenas */
+            }
+
+            /* Cabeçalho da Coluna (Título + Botão) */
+            .col-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+                padding-bottom: 5px;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+            .col-title { font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+
+            /* Estilo dos Cards */
+            .m-card {
+                background: rgba(255,255,255,0.02);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 12px;
+                margin-bottom: 10px;
+            }
             .n-border { border-left: 3px solid var(--accent); }
             .v-border { border-left: 3px solid var(--good); }
-            .m-empty { padding: 30px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 13px; }
-
-            /* --- MOBILE CORRECTIONS (A Mágica acontece aqui) --- */
-            @media (max-width: 768px) {
-                /* Força o container a não vazar */
-                .market-view { width: 100%; padding: 0; overflow-x: hidden; }
-
-                /* Header: Título em cima, Busca embaixo (Full Width) */
-                .m-head-row { flex-direction: column; align-items: stretch; gap: 12px; }
-                .m-search-wrap { width: 100%; min-width: unset; } 
-                
-                /* KPIs: 2 colunas para caber na tela */
-                .m-kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-                
-                /* Conteúdo: Uma coluna embaixo da outra */
-                .m-content-grid { display: flex; flex-direction: column; gap: 30px; }
-                
-                /* Ajuste de margens */
-                .m-col-header { margin-bottom: 10px; }
-                
-                /* Garante que o texto do card quebre linha se for longo */
-                .m-title { font-size: 15px; }
+            
+            .m-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+            .m-title { font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+            .m-sub { color: var(--muted); font-size: 11px; margin-bottom: 10px; }
+            .m-card-bot { display: flex; justify-content: space-between; align-items: center; }
+            .m-actions { display: flex; gap: 6px; }
+            
+            .m-empty { 
+                padding: 20px; 
+                text-align: center; 
+                border: 1px dashed var(--line); 
+                border-radius: 10px; 
+                color: var(--muted); 
+                font-size: 12px; 
             }
         </style>`;
 
@@ -4734,45 +4762,49 @@
   ${styles}
   <div class="card"><div class="cardin">
     
-    <div class="market-view">
-        <div class="m-head-row">
+    <div class="market-container">
+        
+        <div class="market-header-row">
             <div>
-                <h2 data-i18n="marketTitle">${t("marketTitle")}</h2>
-                <div class="muted" data-i18n="marketHint">Gestão de parceiros e SLAs.</div>
+                <h2 data-i18n="marketTitle" style="margin:0">${t("marketTitle")}</h2>
+                <div class="muted" style="font-size:12px">Gestão de parceiros.</div>
             </div>
-            <div class="m-search-wrap">
+            <div class="market-search-box">
                 <input id="mSearch" placeholder="🔍 Buscar..." value="${term}">
             </div>
         </div>
 
         <div class="divider"></div>
 
-        <div class="m-kpi-grid">
-            <div class="m-kpi-box"><div class="m-kpi-val">${DB.market.network.length}</div><div class="m-kpi-lbl">Rede</div></div>
-            <div class="m-kpi-box"><div class="m-kpi-val">${DB.market.vendors.length}</div><div class="m-kpi-lbl">Fornecedores</div></div>
-            <div class="m-kpi-box"><div class="m-kpi-val" style="color:var(--good)">${DB.market.vendors.filter((v) => v.status === "ativo").length}</div><div class="m-kpi-lbl">Ativos</div></div>
-            <div class="m-kpi-box"><div class="m-kpi-val" style="color:var(--warn)">${DB.market.vendors.filter((v) => v.status !== "ativo").length}</div><div class="m-kpi-lbl">Análise</div></div>
+        <div class="market-kpi-row">
+            <div class="kpi-box"><div class="kpi-val">${DB.market.network.length}</div><div class="kpi-lbl">Rede</div></div>
+            <div class="kpi-box"><div class="kpi-val">${DB.market.vendors.length}</div><div class="kpi-lbl">Forn.</div></div>
+            <div class="kpi-box"><div class="kpi-val" style="color:var(--good)">${DB.market.vendors.filter((v) => v.status === "ativo").length}</div><div class="kpi-lbl">Ativos</div></div>
+            <div class="kpi-box"><div class="kpi-val" style="color:var(--warn)">${DB.market.vendors.filter((v) => v.status !== "ativo").length}</div><div class="kpi-lbl">Análise</div></div>
         </div>
 
-        <div class="m-content-grid">
-          
-          <div>
-            <div class="m-col-header">
-                <h3 style="color:var(--accent)">🏥 Rede Credenciada</h3>
-                <button class="small primary" id="btnNAdd" style="white-space:nowrap">+ Adicionar</button>
-            </div>
-            <div>${nCards}</div>
-          </div>
+        <div class="sp"></div>
 
-          <div>
-            <div class="m-col-header">
-                <h3 style="color:var(--good)">📦 Fornecedores</h3>
-                <button class="small primary" id="btnVAdd" style="white-space:nowrap">+ Adicionar</button>
+        <div class="market-content-row">
+            
+            <div class="market-col">
+                <div class="col-header">
+                    <div class="col-title" style="color:var(--accent)">🏥 Rede</div>
+                    <button class="small primary" id="btnNAdd">+ Adicionar</button>
+                </div>
+                <div class="col-list">${nCards}</div>
             </div>
-            <div>${vCards}</div>
-          </div>
+
+            <div class="market-col">
+                <div class="col-header">
+                    <div class="col-title" style="color:var(--good)">📦 Fornecedores</div>
+                    <button class="small primary" id="btnVAdd">+ Adicionar</button>
+                </div>
+                <div class="col-list">${vCards}</div>
+            </div>
 
         </div>
+
     </div>
 
     <div id="marketCreateModal" class="modalOverlay" style="display:none; z-index:900"></div>
