@@ -4099,24 +4099,39 @@
         };
       }
 
-      /* ========= Payments ========= */
-      /* ========= Payments (Com Melhorias Enterprise) ========= */
       function renderPay() {
         const batchMonth = window.payFilterMonth || isoMonth(nowISO());
         const unitId = window.payFilterUnit || "";
 
-        // Busca o lote fechado (se houver)
-        const closedBatch = DB.payBatches.find(
+        // 1. Helpers Internos de Cálculo (Necessários para o render inicial)
+        function parseHM(hm) {
+          const [h, m] = String(hm || "0:0")
+            .split(":")
+            .map((x) => parseInt(x, 10) || 0);
+          return h + m / 60;
+        }
+        function hoursBetween(s, e) {
+          let v = parseHM(e) - parseHM(s);
+          if (v < 0) v += 24;
+          return v;
+        }
+        function isWeekend(dateStr) {
+          const d = new Date(dateStr + "T00:00:00");
+          const g = d.getDay();
+          return g === 0 || g === 6;
+        }
+
+        // 2. Busca Lote Fechado
+        const closedBatch = (DB.payBatches || []).find(
           (b) => b.month === batchMonth && b.unitId === unitId,
         );
         const isClosed = !!closedBatch;
 
-        // Se estiver fechado, usa os dados do lote. Se não, calcula 'on the fly' (Preview)
         let displayItems = [];
         let totalVal = 0;
         let totalHours = 0;
 
-        // Opções de Unidade
+        // Opções de Unidade para o Select
         const unitOpt =
           `<option value="">Todas</option>` +
           DB.units
@@ -4126,49 +4141,101 @@
             )
             .join("");
 
+        // 3. Define os Itens a Exibir (Dados Fechados ou Cálculo em Tempo Real)
         if (isClosed) {
-          displayItems = closedBatch.items;
-          totalVal = closedBatch.totalValue;
-          totalHours = closedBatch.totalHours;
+          // PROTEÇÃO: Garante que .items seja um array mesmo se o banco estiver zoado
+          displayItems = Array.isArray(closedBatch.items)
+            ? closedBatch.items
+            : [];
+          totalVal = closedBatch.totalValue || 0;
+          totalHours = closedBatch.totalHours || 0;
         } else {
-          // Lógica de Preview (Cálculo em tempo real)
-          // ... (mesma lógica de antes, mas simplificada aqui para focar no render)
+          // --- MODO PREVIEW: Calcula agora para mostrar na tela ---
+          // Pega regras salvas ou usa padrão
+          const rules = DB.payRules || {
+            baseHour: 120,
+            nightMult: 1.2,
+            weekendMult: 1.15,
+            holidayMult: 1.5,
+            useCheckIO: true,
+          };
+          const taxRate = 0; // No preview inicial assume 0, ajusta via bindPay depois
+
+          const rawShifts = DB.shifts.filter(
+            (s) =>
+              s.month === batchMonth &&
+              (!unitId || s.unitId === unitId) &&
+              s.profId,
+          );
+          const map = {};
+
+          rawShifts.forEach((s) => {
+            if (!map[s.profId])
+              map[s.profId] = { profId: s.profId, hours: 0, value: 0 };
+
+            // Calcula Horas
+            let h = hoursBetween(s.start, s.end);
+            if (rules.useCheckIO && s.checkInAt && s.checkOutAt) {
+              h = hoursBetween(
+                s.checkInAt.slice(11, 16),
+                s.checkOutAt.slice(11, 16),
+              );
+            }
+
+            // Calcula Multiplicador
+            let m = 1.0;
+            const sH = parseHM(s.start),
+              eH = parseHM(s.end);
+            const isNight = sH >= 19 || eH <= 7 || eH < sH;
+            const isWk = isWeekend(s.date);
+
+            if (isWk) m = Math.max(m, rules.weekendMult || 1);
+            if (isNight) m = Math.max(m, rules.nightMult || 1);
+
+            map[s.profId].hours += h;
+            map[s.profId].value += h * (rules.baseHour || 0) * m;
+          });
+
+          displayItems = Object.values(map).map((i) => ({
+            ...i,
+            taxValue: 0,
+            netValue: i.value,
+            status: "PENDENTE",
+            hasInvoice: false,
+          }));
+
+          totalVal = displayItems.reduce((a, b) => a + b.value, 0);
+          totalHours = displayItems.reduce((a, b) => a + b.hours, 0);
         }
 
-        // Renderiza as linhas da tabela
+        // 4. Renderiza as Linhas da Tabela
+        // AQUI ESTAVA O ERRO: Agora displayItems é garantido como array []
         const rows = displayItems
           .map((item, idx) => {
             const prof = getProf(item.profId);
-            // 1. STATUS VISUAL (Verde se pago)
             const isPaid = item.status === "PAGO";
             const rowClass = isPaid
               ? "style='background:rgba(55, 214, 122, 0.1)'"
               : "";
 
-            // 2. ALERTA DE DISCREPÂNCIA
-            // Se horas pagas forem muito diferentes das horas originais da escala
-            const delta = Math.abs(
-              item.hours - (item.hoursPlanned || item.hours),
-            );
+            // Alerta de discrepância
+            const hPlan = item.hoursPlanned || item.hours; // fallback
+            const delta = Math.abs(item.hours - hPlan);
             const alertIcon =
               delta > 0.5
-                ? `<span title="Diferença de ${delta.toFixed(1)}h entre escala e ponto" style="cursor:help">⚠️</span>`
+                ? `<span title="Diferença de ${delta.toFixed(1)}h" style="cursor:help">⚠️</span>`
                 : "";
 
-            // 3. BOTÃO DE NOTA FISCAL (Upload Simulado)
             const nfBtn = item.hasInvoice
-              ? `<button class="small" onclick="uploadInvoice('${idx}')" title="Ver Nota Fiscal" style="color:var(--good)">📎 OK</button>`
-              : `<button class="small" onclick="uploadInvoice('${idx}')" title="Anexar Nota Fiscal" style="opacity:0.5">📎 Add</button>`;
+              ? `<button class="small" onclick="uploadInvoice('${idx}')" title="Ver NF" style="color:var(--good)">📎 OK</button>`
+              : `<button class="small" onclick="uploadInvoice('${idx}')" title="Anexar NF" style="opacity:0.5">📎 Add</button>`;
 
-            // 4. BOTÃO DE EXTRATO
-            const recBtn = `<button class="small" onclick="viewReceipt('${idx}')" title="Ver Extrato Detalhado">📄</button>`;
+            const recBtn = `<button class="small" onclick="viewReceipt('${idx}')" title="Extrato">📄</button>`;
 
-            // Status Badge
             const stBadge = isPaid
               ? `<span class="badge bGood">PAGO</span>`
               : `<span class="badge bWarn">PENDENTE</span>`;
 
-            // Botões de Ação
             const actionBtns = isPaid
               ? `<button class="small" onclick="togglePayStatus('${idx}')">Desfazer</button>`
               : `<button class="small primary" onclick="approvePay('${idx}')">Pagar</button>`;
