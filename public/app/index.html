@@ -4099,11 +4099,12 @@
         };
       }
 
+      /* ========= Payments (Mobile-Ready Enterprise) ========= */
       function renderPay() {
         const batchMonth = window.payFilterMonth || isoMonth(nowISO());
         const unitId = window.payFilterUnit || "";
 
-        // 1. Helpers Internos de Cálculo (Necessários para o render inicial)
+        // Helpers de cálculo para o render (Preview)
         function parseHM(hm) {
           const [h, m] = String(hm || "0:0")
             .split(":")
@@ -4121,7 +4122,7 @@
           return g === 0 || g === 6;
         }
 
-        // 2. Busca Lote Fechado
+        // Busca Lote
         const closedBatch = (DB.payBatches || []).find(
           (b) => b.month === batchMonth && b.unitId === unitId,
         );
@@ -4131,7 +4132,7 @@
         let totalVal = 0;
         let totalHours = 0;
 
-        // Opções de Unidade para o Select
+        // Opções de Unidade
         const unitOpt =
           `<option value="">Todas</option>` +
           DB.units
@@ -4141,17 +4142,15 @@
             )
             .join("");
 
-        // 3. Define os Itens a Exibir (Dados Fechados ou Cálculo em Tempo Real)
+        // Lógica de Exibição (Preview ou Fechado)
         if (isClosed) {
-          // PROTEÇÃO: Garante que .items seja um array mesmo se o banco estiver zoado
           displayItems = Array.isArray(closedBatch.items)
             ? closedBatch.items
             : [];
           totalVal = closedBatch.totalValue || 0;
           totalHours = closedBatch.totalHours || 0;
         } else {
-          // --- MODO PREVIEW: Calcula agora para mostrar na tela ---
-          // Pega regras salvas ou usa padrão
+          // Preview em tempo real
           const rules = DB.payRules || {
             baseHour: 120,
             nightMult: 1.2,
@@ -4159,7 +4158,6 @@
             holidayMult: 1.5,
             useCheckIO: true,
           };
-          const taxRate = 0; // No preview inicial assume 0, ajusta via bindPay depois
 
           const rawShifts = DB.shifts.filter(
             (s) =>
@@ -4172,8 +4170,6 @@
           rawShifts.forEach((s) => {
             if (!map[s.profId])
               map[s.profId] = { profId: s.profId, hours: 0, value: 0 };
-
-            // Calcula Horas
             let h = hoursBetween(s.start, s.end);
             if (rules.useCheckIO && s.checkInAt && s.checkOutAt) {
               h = hoursBetween(
@@ -4181,14 +4177,11 @@
                 s.checkOutAt.slice(11, 16),
               );
             }
-
-            // Calcula Multiplicador
             let m = 1.0;
             const sH = parseHM(s.start),
               eH = parseHM(s.end);
             const isNight = sH >= 19 || eH <= 7 || eH < sH;
             const isWk = isWeekend(s.date);
-
             if (isWk) m = Math.max(m, rules.weekendMult || 1);
             if (isNight) m = Math.max(m, rules.nightMult || 1);
 
@@ -4208,8 +4201,6 @@
           totalHours = displayItems.reduce((a, b) => a + b.hours, 0);
         }
 
-        // 4. Renderiza as Linhas da Tabela
-        // AQUI ESTAVA O ERRO: Agora displayItems é garantido como array []
         const rows = displayItems
           .map((item, idx) => {
             const prof = getProf(item.profId);
@@ -4217,24 +4208,20 @@
             const rowClass = isPaid
               ? "style='background:rgba(55, 214, 122, 0.1)'"
               : "";
-
-            // Alerta de discrepância
-            const hPlan = item.hoursPlanned || item.hours; // fallback
+            const hPlan = item.hoursPlanned || item.hours;
             const delta = Math.abs(item.hours - hPlan);
             const alertIcon =
-              delta > 0.5
-                ? `<span title="Diferença de ${delta.toFixed(1)}h" style="cursor:help">⚠️</span>`
-                : "";
+              delta > 0.5 ? `<span style="cursor:help">⚠️</span>` : "";
 
             const nfBtn = item.hasInvoice
-              ? `<button class="small" onclick="uploadInvoice('${idx}')" title="Ver NF" style="color:var(--good)">📎 OK</button>`
-              : `<button class="small" onclick="uploadInvoice('${idx}')" title="Anexar NF" style="opacity:0.5">📎 Add</button>`;
+              ? `<button class="small" onclick="uploadInvoice('${idx}')" style="color:var(--good); min-width:40px">📎</button>`
+              : `<button class="small" onclick="uploadInvoice('${idx}')" style="opacity:0.5; min-width:40px">➕</button>`;
 
-            const recBtn = `<button class="small" onclick="viewReceipt('${idx}')" title="Extrato">📄</button>`;
+            const recBtn = `<button class="small" onclick="viewReceipt('${idx}')">📄</button>`;
 
             const stBadge = isPaid
               ? `<span class="badge bGood">PAGO</span>`
-              : `<span class="badge bWarn">PENDENTE</span>`;
+              : `<span class="badge bWarn">PEND.</span>`;
 
             const actionBtns = isPaid
               ? `<button class="small" onclick="togglePayStatus('${idx}')">Desfazer</button>`
@@ -4242,18 +4229,18 @@
 
             return `<tr ${rowClass}>
                 <td>
-                    <div style="font-weight:bold">${prof ? prof.name : "Desconhecido"}</div>
-                    <div class="muted" style="font-size:11px">${prof?.pixKey || "Sem PIX"}</div>
+                    <div style="font-weight:bold; white-space:nowrap">${prof ? prof.name : "Desconhecido"}</div>
+                    <div class="muted" style="font-size:10px">${prof?.pixKey || "Sem PIX"}</div>
                 </td>
                 <td>${item.hours.toFixed(1)}h ${alertIcon}</td>
-                <td>R$ ${item.value.toFixed(2)}</td>
-                <td style="color:var(--bad); font-size:12px">- R$ ${item.taxValue ? item.taxValue.toFixed(2) : "0.00"}</td>
-                <td style="font-weight:bold; color:var(--good)">R$ ${item.netValue ? item.netValue.toFixed(2) : item.value.toFixed(2)}</td>
+                <td>R$ ${item.value.toFixed(0)}</td>
+                <td style="color:var(--bad); font-size:11px">-${item.taxValue ? item.taxValue.toFixed(0) : "0"}</td>
+                <td style="font-weight:bold; color:var(--good)">R$ ${item.netValue ? item.netValue.toFixed(0) : item.value.toFixed(0)}</td>
                 <td style="text-align:center">${nfBtn}</td>
                 <td style="text-align:center">${recBtn}</td>
                 <td>${stBadge}</td>
                 <td style="text-align:right">
-                    <div class="row" style="justify-content:flex-end; gap:5px">
+                    <div class="row" style="justify-content:flex-end; gap:5px; flex-wrap:nowrap">
                         ${actionBtns}
                     </div>
                 </td>
@@ -4261,81 +4248,93 @@
           })
           .join("");
 
+        // CSS Injetado para Mobile Específico dessa tela
+        const mobileStyles = `
+        <style>
+            @media (max-width: 768px) {
+                .pay-grid { grid-template-columns: 1fr !important; display:flex; flex-direction:column-reverse; }
+                .pay-rules-box { display:none; }
+                .pay-rules-box.open { display:block; animation: fadeIn 0.3s; }
+                .pay-header-row { flex-direction:column; align-items:stretch !important; gap:10px; }
+                .pay-kpi-row { flex-direction:row; justify-content:space-between; font-size:13px; }
+            }
+        </style>`;
+
         return `
+    ${mobileStyles}
     <div class="card"><div class="cardin">
-        <div class="row" style="justify-content:space-between; align-items:center">
+        <div class="row pay-header-row" style="justify-content:space-between; align-items:center">
             <h2 data-i18n="payTitle">${t("payTitle")}</h2>
-            <div class="badge" style="font-size:12px">${isClosed ? "🔒 FECHAMENTO CONGELADO" : "🔓 PRÉ-VISUALIZAÇÃO"}</div>
+            <div class="row" style="gap:10px">
+                <button class="small" id="btnToggleRules" style="border:1px solid var(--accent)">⚙️ Regras</button>
+                <div class="badge" style="font-size:12px">${isClosed ? "🔒 FECHADO" : "🔓 PREVIEW"}</div>
+            </div>
         </div>
         <div class="sp"></div>
 
         <div class="card" style="background:rgba(255,255,255,0.02); padding:10px">
-            <div class="row" style="gap:20px; align-items:flex-end">
-                <div>
-                    <div class="muted">Mês de Referência</div>
-                    <input type="month" id="payMonth" value="${batchMonth}" style="font-weight:bold">
+            <div class="row pay-header-row" style="gap:15px; align-items:flex-end">
+                <div style="flex:1">
+                    <div class="muted">Mês</div>
+                    <input type="month" id="payMonth" value="${batchMonth}" style="font-weight:bold; min-width:140px">
                 </div>
-                <div>
-                    <div class="muted">Filtrar Unidade</div>
-                    <select id="payUnit">${unitOpt}</select>
+                <div style="flex:1">
+                    <div class="muted">Unidade</div>
+                    <select id="payUnit" style="min-width:140px">${unitOpt}</select>
                 </div>
-                <div style="flex-grow:1"></div>
-                ${!isClosed ? `<button class="primary" id="btnGenBatch">🔒 Fechar & Gerar Fatura</button>` : `<button class="danger" onclick="deleteBatch()">🗑️ Reabrir Mês</button>`}
+                ${
+                  !isClosed
+                    ? `<button class="primary" id="btnGenBatch" style="min-width:140px">🔒 Fechar Folha</button>`
+                    : `<button class="danger" onclick="deleteBatch()" style="min-width:140px">🗑️ Reabrir</button>`
+                }
             </div>
         </div>
 
         <div class="sp"></div>
 
-        <div class="grid g2" style="grid-template-columns: 300px 1fr; gap:20px">
-            <div class="card" style="height:fit-content; border:1px solid var(--line)">
+        <div class="grid g2 pay-grid" style="grid-template-columns: 280px 1fr; gap:20px">
+            
+            <div id="payRulesBox" class="card pay-rules-box" style="height:fit-content; border:1px solid var(--line)">
                 <div class="cardin">
-                    <h3>Regras de Cálculo</h3>
+                    <h3>Parâmetros</h3>
                     <div class="sp"></div>
-                    
                     <div class="two">
                         <div><div class="muted">Hora Base (R$)</div><input id="payRate" type="number" value="120" ${isClosed ? "disabled" : ""}></div>
-                        <div><div class="muted">Taxa Imposto (%)</div><input id="payTaxRate" type="number" value="0" placeholder="Ex: 11" ${isClosed ? "disabled" : ""}></div>
+                        <div><div class="muted">Imposto (%)</div><input id="payTaxRate" type="number" value="0" ${isClosed ? "disabled" : ""}></div>
                     </div>
-                    
                     <div class="sp"></div>
-                    <div class="muted">Multiplicadores</div>
+                    <div class="muted">Adicionais</div>
                     <div class="row" style="justify-content:space-between; margin-top:5px">
-                        <span class="muted">Noturno</span>
-                        <input id="payMultN" type="number" value="1.2" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
+                        <span class="muted">Noturno</span><input id="payMultN" type="number" value="1.2" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
                     </div>
                     <div class="row" style="justify-content:space-between; margin-top:5px">
-                        <span class="muted">Feriado</span>
-                        <input id="payMultF" type="number" value="1.5" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
+                        <span class="muted">Feriado</span><input id="payMultF" type="number" value="1.5" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
                     </div>
                     <div class="row" style="justify-content:space-between; margin-top:5px">
-                        <span class="muted">Fim de Semana</span>
-                        <input id="payMultW" type="number" value="1.15" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
+                        <span class="muted">Fim de Semana</span><input id="payMultW" type="number" value="1.15" style="width:60px" step="0.1" ${isClosed ? "disabled" : ""}>
                     </div>
-
                     <div class="sp"></div>
                     <div class="muted">Fonte de Horas</div>
                     <select id="paySource" ${isClosed ? "disabled" : ""} style="width:100%">
-                        <option value="real">Real (Check-in/out)</option>
+                        <option value="real">Real (Check-in)</option>
                         <option value="planned">Planejado (Escala)</option>
                     </select>
-
                     <div class="sp"></div>
-                    ${!isClosed ? `<button id="btnSimulate" style="width:100%">🔄 Recalcular Preview</button>` : ""}
+                    ${!isClosed ? `<button id="btnSimulate" style="width:100%; margin-top:10px">🔄 Recalcular</button>` : ""}
                 </div>
             </div>
 
-            <div>
-                 <div class="row" style="justify-content:space-between; align-items:center; margin-bottom:10px">
+            <div style="min-width:0"> <div class="row pay-kpi-row" style="align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px">
                     <div class="muted">
-                        Total Bruto: <b>R$ ${totalVal.toFixed(2)}</b> • Horas: <b>${totalHours.toFixed(1)}h</b>
+                        Total: <b style="color:var(--text); font-size:16px">R$ ${totalVal.toFixed(2)}</b> <span style="opacity:0.5">(${totalHours.toFixed(0)}h)</span>
                     </div>
                     <div class="row">
-                        <button class="small" onclick="exportPay('csv')">Exportar CSV</button>
-                        <button class="small" onclick="exportPay('cnab')">Remessa CNAB/PIX</button>
+                        <button class="small" onclick="exportPay('csv')">CSV</button>
+                        <button class="small" onclick="exportPay('cnab')">PIX</button>
                     </div>
                  </div>
 
-                 <div class="tableWrap" style="max-height:500px; overflow-y:auto">
+                 <div class="tableWrap" style="max-height:60vh; overflow-y:auto; border:1px solid var(--line); border-radius:8px">
                     <table class="table">
                         <thead>
                             <tr>
@@ -4343,15 +4342,15 @@
                                 <th>Horas</th>
                                 <th>Bruto</th>
                                 <th>Desc.</th>
-                                <th>Líquido</th>
+                                <th>Líq.</th>
                                 <th style="text-align:center">NF</th>
-                                <th style="text-align:center">Extrato</th>
+                                <th style="text-align:center">Doc</th>
                                 <th>Status</th>
                                 <th style="text-align:right">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${rows.length ? rows : `<tr><td colspan="9" class="muted" style="text-align:center; padding:20px">Nenhum pagamento gerado para este filtro.</td></tr>`}
+                            ${rows.length ? rows : `<tr><td colspan="9" class="muted" style="text-align:center; padding:20px">Sem dados.</td></tr>`}
                         </tbody>
                     </table>
                  </div>
@@ -4363,38 +4362,29 @@
     `;
       }
       function bindPay() {
-        // --- 1. HELPERS INTERNOS (Para garantir que os cálculos funcionem) ---
+        // --- HELPERS (Replicados para garantir escopo) ---
         function parseHM(hm) {
           const [h, m] = String(hm || "0:0")
             .split(":")
             .map((x) => parseInt(x, 10) || 0);
           return h + m / 60;
         }
-
         function hoursBetween(start, end) {
           let s = parseHM(start),
             e = parseHM(end);
-          if (e <= s) e += 24; // Passou da meia-noite
+          if (e <= s) e += 24;
           return e - s;
         }
-
         function isWeekend(dateStr) {
           const d = new Date(dateStr + "T00:00:00");
           const g = d.getDay();
-          return g === 0 || g === 6; // 0=Domingo, 6=Sábado
+          return g === 0 || g === 6;
         }
 
-        // --- 2. PREPARAÇÃO DA TELA ---
+        // --- ELEMENTOS E LISTENERS ---
         const mInput = $("payMonth");
         const uInput = $("payUnit");
 
-        // Garante padrões nos profissionais (PIX/Banco)
-        (DB.profs || []).forEach((p) => {
-          if (!("pixKey" in p)) p.pixKey = "";
-          if (!("bankName" in p)) p.bankName = "";
-        });
-
-        // --- 3. EVENTOS DE FILTRO ---
         if (mInput)
           mInput.onchange = () => {
             window.payFilterMonth = mInput.value;
@@ -4406,106 +4396,79 @@
             renderInternalBody("pay");
           };
 
-        // --- 4. CÉREBRO DE CÁLCULO (Onde a mágica acontece) ---
+        // Toggle Regras (Mobile)
+        const btnRules = $("btnToggleRules");
+        if (btnRules) {
+          btnRules.onclick = () => {
+            const box = $("payRulesBox");
+            if (box) box.classList.toggle("open");
+          };
+        }
+
+        // --- CÁLCULO CORE ---
         function calculateCurrentData() {
-          // Pega valores da tela
           const rate = parseFloat($("payRate")?.value || 120);
           const taxRate = parseFloat($("payTaxRate")?.value || 0);
           const multN = parseFloat($("payMultN")?.value || 1.2);
-          const multF = parseFloat($("payMultF")?.value || 1.5); // Feriado
-          const multW = parseFloat($("payMultW")?.value || 1.15); // Fim de Semana
+          const multW = parseFloat($("payMultW")?.value || 1.15);
           const useReal = $("paySource")?.value === "real";
-
           const month = window.payFilterMonth || isoMonth(nowISO());
           const unit = window.payFilterUnit;
 
-          // Filtra plantões elegíveis
           const rawShifts = DB.shifts.filter(
             (s) =>
               s.month === month && (!unit || s.unitId === unit) && s.profId,
           );
-
-          // Agrupa por profissional
           const map = {};
 
           rawShifts.forEach((s) => {
             if (!map[s.profId])
-              map[s.profId] = {
-                profId: s.profId,
-                hours: 0,
-                value: 0,
-                shifts: [],
-              };
-
-            // 1. Calcula Horas (Planejado vs Real)
-            const hPlanned = hoursBetween(s.start, s.end);
-            let hFinal = hPlanned;
-
+              map[s.profId] = { profId: s.profId, hours: 0, value: 0 };
+            let h = hoursBetween(s.start, s.end);
             if (useReal && s.checkInAt && s.checkOutAt) {
-              // Pega hora real do check-in (ex: "2026-01-01T07:05" -> "07:05")
-              const realStart = s.checkInAt.slice(11, 16);
-              const realEnd = s.checkOutAt.slice(11, 16);
-              hFinal = hoursBetween(realStart, realEnd);
+              const rs = s.checkInAt.slice(11, 16);
+              const re = s.checkOutAt.slice(11, 16);
+              h = hoursBetween(rs, re);
             }
-
-            // 2. Define Multiplicador (Prioridade: Feriado > FDS > Noturno > Normal)
             let mult = 1.0;
-
-            // Detecção simples de noturno (se começa depois das 19h ou termina antes das 7h ou vira noite)
             const sH = parseHM(s.start),
               eH = parseHM(s.end);
             const isNight = sH >= 19 || eH <= 7 || eH < sH;
             const isWk = isWeekend(s.date);
-            // (Se tiver array de feriados no DB, usaria aqui. Por hora simula só FDS e Noturno)
-
             if (isWk) mult = Math.max(mult, multW);
             if (isNight) mult = Math.max(mult, multN);
-            // if (DB.holidays?.includes(s.date)) mult = Math.max(mult, multF);
 
-            // 3. Soma Tudo
-            map[s.profId].hours += hFinal;
-            map[s.profId].value += hFinal * rate * mult;
-            map[s.profId].shifts.push(s);
+            map[s.profId].hours += h;
+            map[s.profId].value += h * rate * mult;
           });
 
-          // Retorna lista formatada
           return Object.values(map).map((item) => {
             const taxVal = item.value * (taxRate / 100);
             return {
               ...item,
               taxValue: taxVal,
               netValue: item.value - taxVal,
-              status: "PENDENTE", // Status inicial
+              status: "PENDENTE",
               hasInvoice: false,
             };
           });
         }
 
-        // --- 5. AÇÕES DOS BOTÕES ---
-
-        // Botão Simular (Recalcula na tela sem salvar)
+        // --- BOTÕES DE AÇÃO ---
         const btnSim = $("btnSimulate");
         if (btnSim)
           btnSim.onclick = () => {
             renderInternalBody("pay");
-            toast("Valores recalculados (Preview).");
+            toast("Recalculado.");
           };
 
-        // Botão Fechar Folha (Salva no Banco)
         const btnGen = $("btnGenBatch");
         if (btnGen)
           btnGen.onclick = () => {
-            if (
-              !confirm(
-                "⚠️ Confirma o FECHAMENTO da folha?\n\nOs valores serão congelados e arquivados.",
-              )
-            )
-              return;
-
+            if (!confirm("Fechar a folha e congelar valores?")) return;
             const data = calculateCurrentData();
             const totalV = data.reduce((a, b) => a + b.value, 0);
             const totalH = data.reduce((a, b) => a + b.hours, 0);
-
             const batch = {
               id: uid("batch"),
               month: window.payFilterMonth || isoMonth(nowISO()),
@@ -4515,32 +4478,27 @@
               totalHours: totalH,
               items: data,
             };
-
-            DB.payBatches.push(batch); // Salva
+            DB.payBatches.push(batch);
             saveDB();
-            renderInternalBody("pay"); // Atualiza tela
-            toast("✅ Folha fechada e congelada!");
+            renderInternalBody("pay");
+            toast("Folha fechada!");
           };
 
-        // --- 6. FUNÇÕES GLOBAIS (Chamadas pelos botões da tabela) ---
-
-        // Upload NF (Simulado)
+        // --- FUNÇÕES GLOBAIS (PARA ONCLICK NA TABELA) ---
         window.uploadInvoice = (idx) => {
           const batch = DB.payBatches.find(
             (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
           );
           if (!batch) return;
-
-          toast("📤 Anexando Nota Fiscal...");
+          toast("Enviando...");
           setTimeout(() => {
             batch.items[idx].hasInvoice = true;
             saveDB();
             renderInternalBody("pay");
-            toast("Nota Fiscal salva.");
-          }, 700);
+            toast("NF Anexada");
+          }, 500);
         };
 
-        // Ver Extrato (Holerite)
         window.viewReceipt = (idx) => {
           const batch = DB.payBatches.find(
             (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
@@ -4548,138 +4506,75 @@
           if (!batch) return;
           const item = batch.items[idx];
           const prof = getProf(item.profId);
-
-          // HTML do Holerite para o Modal
           const html = `
-                <div class="modal" style="width:400px; background:#fff; color:#333; font-family:'Courier New', monospace; padding:20px; border-radius:4px; box-shadow:0 10px 40px rgba(0,0,0,0.5)">
-                    <div style="border-bottom:1px dashed #999; padding-bottom:10px; margin-bottom:15px; text-align:center">
-                        <h3 style="margin:0">RECIBO DE PAGAMENTO</h3>
-                        <div style="font-size:12px">Ref: ${batch.month}</div>
-                    </div>
-                    
-                    <div style="font-size:12px; margin-bottom:15px">
-                        <div><b>Prestador:</b> ${prof ? prof.name : "N/D"}</div>
-                        <div><b>CPF:</b> ***.***.***-**</div>
-                        <div><b>Banco:</b> ${prof?.bankName || "N/D"}</div>
-                    </div>
-
-                    <table style="width:100%; font-size:12px; border-collapse:collapse">
-                        <tr style="border-bottom:1px solid #eee">
-                            <th style="text-align:left; padding:4px 0">Evento</th>
-                            <th style="text-align:right">Qtde</th>
-                            <th style="text-align:right">Valor</th>
-                        </tr>
-                        <tr>
-                            <td style="padding:4px 0">Horas Plantão</td>
-                            <td style="text-align:right">${item.hours.toFixed(1)}h</td>
-                            <td style="text-align:right">${item.value.toFixed(2)}</td>
-                        </tr>
-                        <tr style="color:#d00">
-                            <td style="padding:4px 0">Retenção Impostos</td>
-                            <td style="text-align:right">${$("payTaxRate")?.value || 0}%</td>
-                            <td style="text-align:right">-${item.taxValue.toFixed(2)}</td>
-                        </tr>
-                    </table>
-
-                    <div style="margin-top:15px; padding-top:10px; border-top:2px solid #333; display:flex; justify-content:space-between; font-weight:bold; font-size:14px">
-                        <span>LÍQUIDO:</span>
-                        <span>R$ ${item.netValue.toFixed(2)}</span>
-                    </div>
-
-                    <div style="margin-top:25px; text-align:center">
-                         <button onclick="document.getElementById('receiptModalOverlay').style.display='none'" style="padding:8px 20px; cursor:pointer">Fechar</button>
-                    </div>
-                </div>
-             `;
-
-          const overlay = document.getElementById("receiptModalOverlay");
-          if (overlay) {
-            overlay.innerHTML = html;
-            overlay.style.display = "flex";
+                <div class="modal" style="width:350px; background:#fff; color:#000; font-family:monospace; padding:20px;">
+                    <h3 style="text-align:center; border-bottom:1px dashed #000; padding-bottom:10px">RECIBO</h3>
+                    <div>${prof ? prof.name : "N/D"}</div>
+                    <div>Ref: ${batch.month}</div>
+                    <hr>
+                    <div style="display:flex; justify-content:space-between"><span>Bruto:</span><span>R$ ${item.value.toFixed(2)}</span></div>
+                    <div style="display:flex; justify-content:space-between; color:red"><span>Imposto:</span><span>- R$ ${item.taxValue.toFixed(2)}</span></div>
+                    <hr>
+                    <div style="display:flex; justify-content:space-between; font-weight:bold"><span>LÍQUIDO:</span><span>R$ ${item.netValue.toFixed(2)}</span></div>
+                    <div style="margin-top:20px; text-align:center"><button onclick="document.getElementById('receiptModalOverlay').style.display='none'">Fechar</button></div>
+                </div>`;
+          const ov = document.getElementById("receiptModalOverlay");
+          if (ov) {
+            ov.innerHTML = html;
+            ov.style.display = "flex";
           }
         };
 
-        // Aprovar Pagamento (Muda status)
         window.approvePay = (idx) => {
           const batch = DB.payBatches.find(
             (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
           );
           if (!batch) return;
-
           batch.items[idx].status = "PAGO";
           saveDB();
           renderInternalBody("pay");
-          toast("Pagamento autorizado.");
         };
 
-        // Alternar Status (Pagar/Desfazer)
         window.togglePayStatus = (idx) => {
           const batch = DB.payBatches.find(
             (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
           );
           if (!batch) return;
-
-          const current = batch.items[idx].status;
-          batch.items[idx].status = current === "PAGO" ? "PENDENTE" : "PAGO";
+          batch.items[idx].status =
+            batch.items[idx].status === "PAGO" ? "PENDENTE" : "PAGO";
           saveDB();
           renderInternalBody("pay");
         };
 
-        // Reabrir Mês (Deletar Batch)
         window.deleteBatch = () => {
-          if (
-            !confirm(
-              "ATENÇÃO: Isso vai excluir o fechamento atual e permitir editar as regras novamente.\n\nDeseja continuar?",
-            )
-          )
-            return;
+          if (!confirm("Reabrir mês? O fechamento será excluído.")) return;
           const m = window.payFilterMonth || isoMonth(nowISO());
           DB.payBatches = DB.payBatches.filter((b) => b.month !== m);
           saveDB();
           renderInternalBody("pay");
-          toast("Mês reaberto para edição.");
         };
 
-        // Exportação (CSV e CNAB)
         window.exportPay = (type) => {
           const batch = DB.payBatches.find(
             (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
           );
           if (!batch) {
-            toast(
-              "⚠️ Você precisa fechar a folha (Gerar Fatura) antes de exportar.",
-            );
+            toast("Feche a folha primeiro.");
             return;
           }
 
-          // Gera conteúdo CSV simples
-          let csvContent =
-            "data:text/csv;charset=utf-8,Profissional,Horas,Bruto,Imposto,Liquido,Status,Pix\n";
-          batch.items.forEach((item) => {
-            const p = getProf(item.profId);
-            const row = [
-              p ? p.name : "N/D",
-              item.hours.toFixed(2).replace(".", ","),
-              item.value.toFixed(2).replace(".", ","),
-              item.taxValue.toFixed(2).replace(".", ","),
-              item.netValue.toFixed(2).replace(".", ","),
-              item.status,
-              p ? p.pixKey : "",
-            ].join(",");
-            csvContent += row + "\n";
+          let csv = "Nome,Horas,Valor,Pix\n";
+          batch.items.forEach((i) => {
+            const p = getProf(i.profId);
+            csv += `${p ? p.name : "?"},${i.hours},${i.netValue},${p ? p.pixKey : ""}\n`;
           });
 
-          const encodedUri = encodeURI(csvContent);
-          const link = document.createElement("a");
-          link.setAttribute("href", encodedUri);
-          link.setAttribute(
-            "download",
-            `pagamentos_${type}_${batch.month}.csv`,
-          );
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          toast("Download iniciado.");
+          const a = document.createElement("a");
+          a.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+          a.download = `pgto_${type}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
         };
       }
 
