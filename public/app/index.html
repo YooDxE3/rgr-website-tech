@@ -925,12 +925,21 @@
                   </div>
 
                   <div class="sp"></div>
-                  <div class="two" id="extSpecRow">
+                  <div id="extSpecRow">
                     <div>
                       <div class="muted" data-i18n="lblSpecialty">
                         Área / Especialidade
                       </div>
                       <select id="extSpec"></select>
+                      <input
+                        id="extSpecOther"
+                        placeholder="Digite a especialidade..."
+                        style="
+                          display: none;
+                          margin-top: 8px;
+                          border-color: var(--accent);
+                        "
+                      />
                     </div>
                     <div>
                       <div class="muted" data-i18n="lblNoSpecialtyNote">
@@ -4968,7 +4977,12 @@
         const role = session.role;
         const month = $("fMonth") ? $("fMonth").value : isoMonth(isoDateAdd(0));
         const unitFilter = $("fUnit") ? $("fUnit").value : "";
-        const specFilter = $("fSpec") ? $("fSpec").value : "";
+
+        // Pega valores do filtro
+        const specSelect = $("fSpec") ? $("fSpec").value : "";
+        const specTyped = $("fSpecOther")
+          ? $("fSpecOther").value.trim().toLowerCase()
+          : "";
 
         let list = DB.shifts
           .slice()
@@ -4979,18 +4993,30 @@
           );
 
         if (role === "prof") {
+          // ... (lógica do profissional mantém igual) ...
           const prof = getProf(session.profId);
           if (profScheduleMode === "mine") {
-            // CORREÇÃO: Médico só vê seus plantões SE estiverem publicados
             list = list.filter((s) => s.profId === prof.id && s.published);
           } else {
-            // Escala completa: só publicados
             list = list.filter((s) => s.published && s.spec === prof.spec);
           }
         } else {
-          // Admin/Gestor vê tudo (Rascunhos e Publicados)
+          // LÓGICA DE FILTRO DO ADMIN/GESTOR
           if (unitFilter) list = list.filter((s) => s.unitId === unitFilter);
-          if (specFilter) list = list.filter((s) => s.spec === specFilter);
+
+          if (specSelect) {
+            if (specSelect === "Outro") {
+              // Se selecionou "Outro", busca pelo texto digitado dentro da especialidade do plantão
+              if (specTyped) {
+                list = list.filter((s) =>
+                  (s.spec || "").toLowerCase().includes(specTyped),
+                );
+              }
+            } else {
+              // Se selecionou uma padrão, filtro exato
+              list = list.filter((s) => s.spec === specSelect);
+            }
+          }
         }
         return list;
       }
@@ -5007,23 +5033,26 @@
               `<option value="${u.id}" ${u.id === currentUnit ? "selected" : ""}>${u.name} (${u.uf})</option>`,
           )
           .join("");
+
         const currentSpec = window.tempSpecFilter || "";
 
-        // 2. Reconstrói a lista marcando com 'selected' a opção correta
-        const specOpt = SPECIALTIES.filter(
-          (x) => x !== "Sem especialidade registrada",
-        )
-          .map(
-            (s) =>
-              `<option value="${s}" ${s === currentSpec ? "selected" : ""}>${specLabel(s)}</option>`,
-          )
-          .join("");
+        // 1. ATUALIZAÇÃO AQUI: Adiciona a opção "Outro / Buscar..." no final da lista
+        const specOpt =
+          SPECIALTIES.filter((x) => x !== "Sem especialidade registrada")
+            .map(
+              (s) =>
+                `<option value="${s}" ${s === currentSpec ? "selected" : ""}>${specLabel(s)}</option>`,
+            )
+            .join("") +
+          `<option value="Outro" ${currentSpec === "Outro" ? "selected" : ""}>Outro / Buscar...</option>`; // <--- NOVA OPÇÃO
+
         const tplOpt = DB.timeTemplates
           .map(
             (tpl) =>
               `<option value="${tpl.k}">${tpl.k} • ${tpl.name} • ${tpl.s}→${tpl.e}</option>`,
           )
           .join("");
+
         const monthNow = isoMonth(isoDateAdd(0));
         const months = Array.from(new Set(DB.shifts.map((s) => s.month)))
           .sort()
@@ -5069,6 +5098,9 @@
         <div style="min-width:240px">
           <div class="muted">${t("schedFilterSpec")}</div>
           <div class="selectWrap"><select id="fSpec"><option value="">—</option>${specOpt}</select></div>
+          
+          <input id="fSpecOther" placeholder="Digite para buscar..." style="display:${currentSpec === "Outro" ? "block" : "none"}; margin-top:5px; border-color:var(--accent);" value="${window.tempSpecOther || ""}"/>
+          
         </div>
       </div>
       <div class="row">
@@ -5791,8 +5823,23 @@
         };
         $("fSpec").onchange = (e) => {
           window.tempSpecFilter = e.target.value;
+          // Se mudou para outro que não seja "Outro", limpa a busca textual
+          if (e.target.value !== "Outro") window.tempSpecOther = "";
           renderInternalBody("schedule");
         };
+
+        // Adicione listener para o campo de texto também
+        if ($("fSpecOther")) {
+          $("fSpecOther").oninput = (e) => {
+            window.tempSpecOther = e.target.value;
+            // Pequeno delay para não renderizar a cada letra (opcional, mas bom)
+            clearTimeout(window._searchTimer);
+            window._searchTimer = setTimeout(
+              () => renderInternalBody("schedule"),
+              400,
+            );
+          };
+        }
 
         $("btnGen").onclick = () => {
           const month = $("fMonth").value;
@@ -6694,9 +6741,27 @@
 
       /* ===================== External submit ===================== */
       function fillExternalLists() {
-        $("extSpec").innerHTML = SPECIALTIES.map(
-          (s) => `<option value="${s}">${specLabel(s)}</option>`,
-        ).join("");
+        // 1. Preenche o Select de Especialidades
+        const specSelect = $("extSpec");
+        if (specSelect) {
+          // Adiciona opção "Outro" no final
+          specSelect.innerHTML =
+            SPECIALTIES.map(
+              (s) => `<option value="${s}">${specLabel(s)}</option>`,
+            ).join("") + `<option value="Outro">Outro (Especificar)</option>`;
+
+          // Lógica para mostrar/esconder o campo de texto
+          specSelect.onchange = () => {
+            const val = specSelect.value;
+            const otherInput = $("extSpecOther");
+            if (otherInput) {
+              otherInput.style.display = val === "Outro" ? "block" : "none";
+              if (val !== "Outro") otherInput.value = ""; // Limpa se mudar
+            }
+          };
+        }
+
+        // 2. Preenche Estados e Cidades (Mantido igual)
         $("extUF").innerHTML = Object.keys(UF_CITIES)
           .filter((x) => x)
           .map((uf) => `<option value="${uf}">${uf}</option>`)
@@ -6848,8 +6913,16 @@
           $("extProfession") && $("extProfession").value
             ? $("extProfession").value
             : "";
-        const spec =
-          $("extSpec") && $("extSpec").value ? $("extSpec").value : "";
+        // Lógica inteligente para pegar a especialidade
+        let rawSpec = $("extSpec").value;
+        if (rawSpec === "Outro") {
+          rawSpec = $("extSpecOther").value.trim(); // Pega do campo de texto
+          if (!rawSpec) {
+            toast("Por favor, digite a especialidade.");
+            return;
+          }
+        }
+        const spec = kind === "health" ? rawSpec : "";
 
         const app = {
           id: uid("c"),
