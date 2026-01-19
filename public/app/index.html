@@ -3562,23 +3562,38 @@
         };
 
         // --- CORREÇÃO AQUI: EXCLUSÃO FORÇADA ---
+        // --- EXCLUSÃO EM CASCATA (UNIDADE + PLANTÕES) ---
         window.deleteUnit = (id) => {
-          if (!confirm("Tem certeza? Isso pode afetar escalas vinculadas."))
-            return;
+          // 1. Conta quantos plantões serão afetados para avisar o usuário
+          const shiftsAffected = DB.shifts.filter(
+            (s) => s.unitId === id,
+          ).length;
 
-          // 1. Remove da memória local
+          const msg =
+            shiftsAffected > 0
+              ? `⚠️ ATENÇÃO: Essa unidade tem ${shiftsAffected} plantões criados.\n\nAo excluir a unidade, TODOS os plantões dela também serão apagados.\n\nDeseja continuar?`
+              : "Tem certeza que deseja excluir esta unidade?";
+
+          if (!confirm(msg)) return;
+
+          // 2. Remove a Unidade (Local)
           DB.units = DB.units.filter((x) => x.id !== id);
 
-          // 2. Atualiza a tela imediatamente
-          renderInternalBody("units");
-          toast("Excluindo...");
+          // 3. Remove os Plantões Vinculados (O Cascade acontece aqui)
+          DB.shifts = DB.shifts.filter((s) => s.unitId !== id);
 
-          // 3. Manda a ordem de EXTERMÍNIO para o Firebase (sem usar saveDB/merge)
+          // 4. Atualiza a tela imediatamente
+          renderInternalBody("units");
+          toast(`Unidade e ${shiftsAffected} plantões excluídos.`);
+
+          // 5. Manda a atualização completa para o Firebase
           if (typeof db !== "undefined") {
             db.collection("sistema")
               .doc("v1")
-              .update({ units: DB.units })
-              .then(() => toast("Unidade excluída permanentemente."))
+              .update({
+                units: DB.units, // Salva a lista de unidades limpa
+                schedule: DB.shifts, // Salva a lista de plantões limpa (schedule é o nome no banco)
+              })
               .catch((err) => {
                 console.error(err);
                 toast("Erro ao excluir na nuvem.");
