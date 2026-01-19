@@ -3505,7 +3505,7 @@
       function bindUnits() {
         const uf = $("uUF"),
           city = $("uCity");
-        let editingId = null; // Controla se estamos editando ou criando
+        let editingId = null;
 
         function fillCities() {
           const ufv = uf.value || "SC";
@@ -3549,19 +3549,36 @@
           $("uUF").value = u.uf || "SC";
           fillCities();
           $("uCity").value = u.city || "";
-          // Rola até o formulário
           location.href = "#unitForm";
         };
 
-        // Excluir (Global)
+        // --- CORREÇÃO AQUI: EXCLUSÃO FORÇADA ---
         window.deleteUnit = (id) => {
           if (!confirm("Tem certeza? Isso pode afetar escalas vinculadas."))
             return;
+
+          // 1. Remove da memória local
           DB.units = DB.units.filter((x) => x.id !== id);
-          saveDB();
+
+          // 2. Atualiza a tela imediatamente
           renderInternalBody("units");
-          toast("Unidade excluída.");
+          toast("Excluindo...");
+
+          // 3. Manda a ordem de EXTERMÍNIO para o Firebase (sem usar saveDB/merge)
+          if (typeof db !== "undefined") {
+            db.collection("sistema")
+              .doc("v1")
+              .update({ units: DB.units })
+              .then(() => toast("Unidade excluída permanentemente."))
+              .catch((err) => {
+                console.error(err);
+                toast("Erro ao excluir na nuvem.");
+              });
+          } else {
+            saveDB(); // Fallback offline
+          }
         };
+        // ---------------------------------------
 
         uf.onchange = fillCities;
         fillCities();
@@ -3580,7 +3597,6 @@
           }
 
           if (editingId) {
-            // ATUALIZAR
             const u = DB.units.find((x) => x.id === editingId);
             if (u) {
               u.name = name;
@@ -3593,7 +3609,6 @@
               toast("Unidade atualizada.");
             }
           } else {
-            // CRIAR NOVA
             DB.units.unshift({
               id: uid("u"),
               name,
@@ -3618,7 +3633,6 @@
           applyI18n();
         };
 
-        // configure integration button
         document.querySelectorAll(".btnCfg").forEach((btn) => {
           btn.onclick = () => {
             const id = btn.dataset.unit;
