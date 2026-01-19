@@ -4075,7 +4075,27 @@
           toast("BI conectado (demo)");
         };
         $("btnBIDataset").onclick = () => {
-          toast("Dataset gerado (demo)");
+          // Pega os dados REAIS que estão na sua memória agora
+          const exportData = {
+            unidade: getUnit(unitSel.value).name,
+            data_geracao: new Date().toISOString(),
+            plantoes: DB.shifts.filter((s) => s.unitId === unitSel.value), // Só dessa unidade
+            pagamentos: DB.payBatches || [],
+          };
+
+          // Cria um arquivo invisível para download
+          const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `dataset_bi_${exportData.unidade}.json`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          toast("Arquivo de dados gerado! Importe isso no Power BI.");
         };
       }
 
