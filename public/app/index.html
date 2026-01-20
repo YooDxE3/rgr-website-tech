@@ -1591,77 +1591,52 @@
       };
 
       function loadDB() {
-        try {
-          const raw = localStorage.getItem(KEY);
-          if (!raw) return defaultDB();
-          const obj = JSON.parse(raw);
-          if (!obj.lang) obj.lang = "pt";
-          if (!Array.isArray(obj.cadastros)) obj.cadastros = [];
-          if (!Array.isArray(obj.profs)) obj.profs = [];
-          if (!("lastExternalId" in obj)) obj.lastExternalId = null;
-          obj.profs.forEach((p) => {
-            if (!("kind" in p)) p.kind = "health";
-            if (!("profession" in p)) p.profession = "Médico(a)";
-          });
-          obj.cadastros.forEach((c) => {
-            if (c.status === "pending") c.status = "received";
-            if (!("status" in c)) c.status = "received";
-            if (!("kind" in c)) c.kind = "health";
-            if (!("profession" in c)) c.profession = "Médico(a)";
-            if (!("reg" in c)) c.reg = c.crm || "";
-            if (!("rejectionReason" in c)) c.rejectionReason = "";
-          });
-          if (!Array.isArray(obj.units)) obj.units = [];
-          if (!Array.isArray(obj.timeTemplates)) obj.timeTemplates = [];
-          if (!obj.defaultTimeKey && obj.timeTemplates[0])
-            obj.defaultTimeKey = obj.timeTemplates[0].k;
-          if (!Array.isArray(obj.shifts)) obj.shifts = [];
-          if (!Array.isArray(obj.urgent)) obj.urgent = [];
-          obj.shifts.forEach((s) => {
-            if (!s.month) s.month = isoMonth(s.date);
-            if (typeof s.published !== "boolean") s.published = false;
-            if (!("checkInAt" in s)) s.checkInAt = null;
-            if (!("checkOutAt" in s)) s.checkOutAt = null;
-            if (!("originalProfId" in s)) s.originalProfId = s.profId;
-            if (!("swapped" in s)) s.swapped = s.profId !== s.originalProfId;
-            if (!("swappedAt" in s)) s.swappedAt = null;
-            if (!("swapNote" in s)) s.swapNote = null;
-          });
-          // --- Migration: new fields for units (system/integration/BI) ---
-          if (Array.isArray(obj.units)) {
-            obj.units.forEach((u) => {
-              if (!("system" in u)) u.system = guessSystem(u);
-              if (!("integrationMode" in u)) u.integrationMode = "Export/CSV";
-              if (!("integrationStatus" in u)) u.integrationStatus = "pendente";
-              if (!("lastSync" in u)) u.lastSync = null;
-              if (!("biEnabled" in u)) u.biEnabled = false;
-              if (!("biTool" in u)) u.biTool = null;
-            });
-          }
+        // Tenta pegar configurações locais (como idioma), mas ignora dados pesados
+        const raw = localStorage.getItem(KEY);
+        let localObj = {};
 
-          // Payments defaults (v19.12)
-          if (!obj.payRules)
-            obj.payRules = {
-              baseHour: 120,
-              nightMult: 1.2,
-              weekendMult: 1.15,
-              holidayMult: 1.3,
-              useCheckIO: true,
-              roundToMin: 5,
-            };
-          if (!Array.isArray(obj.payBatches)) obj.payBatches = [];
-          if (!Array.isArray(obj.holidays)) obj.holidays = [];
-          obj.profs.forEach((p) => {
-            if (!("pixKey" in p)) p.pixKey = "";
-            if (!("bankName" in p)) p.bankName = "";
-            if (!("bankAgency" in p)) p.bankAgency = "";
-            if (!("bankAccount" in p)) p.bankAccount = "";
-          });
-          return obj;
+        try {
+          if (raw) localObj = JSON.parse(raw);
         } catch (e) {
-          console.error(e);
-          return defaultDB();
+          console.warn("Erro ao ler cache local, resetando.");
         }
+
+        // Retorna a estrutura padrão, priorizando arrays vazios.
+        // O listener do Firebase (no boot ou nas telas) vai preencher isso em segundos.
+        return {
+          meta: { createdAt: new Date().toISOString() },
+          lang: localObj.lang || "pt", // Preserva idioma escolhido
+
+          // Arrays iniciam vazios (serão populados pelo Firestore)
+          units: [],
+          profs: [],
+          shifts: [],
+          cadastros: [],
+          users: [], // Admins
+          accounts: [], // Contas de médicos
+
+          // Dados de apoio podem vir de um padrão se não tiver no banco
+          timeTemplates: localObj.timeTemplates || [
+            { k: "07-19", name: "Diurno 12h", s: "07:00", e: "19:00" },
+            { k: "19-07", name: "Noturno 12h", s: "19:00", e: "07:00" },
+            { k: "07-07", name: "Plantão 24h", s: "07:00", e: "07:00" },
+          ],
+
+          payRules: localObj.payRules || {
+            baseHour: 120,
+            nightMult: 1.2,
+            weekendMult: 1.15,
+            holidayMult: 1.3,
+            useCheckIO: true,
+            roundToMin: 5,
+          },
+
+          payBatches: [],
+          market: { network: [], vendors: [] },
+
+          // Mantém sessão se existir
+          lastExternalId: null,
+        };
       }
       /* ===================== SALVAR NA NUVEM ===================== */
       async function saveDB() {
@@ -3609,11 +3584,44 @@
       }
 
       function bindUnits() {
-        const uf = $("uUF"),
-          city = $("uCity");
+        const uf = $("uUF");
+        const city = $("uCity");
         let editingId = null;
 
-        // Função para preencher cidades baseada no UF
+        // --- 1. OUVINTE EM TEMPO REAL (A Mágica do Back-end) ---
+        // Assim que alguém mudar algo no banco, essa função roda e atualiza a tela.
+        if (typeof db !== "undefined") {
+          const unsubscribe = db.collection("units").onSnapshot(
+            (snapshot) => {
+              const cloudUnits = [];
+              snapshot.forEach((doc) => {
+                cloudUnits.push({ id: doc.id, ...doc.data() });
+              });
+
+              // Atualiza a memória local com a verdade da nuvem
+              DB.units = cloudUnits;
+
+              // Se estivermos na aba de unidades, redesenha a tabela
+              const activeTab = document.querySelector(".tab.active");
+              if (activeTab && activeTab.dataset.key === "units") {
+                // Nota: recarregar o HTML inteiro pode fechar modais abertos,
+                // idealmente faríamos uma função renderUnitsTable(DB.units),
+                // mas por enquanto vamos forçar o render da aba.
+                const modalOpen = $("unitModal").style.display === "flex";
+                if (!modalOpen) {
+                  $("inBody").innerHTML = renderUnits();
+                  // Precisamos re-vincular os eventos após redesenhar o HTML
+                  bindUnitsEventsOnly();
+                }
+              }
+            },
+            (error) => {
+              console.error("Erro ao sincronizar unidades:", error);
+            },
+          );
+        }
+
+        // Função auxiliar para preencher cidades
         function fillCities() {
           const ufv = uf.value || "SC";
           const list = UF_CITIES[ufv] || ["—"];
@@ -3621,7 +3629,25 @@
             .map((c) => `<option value="${c}">${c}</option>`)
             .join("");
         }
-        uf.onchange = fillCities;
+
+        // Função que liga os cliques (separada para poder ser rechamada)
+        function bindUnitsEventsOnly() {
+          // Re-seleciona elementos pois o HTML foi recriado
+          const btnAdd = $("btnAddUnit");
+          if (btnAdd) btnAdd.onclick = () => openUnitModal(false);
+
+          const btnGeo = $("btnGeoSearch");
+          if (btnGeo) btnGeo.onclick = handleGeoSearch;
+
+          // Re-liga botões da tabela (Editar/Excluir/Configurar)
+          document.querySelectorAll(".btnCfg").forEach((btn) => {
+            btn.onclick = () => {
+              setConnectUnit(btn.dataset.unit);
+              gotoTab("connect");
+              toast("Abrindo integrações…");
+            };
+          });
+        }
 
         // --- CONTROLE DO MODAL ---
         window.openUnitModal = (isEdit) => {
@@ -3629,8 +3655,9 @@
           $("unitFormTitle").textContent = isEdit
             ? "Editar Unidade"
             : "Nova Unidade";
+
+          // Se for nova, reseta. Se for edição, o window.editUnit já preencheu.
           if (!isEdit) {
-            // Reset form se for nova
             editingId = null;
             uf.value = "PR";
             fillCities();
@@ -3648,130 +3675,119 @@
 
         window.closeUnitModal = () => {
           $("unitModal").style.display = "none";
+          // Ao fechar, se houve atualização via listener, a tabela já estará atualizada
         };
 
-        // Botão "Nova Unidade"
-        $("btnAddUnit").onclick = () => openUnitModal(false);
+        // --- SALVAR NO FIREBASE (CREATE / UPDATE) ---
+        $("btnSaveUnit").onclick = async () => {
+          const btn = $("btnSaveUnit");
+          const originalText = btn.textContent;
 
-        // Botão "Salvar" dentro do Modal
-        $("btnSaveUnit").onclick = () => {
           const name = $("uName").value.trim();
-          const type = $("uType").value;
-          const ufv = $("uUF").value;
-          const cityv = $("uCity").value;
-          const sub = $("uSub").value.trim();
-          const sys = $("uSys").value;
+          if (!name) return toast("Informe o nome da unidade");
 
-          // Geo
-          const addr = $("uAddr").value.trim();
-          const lat = $("uLat").value;
-          const lon = $("uLon").value;
-          const rad = parseInt($("uRadius").value) || 200;
-
-          if (!name) {
-            toast("Informe o nome da unidade");
-            return;
-          }
-
-          if (editingId) {
-            // ATUALIZAR
-            const u = DB.units.find((x) => x.id === editingId);
-            if (u) {
-              u.name = name;
-              u.type = type;
-              u.uf = ufv;
-              u.city = cityv;
-              u.subtype = sub;
-              u.system = sys;
-              u.address = addr;
-              u.lat = lat;
-              u.lon = lon;
-              u.radiusM = rad;
-              saveDB();
-              toast("Unidade atualizada.");
-            }
-          } else {
-            // CRIAR
-            DB.units.unshift({
-              id: uid("u"),
-              name,
-              type,
-              uf: ufv,
-              city: cityv,
-              subtype: sub,
-              system: sys,
-              address: addr,
-              lat,
-              lon,
-              radiusM: rad,
-              integrationMode: "Export/CSV",
-              integrationStatus: "pendente",
-              lastSync: null,
-              biEnabled: false,
-              biTool: null,
-              createdAt: nowISO(),
-            });
-            saveDB();
-            toast("Unidade criada.");
-          }
-
-          closeUnitModal();
-          renderInternalBody("units");
-        };
-
-        // --- FUNÇÃO DE GEOCODING (Busca GPS) ---
-        $("btnGeoSearch").onclick = async () => {
-          let term = $("uAddr").value.trim();
-          if (!term) {
-            toast("Digite um nome ou endereço.");
-            return;
-          }
-          toast("🔍 Buscando...");
-
-          // Limpeza simples para números compostos (ex: 600/700 -> 600)
-          if (term.match(/\d+\/\d+/)) term = term.replace(/(\d+)[/-]\d+/, "$1");
+          // Prepara o objeto
+          const dados = {
+            name: name,
+            type: $("uType").value,
+            uf: $("uUF").value,
+            city: $("uCity").value,
+            subtype: $("uSub").value.trim(),
+            system: $("uSys").value,
+            address: $("uAddr").value.trim(),
+            lat: $("uLat").value,
+            lon: $("uLon").value,
+            radiusM: parseInt($("uRadius").value) || 200,
+            updatedAt: new Date().toISOString(),
+          };
 
           try {
-            if (
-              !term.toLowerCase().includes("brazil") &&
-              !term.toLowerCase().includes("brasil")
-            ) {
-              term += ", Brazil";
-            }
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(term)}&limit=1`;
-            const res = await fetch(url);
-            const data = await res.json();
+            btn.disabled = true;
+            btn.textContent = "Salvando na nuvem...";
 
-            if (data && data.length > 0) {
-              const place = data[0];
-              $("uLat").value = place.lat;
-              $("uLon").value = place.lon;
-              toast("✅ Encontrado!");
+            if (editingId) {
+              // UPDATE NO FIREBASE
+              await db.collection("units").doc(editingId).update(dados);
+              toast("✅ Unidade atualizada!");
             } else {
-              toast("❌ Local não encontrado. Tente simplificar.");
+              // CREATE NO FIREBASE
+              await db.collection("units").add({
+                ...dados,
+                integrationMode: "Export/CSV",
+                integrationStatus: "pendente",
+                biEnabled: false,
+                createdAt: new Date().toISOString(),
+              });
+              toast("✅ Unidade criada!");
             }
-          } catch (e) {
-            console.error(e);
-            toast("Erro ao conectar no mapa.");
+            closeUnitModal();
+            // Não precisa chamar renderInternalBody, o Listener (onSnapshot) fará isso sozinho!
+          } catch (error) {
+            console.error(error);
+            toast("❌ Erro ao salvar: " + error.message);
+          } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
           }
         };
 
-        // --- AÇÕES GLOBAIS (Editar/Excluir) ---
+        // --- GEO SEARCH ---
+        const handleGeoSearch = async () => {
+          let term = $("uAddr").value.trim();
+          if (!term) return toast("Digite um endereço.");
+          toast("🔍 Buscando GPS...");
+          if (term.match(/\d+\/\d+/)) term = term.replace(/(\d+)[/-]\d+/, "$1");
+          try {
+            if (!term.toLowerCase().includes("brazil")) term += ", Brazil";
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(term)}&limit=1`,
+            );
+            const data = await res.json();
+            if (data && data.length > 0) {
+              $("uLat").value = data[0].lat;
+              $("uLon").value = data[0].lon;
+              toast("✅ Localizado!");
+            } else {
+              toast("❌ Não encontrado.");
+            }
+          } catch (e) {
+            toast("Erro no mapa.");
+          }
+        };
+
+        // --- DELETAR NO FIREBASE ---
+        window.deleteUnit = async (id) => {
+          if (
+            !confirm(
+              "Tem certeza? Essa ação apaga a unidade DO SERVIDOR para todos os usuários.",
+            )
+          )
+            return;
+
+          try {
+            await db.collection("units").doc(id).delete();
+            toast("🗑️ Unidade removida da nuvem.");
+            // O listener vai atualizar a tabela automaticamente
+          } catch (error) {
+            console.error(error);
+            toast("Erro ao excluir: " + error.message);
+          }
+        };
+
+        // --- PREPARAR EDIÇÃO ---
         window.editUnit = (id) => {
           const u = DB.units.find((x) => x.id === id);
           if (!u) return;
           editingId = id;
-          openUnitModal(true); // Abre em modo edição
 
-          // Preenche
+          // Preenche o form
           $("uName").value = u.name;
           $("uType").value = u.type;
           $("uSys").value = u.system || "Tasy";
           $("uSub").value = u.subtype || "";
           $("uUF").value = u.uf || "SC";
-          fillCities();
+          fillCities(); // Atualiza cidades do UF
           $("uCity").value = u.city || "";
-
           $("uAddr").value = u.address || "";
           $("uLat").value = u.lat || "";
           $("uLon").value = u.lon || "";
@@ -3781,46 +3797,13 @@
           $("uIntStatus").textContent = st.toUpperCase();
           $("uIntStatus").className =
             "badge " + (st === "conectado" ? "bGood" : "bWarn");
+
+          openUnitModal(true);
         };
 
-        window.deleteUnit = (id) => {
-          const shiftsAffected = DB.shifts.filter(
-            (s) => s.unitId === id,
-          ).length;
-          const msg =
-            shiftsAffected > 0
-              ? `⚠️ ATENÇÃO: Esta unidade possui ${shiftsAffected} plantões.\nAo excluir, TODOS os plantões dela também serão apagados.\n\nDeseja continuar?`
-              : "Tem certeza que deseja excluir esta unidade?";
-
-          if (!confirm(msg)) return;
-
-          DB.units = DB.units.filter((x) => x.id !== id);
-          DB.shifts = DB.shifts.filter((s) => s.unitId !== id); // Cascade
-
-          renderInternalBody("units");
-          toast("Unidade excluída.");
-
-          if (typeof db !== "undefined") {
-            db.collection("sistema")
-              .doc("v1")
-              .update({
-                units: DB.units,
-                schedule: DB.shifts,
-              })
-              .catch(console.error);
-          } else {
-            saveDB();
-          }
-        };
-
-        // Configurar botões da tabela (Integração)
-        document.querySelectorAll(".btnCfg").forEach((btn) => {
-          btn.onclick = () => {
-            setConnectUnit(btn.dataset.unit);
-            gotoTab("connect");
-            toast("Abrindo integrações…");
-          };
-        });
+        // Inicializa eventos
+        if (uf) uf.onchange = fillCities;
+        bindUnitsEventsOnly();
       }
 
       /* ========= Connect (Integrações - UI Minimalista) ========= */
@@ -7371,47 +7354,80 @@
         });
 
         // --- LÓGICA DO NOVO LOGIN ---
+        // --- LÓGICA DE LOGIN CONECTADA (SUBSTITUA O TRECHO ANTIGO POR ESTE) ---
         if ($("btnLoginUnified")) {
-          $("btnLoginUnified").onclick = async () => {
-            const u = $("lUser").value.trim();
-            const p = $("lPass").value.trim();
+          $("btnLoginUnified").onclick = async (e) => {
+            // Previne comportamento padrão se houver form, e garante feedback visual
+            if (e) e.preventDefault();
 
-            if (!u || !p) {
+            const btn = $("btnLoginUnified");
+            const originalText = btn.innerText;
+
+            // Pega valores
+            const uInput = $("lUser").value.trim(); // Ex: "Andre"
+            const pInput = $("lPass").value.trim(); // Ex: "123entrar"
+
+            if (!uInput || !pInput) {
               toast("Preencha usuário e senha.");
               return;
             }
 
-            // 1. Procura em ADMINS/GESTORES
-            const sysUser = (DB.users || []).find(
-              (x) => x.user.toLowerCase() === u.toLowerCase(),
-            );
-            if (sysUser) {
-              if (sysUser.pass === p) {
-                toast(`Bem-vindo, ${sysUser.name}!`);
-                goInternal(sysUser.role);
-                return;
+            // Feedback visual que está "pensando"
+            btn.disabled = true;
+            btn.innerText = "🔄 Buscando...";
+
+            try {
+              // 1. TENTA ADMIN/GESTOR (Busca na coleção 'users')
+              // Importante: .toLowerCase() garante que ache 'andre' mesmo digitando 'Andre'
+              const userQuery = await db
+                .collection("users")
+                .where("user", "==", uInput.toLowerCase())
+                .get();
+
+              if (!userQuery.empty) {
+                const userData = userQuery.docs[0].data();
+
+                // Verifica senha (exatamente como está no banco)
+                if (userData.pass === pInput) {
+                  toast(`✅ Bem-vindo, ${userData.name}!`);
+                  goInternal(userData.role);
+                  return; // SUCESSO!
+                } else {
+                  toast("❌ Senha incorreta.");
+                  btn.disabled = false;
+                  btn.innerText = originalText;
+                  return;
+                }
               }
+
+              // 2. SE NÃO ACHOU ADMIN, TENTA PROFISSIONAL (Busca na coleção 'accounts')
+              // (Isso é para quando você tiver médicos cadastrados)
+              const accQuery = await db
+                .collection("accounts")
+                .where("user", "==", uInput) // Aqui pode manter original ou lower dependendo da regra
+                .get();
+
+              if (!accQuery.empty) {
+                const accData = accQuery.docs[0].data();
+
+                // Verifica senha
+                if (accData.pass === pInput) {
+                  toast("✅ Bem-vindo, Dr(a)!");
+                  goInternal("prof", accData.profId);
+                  return;
+                }
+              }
+
+              // Se chegou aqui, não achou ninguém
+              toast("❌ Usuário não encontrado.");
+            } catch (error) {
+              console.error("Erro crítico no login:", error);
+              toast("⚠️ Erro de conexão: " + error.message);
+            } finally {
+              // Restaura o botão se deu erro
+              btn.disabled = false;
+              btn.innerText = originalText;
             }
-
-            // 2. Procura em PROFISSIONAIS
-            const acc = (DB.accounts || []).find(
-              (x) => x.user.toLowerCase() === u.toLowerCase(),
-            );
-            if (acc) {
-              // Verifica senha (simples ou hash)
-              let isValid = acc.pass && acc.pass === p;
-              if (!isValid && acc.passwordHash) {
-                isValid = (await sha256(p)) === acc.passwordHash;
-              }
-
-              if (isValid) {
-                toast(`Bem-vindo, Dr(a).!`);
-                goInternal("prof", acc.profId);
-                return;
-              }
-            }
-
-            toast("Usuário ou senha incorretos.");
           };
         }
 
