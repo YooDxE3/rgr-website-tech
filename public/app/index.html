@@ -7409,6 +7409,27 @@
       function boot() {
         console.log("🚀 Iniciando sistema...");
 
+        if (typeof db !== "undefined") {
+          db.collection("profs").onSnapshot((snap) => {
+            const list = [];
+            snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+
+            // Atualiza a memória global
+            DB.profs = list;
+            console.log("👥 Médicos carregados: ", list.length);
+
+            // Atualiza KPIs da home
+            renderHomeKPIs();
+
+            // Se a tela de criar plantão estiver aberta, força a atualização do dropdown
+            const sSpec = document.getElementById("sSpec");
+            if (sSpec) {
+              // Simula uma mudança na especialidade para recarregar a lista de médicos
+              sSpec.dispatchEvent(new Event("change"));
+            }
+          });
+        }
+
         // 1. OUVIR A NUVEM (A parte que faltava!)
         // Assim que algo mudar no banco, essa função roda e atualiza a tela
         if (typeof db !== "undefined") {
