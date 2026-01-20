@@ -7404,7 +7404,6 @@
         }
       };
 
-      /* ===================== Boot ===================== */
       /* ===================== BOOT (O CÉREBRO CONECTADO) ===================== */
       function boot() {
         console.log("🚀 Iniciando sistema...");
@@ -7440,7 +7439,6 @@
                 const data = doc.data();
 
                 // Atualiza a memória local com o que veio do Google
-                DB.profs = data.profs || [];
                 DB.units = data.units || [];
                 DB.shifts = data.schedule || data.shifts || [];
                 DB.schedule = DB.shifts;
