@@ -6160,194 +6160,191 @@
         renderInternalBody("schedule");
       };
 
-      /* ========= Bind schedule ========= */
+      /* ========= CONTROLE DE ESCALA (LISTENER INTELIGENTE) ========= */
+
+      let _unsubscribeShifts = null; // Variável para guardar a conexão aberta
+
       function bindSchedule() {
-        $("btnViewTable").onclick = () => {
-          scheduleView = "table";
-          renderInternalBody("schedule");
-        };
-        $("btnViewCal").onclick = () => {
-          scheduleView = "calendar";
-          renderInternalBody("schedule");
-        };
+        // --- 1. FUNÇÃO PARA OUVIR O BANCO ---
+        function loadLiveShifts() {
+          // Se já tem uma conexão aberta, fecha ela antes de abrir outra (para não acumular)
+          if (_unsubscribeShifts) {
+            _unsubscribeShifts();
+            _unsubscribeShifts = null;
+          }
+
+          const month = $("fMonth") ? $("fMonth").value : isoMonth(nowISO());
+          const unitId = $("fUnit") ? $("fUnit").value : "";
+          const role = session.role;
+
+          // Prepara a Query
+          let query = db.collection("shifts").where("month", "==", month);
+
+          // Se for Admin/Gestor e filtrou unidade, refina a busca
+          if (role !== "prof" && unitId) {
+            query = query.where("unitId", "==", unitId);
+          }
+
+          // Se for Profissional e modo "Meus Plantões", filtra pelo ID dele
+          if (role === "prof" && profScheduleMode === "mine") {
+            query = query.where("profId", "==", session.profId);
+          }
+
+          console.log(
+            `📡 Buscando escala: Mês ${month} | Unidade ${unitId || "Todas"}`,
+          );
+
+          // Liga o ouvinte
+          _unsubscribeShifts = query.onSnapshot((snap) => {
+            const list = [];
+            snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+
+            // Atualiza cache e redesenha
+            DB.shifts = list;
+
+            // Só redesenha se a aba de escala estiver visível
+            if (
+              document.getElementById("viewInternal").style.display !== "none"
+            ) {
+              // Mantém a view (Calendário ou Tabela)
+              const content =
+                scheduleView === "calendar"
+                  ? renderCalendar()
+                  : renderScheduleTable();
+              // Injeta o conteúdo no lugar certo (precisamos achar o container dos cards)
+              // Como renderSchedule recria tudo, vamos chamar renderInternalBody se for seguro
+              // Mas para evitar piscar a tela toda, vamos tentar atualizar só a lista se possível.
+              // Por simplicidade na migração:
+              renderInternalBody("schedule");
+
+              // Restaura o foco se estava digitando busca
+              if (window.tempSpecOther && $("fSpecOther")) {
+                $("fSpecOther").value = window.tempSpecOther;
+                $("fSpecOther").focus();
+              }
+            }
+          });
+        }
+
+        // --- 2. VINCULA EVENTOS DE FILTRO ---
+
+        // Troca de visualização (Tabela/Calendário)
+        const btnTable = $("btnViewTable");
+        const btnCal = $("btnViewCal");
+        if (btnTable)
+          btnTable.onclick = () => {
+            scheduleView = "table";
+            renderInternalBody("schedule");
+          };
+        if (btnCal)
+          btnCal.onclick = () => {
+            scheduleView = "calendar";
+            renderInternalBody("schedule");
+          };
+
+        // Filtros (Mês, Unidade, Especialidade)
+        const fMonth = $("fMonth");
+        const fUnit = $("fUnit");
+        const fSpec = $("fSpec");
+
+        if (fMonth)
+          fMonth.onchange = () => {
+            loadLiveShifts();
+          }; // Mudou mês -> Busca nova no banco
+        if (fUnit)
+          fUnit.onchange = (e) => {
+            window.tempUnitFilter = e.target.value;
+            loadLiveShifts(); // Mudou unidade -> Busca nova no banco
+          };
+        if (fSpec)
+          fSpec.onchange = (e) => {
+            window.tempSpecFilter = e.target.value;
+            if (e.target.value !== "Outro") window.tempSpecOther = "";
+            renderInternalBody("schedule"); // Filtro de especialidade é visual (local), não precisa ir no banco de novo
+          };
+
+        // Profissional: Modos de Visualização
         if (session.role === "prof") {
-          $("btnModeMine").onclick = () => {
-            profScheduleMode = "mine";
-            calSelectedMyShiftId = null;
-            renderInternalBody("schedule");
-          };
-          $("btnModeFull").onclick = () => {
-            profScheduleMode = "publishedFull";
-            calSelectedMyShiftId = null;
-            renderInternalBody("schedule");
-          };
-          const _b = $("btnBio");
-          if (_b) _b.onclick = () => openBioModal();
-          // Apenas recarrega conteúdo se mudar mês
-          $("fMonth").onchange = () => {
-            renderInternalBody("schedule");
-          };
+          const bMine = $("btnModeMine");
+          const bFull = $("btnModeFull");
+          if (bMine)
+            bMine.onclick = () => {
+              profScheduleMode = "mine";
+              loadLiveShifts(); // Recarrega do banco filtrando só os meus
+            };
+          if (bFull)
+            bFull.onclick = () => {
+              profScheduleMode = "publishedFull";
+              loadLiveShifts(); // Recarrega trazendo todos (publicados)
+            };
+
+          // Injeta turnos de colegas (se necessário)
           injectColleagueShiftsIntoCalendar();
-          return;
+        } else {
+          // Admin: Botões de Ação
+          const btnGen = $("btnGen");
+          const btnPub = $("btnPub");
+
+          if (btnGen)
+            btnGen.onclick = () => {
+              const m = fMonth.value;
+              const u = fUnit.value;
+              const s = fSpec.value;
+              if (!u || !s) return toast("Selecione Unidade e Especialidade");
+              const tpl =
+                DB.defaultTimeKey || DB.timeTemplates[0]?.k || "07-19";
+              genMonthlySchedule(m, u, s, tpl);
+            };
+
+          if (btnPub)
+            btnPub.onclick = () => {
+              const m = fMonth.value;
+              const u = fUnit.value;
+              const s = fSpec.value;
+              if (!u || !s) return toast("Selecione Unidade e Especialidade");
+              publishMonth(m, u, s);
+            };
+
+          // Criação Manual de Plantão (Card Lateral)
+          const btnCreate = $("btnShiftCreate");
+          if (btnCreate)
+            btnCreate.onclick = async () => {
+              const date = $("sDate").value;
+              const unit = $("sUnit").value;
+              const spec = $("sSpec").value;
+              const profId = $("sProf").value;
+
+              if (!date || !unit || !spec || !profId)
+                return toast("Preencha todos os campos.");
+
+              toast("Criando...");
+              try {
+                await db.collection("shifts").add({
+                  unitId: unit,
+                  spec,
+                  date,
+                  month: isoMonth(date),
+                  tpl: $("sTpl").value,
+                  start: $("sStart").value,
+                  end: $("sEnd").value,
+                  profId,
+                  originalProfId: profId,
+                  swapped: false,
+                  published: false,
+                  createdAt: new Date().toISOString(),
+                });
+                toast("✅ Plantão criado!");
+                // O Listener atualiza a tela
+              } catch (e) {
+                toast("Erro ao criar.");
+              }
+            };
         }
 
-        $("fMonth").onchange = () => renderInternalBody("schedule");
-        $("fUnit").onchange = (e) => {
-          window.tempUnitFilter = e.target.value;
-          renderInternalBody("schedule");
-        };
-        $("fSpec").onchange = (e) => {
-          window.tempSpecFilter = e.target.value;
-          // Se mudou para outro que não seja "Outro", limpa a busca textual
-          if (e.target.value !== "Outro") window.tempSpecOther = "";
-          renderInternalBody("schedule");
-        };
-
-        // Adicione listener para o campo de texto também
-        if ($("fSpecOther")) {
-          $("fSpecOther").oninput = (e) => {
-            window.tempSpecOther = e.target.value;
-            // Pequeno delay para não renderizar a cada letra (opcional, mas bom)
-            clearTimeout(window._searchTimer);
-            window._searchTimer = setTimeout(
-              () => renderInternalBody("schedule"),
-              400,
-            );
-          };
-        }
-
-        $("btnGen").onclick = () => {
-          const month = $("fMonth").value;
-          const unit = $("fUnit").value;
-          const spec = $("fSpec").value;
-          if (!unit || !spec) {
-            toast("Selecione Unidade e Especialidade");
-            return;
-          }
-          const tplKey = DB.defaultTimeKey || DB.timeTemplates[0]?.k || "07-19";
-          const ok = genMonthlySchedule(month, unit, spec, tplKey);
-          if (!ok) {
-            toast("Sem profissionais aprovados nessa especialidade");
-            return;
-          }
-          toast(t("msgGenerated"));
-          renderHomeKPIs();
-          renderInternalBody("schedule");
-        };
-        $("btnPub").onclick = () => {
-          const month = $("fMonth").value;
-          const unit = $("fUnit").value;
-          const spec = $("fSpec").value;
-          if (!unit || !spec) {
-            toast("Selecione Unidade e Especialidade");
-            return;
-          }
-          publishMonth(month, unit, spec);
-          toast(t("msgPublished"));
-          renderInternalBody("schedule");
-        };
-
-        const tplDefaultSel = $("tplDefaultSel");
-        if (tplDefaultSel) {
-          tplDefaultSel.value =
-            DB.defaultTimeKey || DB.timeTemplates[0]?.k || "";
-          $("tplDefaultLabel").textContent = tplDefaultSel.value;
-          tplDefaultSel.onchange = () => {
-            DB.defaultTimeKey = tplDefaultSel.value;
-            saveDB();
-            renderInternalBody("schedule");
-          };
-          $("btnTplSave").onclick = () => {
-            const name = $("tplName").value.trim();
-            const key = $("tplKey").value.trim();
-            const st = $("tplStart").value;
-            const en = $("tplEnd").value;
-            if (!name || !key || !st || !en) {
-              toast("—");
-              return;
-            }
-            const ex = DB.timeTemplates.find((x) => x.k === key);
-            if (ex) {
-              ex.name = name;
-              ex.s = st;
-              ex.e = en;
-            } else DB.timeTemplates.push({ k: key, name, s: st, e: en });
-            if (!DB.defaultTimeKey) DB.defaultTimeKey = key;
-            saveDB();
-            toast(t("msgTplSaved"));
-            renderInternalBody("schedule");
-          };
-
-          const sTpl = $("sTpl"),
-            sStart = $("sStart"),
-            sEnd = $("sEnd");
-          const applyTpl = (k) => {
-            if (k === "CUSTOM") {
-              sStart.value = "";
-              sEnd.value = "";
-              return;
-            }
-            const tpl = getTpl(k);
-            if (tpl) {
-              sStart.value = tpl.s;
-              sEnd.value = tpl.e;
-            }
-          };
-          sTpl.value = DB.defaultTimeKey || DB.timeTemplates[0]?.k || "";
-          applyTpl(sTpl.value);
-          sTpl.onchange = () => applyTpl(sTpl.value);
-
-          const sSpec = $("sSpec"),
-            sProf = $("sProf");
-          const fillProf = () => {
-            const spec = sSpec.value;
-            const list = DB.profs.filter((p) => p.approved && p.spec === spec);
-            sProf.innerHTML =
-              list
-                .map((p) => `<option value="${p.id}">${p.name}</option>`)
-                .join("") || `<option value="">—</option>`;
-          };
-          sSpec.onchange = fillProf;
-          fillProf();
-
-          $("btnShiftCreate").onclick = () => {
-            const date = $("sDate").value;
-            const month = isoMonth(date);
-            const unit = $("sUnit").value;
-            const spec = sSpec.value;
-            const tpl = sTpl.value;
-            const st = sStart.value;
-            const en = $("sEnd").value;
-            const profId = sProf.value;
-            if (!date || !unit || !spec || !st || !en || !profId) {
-              toast("—");
-              return;
-            }
-            DB.shifts.push({
-              id: uid("s"),
-              unitId: unit,
-              spec,
-              date,
-              month,
-              tpl,
-              start: st,
-              end: en,
-              profId,
-              originalProfId: profId,
-              swapped: false,
-              swappedAt: null,
-              swapNote: null,
-              createdAt: nowISO(),
-              published: false,
-              publishedAt: null,
-              checkInAt: null,
-              checkOutAt: null,
-            });
-            saveDB();
-            renderHomeKPIs();
-            toast(t("msgShiftCreated"));
-            renderInternalBody("schedule");
-          };
+        // --- 3. INICIALIZAÇÃO ---
+        // Se for a primeira vez rodando nesta tela, carrega os dados
+        if (!_unsubscribeShifts) {
+          loadLiveShifts();
         }
       }
 
