@@ -7353,80 +7353,75 @@
           toast(L() === "pt" ? "Idioma atualizado" : "Language updated");
         });
 
-        // --- LÓGICA DO NOVO LOGIN ---
-        // --- LÓGICA DE LOGIN CONECTADA (SUBSTITUA O TRECHO ANTIGO POR ESTE) ---
+        // --- LÓGICA DO NOVO LOGIN (CONECTADO AO FIREBASE) ---
         if ($("btnLoginUnified")) {
           $("btnLoginUnified").onclick = async (e) => {
-            // Previne comportamento padrão se houver form, e garante feedback visual
-            if (e) e.preventDefault();
-
+            if(e) e.preventDefault(); // Evita recarregar a página
+            
             const btn = $("btnLoginUnified");
             const originalText = btn.innerText;
-
-            // Pega valores
-            const uInput = $("lUser").value.trim(); // Ex: "Andre"
-            const pInput = $("lPass").value.trim(); // Ex: "123entrar"
+            
+            // Pega o que foi digitado e remove espaços
+            const uInput = $("lUser").value.trim(); 
+            const pInput = $("lPass").value.trim();
 
             if (!uInput || !pInput) {
               toast("Preencha usuário e senha.");
               return;
             }
 
-            // Feedback visual que está "pensando"
+            // Avisa o usuário que está buscando
             btn.disabled = true;
             btn.innerText = "🔄 Buscando...";
-
+            
             try {
-              // 1. TENTA ADMIN/GESTOR (Busca na coleção 'users')
-              // Importante: .toLowerCase() garante que ache 'andre' mesmo digitando 'Andre'
-              const userQuery = await db
-                .collection("users")
-                .where("user", "==", uInput.toLowerCase())
-                .get();
+                // 1. BUSCA NO BANCO DE DADOS REAL (Coleção 'users')
+                // .toLowerCase() garante que ache 'andre' mesmo se digitar 'Andre'
+                const userQuery = await db.collection('users')
+                    .where('user', '==', uInput.toLowerCase()) 
+                    .get();
 
-              if (!userQuery.empty) {
-                const userData = userQuery.docs[0].data();
-
-                // Verifica senha (exatamente como está no banco)
-                if (userData.pass === pInput) {
-                  toast(`✅ Bem-vindo, ${userData.name}!`);
-                  goInternal(userData.role);
-                  return; // SUCESSO!
-                } else {
-                  toast("❌ Senha incorreta.");
-                  btn.disabled = false;
-                  btn.innerText = originalText;
-                  return;
+                if (!userQuery.empty) {
+                    const userData = userQuery.docs[0].data();
+                    
+                    // Verifica a senha
+                    if (userData.pass === pInput) {
+                        toast(`✅ Bem-vindo, ${userData.name}!`);
+                        goInternal(userData.role); 
+                        return; // SUCESSO! Entra no sistema
+                    } else {
+                        toast("❌ Senha incorreta.");
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                        return;
+                    }
                 }
-              }
 
-              // 2. SE NÃO ACHOU ADMIN, TENTA PROFISSIONAL (Busca na coleção 'accounts')
-              // (Isso é para quando você tiver médicos cadastrados)
-              const accQuery = await db
-                .collection("accounts")
-                .where("user", "==", uInput) // Aqui pode manter original ou lower dependendo da regra
-                .get();
+                // 2. SE NÃO ACHOU ADMIN, TENTA MÉDICO (Coleção 'accounts')
+                // Isso servirá para quando tivermos médicos cadastrados
+                const accQuery = await db.collection('accounts')
+                    .where('user', '==', uInput) 
+                    .get();
 
-              if (!accQuery.empty) {
-                const accData = accQuery.docs[0].data();
-
-                // Verifica senha
-                if (accData.pass === pInput) {
-                  toast("✅ Bem-vindo, Dr(a)!");
-                  goInternal("prof", accData.profId);
-                  return;
+                if (!accQuery.empty) {
+                    const accData = accQuery.docs[0].data();
+                    if (accData.pass === pInput) {
+                         toast("✅ Bem-vindo, Dr(a)!");
+                         goInternal("prof", accData.profId);
+                         return;
+                    }
                 }
-              }
 
-              // Se chegou aqui, não achou ninguém
-              toast("❌ Usuário não encontrado.");
+                // Se chegou aqui, não existe no banco
+                toast("❌ Usuário não encontrado no banco.");
+
             } catch (error) {
-              console.error("Erro crítico no login:", error);
-              toast("⚠️ Erro de conexão: " + error.message);
+                console.error("Erro crítico no login:", error);
+                toast("⚠️ Erro de conexão.");
             } finally {
-              // Restaura o botão se deu erro
-              btn.disabled = false;
-              btn.innerText = originalText;
+                // Restaura o botão
+                btn.disabled = false;
+                btn.innerText = originalText;
             }
           };
         }
