@@ -1590,7 +1590,7 @@
         };
       };
 
-      /* function loadDB() {
+      function loadDB() {
         try {
           const raw = localStorage.getItem(KEY);
           if (!raw) return defaultDB();
@@ -1662,8 +1662,7 @@
           console.error(e);
           return defaultDB();
         }
-      } */
-
+      }
       /* ===================== SALVAR NA NUVEM ===================== */
       async function saveDB() {
         setCloudStatus("syncing");
@@ -3609,116 +3608,219 @@
     </div>`;
       }
 
-      // Nova bindUnits conectada ao Back-end (Firestore)
       function bindUnits() {
-        const tableBody = document.querySelector("#viewInternal .table tbody"); // Ajuste o seletor se necessário
+        const uf = $("uUF"),
+          city = $("uCity");
+        let editingId = null;
 
-        // 1. OUVINTE EM TEMPO REAL (READ)
-        // Isso substitui o "DB.units.map(...)"
-        // Sempre que alguém criar uma unidade lá no Japão, sua tela atualiza sozinha aqui.
-        const unsubscribe = db
-          .collection("units")
-          .orderBy("name")
-          .onSnapshot(
-            (snapshot) => {
-              const unitsList = [];
-              snapshot.forEach((doc) => {
-                unitsList.push({ id: doc.id, ...doc.data() });
-              });
-
-              // Atualiza a variável global para outras telas usarem (cache local)
-              DB.units = unitsList;
-
-              // Renderiza a tabela
-              renderUnitsTable(unitsList);
-            },
-            (error) => {
-              console.error("Erro ao buscar unidades:", error);
-              toast("Erro de conexão com o banco.");
-            },
-          );
-
-        // --- Função Auxiliar de Renderização (Tiramos de dentro do renderUnits HTML) ---
-        function renderUnitsTable(lista) {
-          // (Aqui você cola o código que gera os <tr> da sua renderUnits atual,
-          // mas usando a variável 'lista' em vez de DB.units)
-          // Vou simplificar para o exemplo:
-          const html = lista
-            .map(
-              (u) => `
-          <tr>
-              <td><b>${u.name}</b><br><span class="muted">${u.city}</span></td>
-              <td>${u.type}</td>
-              <td><span class="badge">${u.integrationStatus || "PENDENTE"}</span></td>
-              <td style="text-align:right">
-                  <button class="small" onclick="editUnit('${u.id}')">✏️</button>
-                  <button class="small danger" onclick="deleteUnit('${u.id}')">🗑️</button>
-              </td>
-          </tr>
-      `,
-            )
+        // Função para preencher cidades baseada no UF
+        function fillCities() {
+          const ufv = uf.value || "SC";
+          const list = UF_CITIES[ufv] || ["—"];
+          city.innerHTML = list
+            .map((c) => `<option value="${c}">${c}</option>`)
             .join("");
-
-          // Acha a tabela dentro da view atual e atualiza
-          // Dica: Adicione id="unitsTableBody" no <tbody> da sua renderUnits para facilitar
-          if (document.getElementById("unitsTableBody")) {
-            document.getElementById("unitsTableBody").innerHTML =
-              html || '<tr><td colspan="4">Nada encontrado.</td></tr>';
-          }
         }
+        uf.onchange = fillCities;
 
-        // 2. FUNÇÃO DE SALVAR (CREATE / UPDATE)
-        // Substitui o "DB.units.push" e "saveDB"
-        const btnSave = document.getElementById("btnSaveUnit");
-        if (btnSave) {
-          btnSave.onclick = async () => {
-            const name = document.getElementById("uName").value;
-            // ... pegue os outros campos ...
-
-            const dados = {
-              name: name,
-              type: document.getElementById("uType").value,
-              // ... outros campos ...
-              updatedAt: new Date().toISOString(),
-            };
-
-            btnSave.disabled = true;
-            btnSave.textContent = "Salvando...";
-
-            try {
-              if (editingId) {
-                // UPDATE
-                await db.collection("units").doc(editingId).update(dados);
-                toast("Unidade atualizada na nuvem!");
-              } else {
-                // CREATE
-                await db.collection("units").add({
-                  ...dados,
-                  createdAt: new Date().toISOString(),
-                });
-                toast("Unidade criada na nuvem!");
-              }
-              closeUnitModal();
-            } catch (e) {
-              console.error(e);
-              toast("Erro ao salvar.");
-            } finally {
-              btnSave.disabled = false;
-              btnSave.textContent = "Salvar Unidade";
-            }
-          };
-        }
-
-        // 3. FUNÇÃO DE DELETAR (DELETE)
-        window.deleteUnit = async (id) => {
-          if (!confirm("Tem certeza? Isso apaga direto do servidor.")) return;
-          try {
-            await db.collection("units").doc(id).delete();
-            toast("Unidade removida.");
-          } catch (e) {
-            toast("Erro ao excluir.");
+        // --- CONTROLE DO MODAL ---
+        window.openUnitModal = (isEdit) => {
+          $("unitModal").style.display = "flex";
+          $("unitFormTitle").textContent = isEdit
+            ? "Editar Unidade"
+            : "Nova Unidade";
+          if (!isEdit) {
+            // Reset form se for nova
+            editingId = null;
+            uf.value = "PR";
+            fillCities();
+            $("uName").value = "";
+            $("uSub").value = "";
+            $("uSys").value = "Tasy";
+            $("uAddr").value = "";
+            $("uLat").value = "";
+            $("uLon").value = "";
+            $("uRadius").value = "200";
+            $("uIntStatus").textContent = "NOVA";
+            $("uIntStatus").className = "badge";
           }
         };
+
+        window.closeUnitModal = () => {
+          $("unitModal").style.display = "none";
+        };
+
+        // Botão "Nova Unidade"
+        $("btnAddUnit").onclick = () => openUnitModal(false);
+
+        // Botão "Salvar" dentro do Modal
+        $("btnSaveUnit").onclick = () => {
+          const name = $("uName").value.trim();
+          const type = $("uType").value;
+          const ufv = $("uUF").value;
+          const cityv = $("uCity").value;
+          const sub = $("uSub").value.trim();
+          const sys = $("uSys").value;
+
+          // Geo
+          const addr = $("uAddr").value.trim();
+          const lat = $("uLat").value;
+          const lon = $("uLon").value;
+          const rad = parseInt($("uRadius").value) || 200;
+
+          if (!name) {
+            toast("Informe o nome da unidade");
+            return;
+          }
+
+          if (editingId) {
+            // ATUALIZAR
+            const u = DB.units.find((x) => x.id === editingId);
+            if (u) {
+              u.name = name;
+              u.type = type;
+              u.uf = ufv;
+              u.city = cityv;
+              u.subtype = sub;
+              u.system = sys;
+              u.address = addr;
+              u.lat = lat;
+              u.lon = lon;
+              u.radiusM = rad;
+              saveDB();
+              toast("Unidade atualizada.");
+            }
+          } else {
+            // CRIAR
+            DB.units.unshift({
+              id: uid("u"),
+              name,
+              type,
+              uf: ufv,
+              city: cityv,
+              subtype: sub,
+              system: sys,
+              address: addr,
+              lat,
+              lon,
+              radiusM: rad,
+              integrationMode: "Export/CSV",
+              integrationStatus: "pendente",
+              lastSync: null,
+              biEnabled: false,
+              biTool: null,
+              createdAt: nowISO(),
+            });
+            saveDB();
+            toast("Unidade criada.");
+          }
+
+          closeUnitModal();
+          renderInternalBody("units");
+        };
+
+        // --- FUNÇÃO DE GEOCODING (Busca GPS) ---
+        $("btnGeoSearch").onclick = async () => {
+          let term = $("uAddr").value.trim();
+          if (!term) {
+            toast("Digite um nome ou endereço.");
+            return;
+          }
+          toast("🔍 Buscando...");
+
+          // Limpeza simples para números compostos (ex: 600/700 -> 600)
+          if (term.match(/\d+\/\d+/)) term = term.replace(/(\d+)[/-]\d+/, "$1");
+
+          try {
+            if (
+              !term.toLowerCase().includes("brazil") &&
+              !term.toLowerCase().includes("brasil")
+            ) {
+              term += ", Brazil";
+            }
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(term)}&limit=1`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data && data.length > 0) {
+              const place = data[0];
+              $("uLat").value = place.lat;
+              $("uLon").value = place.lon;
+              toast("✅ Encontrado!");
+            } else {
+              toast("❌ Local não encontrado. Tente simplificar.");
+            }
+          } catch (e) {
+            console.error(e);
+            toast("Erro ao conectar no mapa.");
+          }
+        };
+
+        // --- AÇÕES GLOBAIS (Editar/Excluir) ---
+        window.editUnit = (id) => {
+          const u = DB.units.find((x) => x.id === id);
+          if (!u) return;
+          editingId = id;
+          openUnitModal(true); // Abre em modo edição
+
+          // Preenche
+          $("uName").value = u.name;
+          $("uType").value = u.type;
+          $("uSys").value = u.system || "Tasy";
+          $("uSub").value = u.subtype || "";
+          $("uUF").value = u.uf || "SC";
+          fillCities();
+          $("uCity").value = u.city || "";
+
+          $("uAddr").value = u.address || "";
+          $("uLat").value = u.lat || "";
+          $("uLon").value = u.lon || "";
+          $("uRadius").value = u.radiusM || "200";
+
+          const st = u.integrationStatus || "pendente";
+          $("uIntStatus").textContent = st.toUpperCase();
+          $("uIntStatus").className =
+            "badge " + (st === "conectado" ? "bGood" : "bWarn");
+        };
+
+        window.deleteUnit = (id) => {
+          const shiftsAffected = DB.shifts.filter(
+            (s) => s.unitId === id,
+          ).length;
+          const msg =
+            shiftsAffected > 0
+              ? `⚠️ ATENÇÃO: Esta unidade possui ${shiftsAffected} plantões.\nAo excluir, TODOS os plantões dela também serão apagados.\n\nDeseja continuar?`
+              : "Tem certeza que deseja excluir esta unidade?";
+
+          if (!confirm(msg)) return;
+
+          DB.units = DB.units.filter((x) => x.id !== id);
+          DB.shifts = DB.shifts.filter((s) => s.unitId !== id); // Cascade
+
+          renderInternalBody("units");
+          toast("Unidade excluída.");
+
+          if (typeof db !== "undefined") {
+            db.collection("sistema")
+              .doc("v1")
+              .update({
+                units: DB.units,
+                schedule: DB.shifts,
+              })
+              .catch(console.error);
+          } else {
+            saveDB();
+          }
+        };
+
+        // Configurar botões da tabela (Integração)
+        document.querySelectorAll(".btnCfg").forEach((btn) => {
+          btn.onclick = () => {
+            setConnectUnit(btn.dataset.unit);
+            gotoTab("connect");
+            toast("Abrindo integrações…");
+          };
+        });
       }
 
       /* ========= Connect (Integrações - UI Minimalista) ========= */
