@@ -5840,75 +5840,126 @@
         }
       };
 
-      /* ========= GERAÇÃO DE ESCALA (CONECTADO AO FIREBASE) ========= */
+      async function checkConflict(profId, date, start, end) {
+        const snap = await db
+          .collection("shifts")
+          .where("profId", "==", profId)
+          .where("date", "==", date)
+          .get();
 
-      // Função Auxiliar para criar em lote (Batch Write)
-      // O Firebase limita lotes a 500 itens, o que é suficiente para um mês/unidade/especialidade
+        if (snap.empty) return false;
+
+        let isBusy = false;
+        snap.forEach((doc) => {
+          const s = doc.data();
+          if (s.start === start) isBusy = true;
+        });
+
+        return isBusy;
+      }
+
+      /* ========= GERAÇÃO COM PROTEÇÃO DE CONFLITOS ========= */
       async function genMonthlySchedule(month, unitId, spec, tplKey) {
         const tpl = getTpl(tplKey);
         if (!tpl) return false;
 
-        // Busca médicos aprovados dessa especialidade
         const pros = DB.profs.filter((p) => p.approved && p.spec === spec);
-        if (!pros.length) return false;
+        if (!pros.length)
+          return toast("Sem médicos habilitados nesta especialidade.");
 
-        toast("Gerando escala na nuvem...");
-        const batch = db.batch(); // Inicia lote
+        toast("🔍 Analisando conflitos globais...");
+
+        // 1. MAPA DE OCUPAÇÃO GLOBAL
+        // Baixa TODOS os plantões deste mês (de todas as unidades) para saber quem está ocupado
+        // Isso garante que o Bracinni veja a ocupação da escala do Adilson
+        const busyMap = new Set(); // Guarda chaves do tipo "ID_MEDICO|DATA"
+
+        const globalSnap = await db
+          .collection("shifts")
+          .where("month", "==", month)
+          .get();
+
+        globalSnap.forEach((doc) => {
+          const s = doc.data();
+          // Marca que o médico X está ocupado no dia Y
+          // (Poderíamos adicionar horário na chave para refinar)
+          busyMap.add(`${s.profId}|${s.date}`);
+        });
+
+        toast("Gerando escala...");
+        const batch = db.batch();
         const n = daysInMonth(month);
         let pi = 0;
         let count = 0;
+        let conflicts = 0;
 
-        // Verifica duplicidade localmente para não tentar criar por cima do que já vemos
-        // (O ideal seria verificar no banco, mas para demo, o cache local serve)
-        const existingShifts = DB.shifts.filter(
+        // Verifica o que já existe NESTA unidade (para não duplicar visualmente)
+        const localShifts = DB.shifts.filter(
           (s) => s.month === month && s.unitId === unitId && s.spec === spec,
         );
 
         for (let day = 1; day <= n; day++) {
           const d = `${month}-${String(day).padStart(2, "0")}`;
 
-          // Pula se já existe plantão igual neste dia/horário
-          const exists = existingShifts.find(
-            (s) => s.date === d && s.start === tpl.s && s.end === tpl.e,
+          // Pula se já existe plantão na minha própria unidade
+          if (localShifts.find((s) => s.date === d && s.start === tpl.s))
+            continue;
+
+          // Tenta encontrar um médico livre no rodízio
+          let pickedProf = null;
+          let attempts = 0;
+
+          while (!pickedProf && attempts < pros.length) {
+            const candidate = pros[pi % pros.length];
+            pi++; // Avança a fila
+            attempts++;
+
+            // CHEQUE DE CONFLITO: O candidato já está no mapa de ocupados?
+            if (!busyMap.has(`${candidate.id}|${d}`)) {
+              pickedProf = candidate;
+            }
+          }
+
+          if (pickedProf) {
+            // Achou médico livre! Agenda.
+            const newRef = db.collection("shifts").doc();
+            batch.set(newRef, {
+              unitId,
+              spec,
+              date: d,
+              month,
+              tpl: tplKey,
+              start: tpl.s,
+              end: tpl.e,
+              profId: pickedProf.id,
+              originalProfId: pickedProf.id,
+              swapped: false,
+              published: false,
+              createdAt: new Date().toISOString(),
+            });
+
+            // Marca ele como ocupado para os próximos dias do loop (caso rode 2x no mesmo dia)
+            busyMap.add(`${pickedProf.id}|${d}`);
+            count++;
+          } else {
+            conflicts++; // Ninguém livre neste dia
+          }
+        }
+
+        if (count === 0 && conflicts === 0)
+          return toast("Dias já preenchidos.");
+
+        if (count > 0) {
+          await batch.commit();
+          toast(`✅ ${count} plantões gerados!`);
+          if (conflicts > 0)
+            alert(
+              `Aviso: ${conflicts} dias ficaram vazios pois todos os médicos da equipe já estavam escalados em outras unidades nestas datas.`,
+            );
+        } else {
+          alert(
+            "Não foi possível gerar: Todos os médicos estão ocupados em outras escalas nestas datas.",
           );
-          if (exists) continue;
-
-          const p = pros[pi % pros.length]; // Rodízio simples de médicos
-          pi++;
-
-          // Cria a referência do novo documento
-          const newRef = db.collection("shifts").doc();
-
-          batch.set(newRef, {
-            unitId,
-            spec,
-            date: d,
-            month, // Importante para filtros
-            tpl: tplKey,
-            start: tpl.s,
-            end: tpl.e,
-            profId: p.id,
-            originalProfId: p.id,
-            swapped: false,
-            published: false,
-            createdAt: new Date().toISOString(),
-          });
-          count++;
-        }
-
-        if (count === 0) {
-          toast("Nenhum plantão novo necessário (dias já preenchidos).");
-          return true;
-        }
-
-        try {
-          await batch.commit(); // Envia tudo de uma vez
-          toast(`✅ ${count} plantões gerados na nuvem!`);
-          return true;
-        } catch (e) {
-          console.error(e);
-          toast("Erro ao gerar escala.");
-          return false;
         }
       }
 
@@ -6269,7 +6320,7 @@
               publishMonth(m, u, s);
             };
 
-          // Criação Manual de Plantão (Card Lateral)
+          // Criação Manual de Plantão
           const btnCreate = $("btnShiftCreate");
           if (btnCreate)
             btnCreate.onclick = async () => {
@@ -6277,19 +6328,37 @@
               const unit = $("sUnit").value;
               const spec = $("sSpec").value;
               const profId = $("sProf").value;
+              const start = $("sStart").value;
 
               if (!date || !unit || !spec || !profId)
                 return toast("Preencha todos os campos.");
 
-              toast("Criando...");
+              const btn = $("btnShiftCreate");
+              const originalText = btn.innerText;
+              btn.disabled = true;
+              btn.innerText = "Verificando...";
+
               try {
+                // 1. CHECAGEM DE CONFLITO
+                const isBusy = await checkConflict(profId, date, start);
+
+                if (isBusy) {
+                  alert(
+                    "🚫 CONFLITO DETECTADO:\n\nEste profissional já está escalado em outra unidade nesta data/horário.\nO sistema prioriza a escala existente.",
+                  );
+                  btn.disabled = false;
+                  btn.innerText = originalText;
+                  return;
+                }
+
+                // 2. SALVA SE ESTIVER LIVRE
                 await db.collection("shifts").add({
                   unitId: unit,
                   spec,
                   date,
                   month: isoMonth(date),
                   tpl: $("sTpl").value,
-                  start: $("sStart").value,
+                  start: start,
                   end: $("sEnd").value,
                   profId,
                   originalProfId: profId,
@@ -6298,9 +6367,12 @@
                   createdAt: new Date().toISOString(),
                 });
                 toast("✅ Plantão criado!");
-                // O Listener atualiza a tela
               } catch (e) {
+                console.error(e);
                 toast("Erro ao criar.");
+              } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
               }
             };
         }
