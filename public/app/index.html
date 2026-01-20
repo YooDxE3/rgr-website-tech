@@ -6395,243 +6395,233 @@
       /* --- LÓGICA DE USUÁRIOS DO SISTEMA --- */
 
       // Abrir Modal de Novo Admin
+      /* --- LÓGICA DE USUÁRIOS DO SISTEMA (MIGRADO PARA FIREBASE) --- */
+
+      // 1. Abrir Modal de Novo Admin (Visual igual, lógica preparada)
       window.openAddUserModal = () => {
         const modalHtml = `
-  <div class="modalOverlay" id="userOverlay" style="display:flex">
-    <div class="modal" style="max-width:400px">
-      <div class="card"><div class="cardin">
-        <h2>Novo Usuário do Sistema</h2>
-        <div class="sp"></div>
-        
-        <div class="muted">Nome de Exibição</div>
-        <input id="newUName" placeholder="Ex: Fulano Silva">
-        <div class="sp"></div>
-
-        <div class="muted">Login (Usuário)</div>
-        <input id="newUUser" placeholder="Ex: Fulano">
-        <div class="sp"></div>
-
-        <div class="muted">Senha</div>
-        <input id="newUPass" type="text" placeholder="Senha de acesso">
-        <div class="sp"></div>
-
-        <div class="muted">Perfil</div>
-        <select id="newURole">
-          <option value="gestor">Gestor</option>
-          <option value="admin">Administrador</option>
-        </select>
-
-        <div class="sp"></div>
-        <div class="row" style="justify-content:flex-end">
-          <button class="small" onclick="document.getElementById('userOverlay').remove()">Cancelar</button>
-          <button class="primary" onclick="saveNewSystemUser()">Salvar</button>
-        </div>
-      </div></div>
-    </div>
-  </div>`;
-
+          <div class="modalOverlay" id="userOverlay" style="display:flex">
+            <div class="modal" style="max-width:400px">
+              <div class="card"><div class="cardin">
+                <h2>Novo Usuário do Sistema</h2>
+                <div class="sp"></div>
+                <div class="muted">Nome de Exibição</div>
+                <input id="newUName" placeholder="Ex: Fulano Silva">
+                <div class="sp"></div>
+                <div class="muted">Login (Usuário)</div>
+                <input id="newUUser" placeholder="Ex: Fulano">
+                <div class="sp"></div>
+                <div class="muted">Senha</div>
+                <input id="newUPass" type="text" placeholder="Senha de acesso">
+                <div class="sp"></div>
+                <div class="muted">Perfil</div>
+                <select id="newURole">
+                  <option value="gestor">Gestor</option>
+                  <option value="admin">Administrador</option>
+                </select>
+                <div class="sp"></div>
+                <div class="row" style="justify-content:flex-end">
+                  <button class="small" onclick="document.getElementById('userOverlay').remove()">Cancelar</button>
+                  <button class="primary" onclick="saveNewSystemUser()">Salvar</button>
+                </div>
+              </div></div>
+            </div>
+          </div>`;
         const anchor = document.getElementById("teamModalAnchor");
         if (anchor) anchor.innerHTML = modalHtml;
       };
 
-      // Salvar Novo Admin
-      window.saveNewSystemUser = () => {
+      // 2. Salvar Novo Admin (NOVO: Grava na coleção 'users')
+      window.saveNewSystemUser = async () => {
         const name = $("newUName").value.trim();
-        const user = $("newUUser").value.trim();
+        const userRaw = $("newUUser").value.trim();
+        const user = userRaw.toLowerCase(); // Força minúsculo
         const pass = $("newUPass").value.trim();
         const role = $("newURole").value;
 
         if (!name || !user || !pass) {
-          alert("Preencha todos os campos!");
-          return;
+          return toast("Preencha todos os campos!");
         }
 
-        // Verifica se já existe
-        if (DB.users.find((u) => u.user.toLowerCase() === user.toLowerCase())) {
-          alert("Este login já está em uso.");
-          return;
+        toast("Verificando disponibilidade...");
+
+        try {
+          // Verifica se já existe na coleção 'users'
+          const check = await db
+            .collection("users")
+            .where("user", "==", user)
+            .get();
+          if (!check.empty) {
+            return toast("❌ Este login já está em uso.");
+          }
+
+          // Cria na nuvem
+          await db.collection("users").add({
+            name,
+            user,
+            pass,
+            role,
+            createdAt: new Date().toISOString(),
+          });
+
+          toast("✅ Usuário criado na nuvem!");
+          document.getElementById("userOverlay").remove();
+          // A tabela atualiza sozinha graças ao bindTeam lá embaixo
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao salvar usuário.");
         }
-
-        // Adiciona na lista
-        DB.users.push({
-          id: "u_" + Math.random().toString(16).slice(2),
-          name,
-          user,
-          pass,
-          role,
-        });
-
-        saveDB(); // Salva na nuvem
-        document.getElementById("userOverlay").remove();
-        renderInternalBody("team"); // Atualiza a tela
-        alert(`Usuário ${user} criado com sucesso!`);
       };
 
-      // Deletar Admin
-      window.deleteSystemUser = (id) => {
-        if (
-          !confirm("Tem certeza que deseja remover este acesso administrativo?")
-        )
+      // 3. Deletar Admin (NOVO: Apaga da coleção 'users')
+      window.deleteSystemUser = async (id) => {
+        if (!confirm("Tem certeza que deseja remover este acesso do servidor?"))
           return;
-
-        DB.users = DB.users.filter((u) => u.id !== id);
-
-        // FORÇA A EXCLUSÃO DIRETA NA NUVEM (Bypassa o Merge)
-        if (typeof db !== "undefined") {
-          db.collection("sistema").doc("v1").update({ users: DB.users });
-        } else {
-          saveDB(); // Fallback para LocalStorage
+        try {
+          await db.collection("users").doc(id).delete();
+          toast("🗑️ Usuário removido.");
+        } catch (e) {
+          toast("Erro ao excluir.");
         }
-
-        renderInternalBody("team");
       };
 
-      // Função auxiliar para abrir o Modal (Edição ou Visualização)
+      // --- LÓGICA DE PROFISSIONAIS (MÉDICOS) ---
+
+      // 4. Modal Profissional
       function openProfModal(id, isReadOnly) {
         const p = DB.profs.find((x) => x.id === id);
         if (!p) return;
 
         const modalHtml = `
-  <div class="modalOverlay" id="teamOverlay" style="display:flex">
-    <div class="modal">
-      <div class="card"><div class="cardin">
-        <div class="row" style="justify-content:space-between">
-          <h2>${isReadOnly ? "Ficha do Profissional" : "Editar Dados"}</h2>
-          <button class="small danger" onclick="closeTeamModal()">Fechar</button>
-        </div>
-        <div class="divider"></div>
-        
-        <div class="two">
-          <div>
-            <div class="muted">Nome Completo</div>
-            <input id="edName" value="${p.name}" ${isReadOnly ? "disabled" : ""}>
-          </div>
-          <div>
-            <div class="muted">Especialidade</div>
-            <select id="edSpec" ${isReadOnly ? "disabled" : ""}>
-               ${SPECIALTIES.map((s) => `<option value="${s}" ${s === p.spec ? "selected" : ""}>${specLabel(s)}</option>`).join("")}
-            </select>
-          </div>
-        </div>
-        <div class="sp"></div>
-        
-        <div class="two">
-          <div>
-            <div class="muted">WhatsApp (Login)</div>
-            <input id="edWpp" value="${p.wpp}" ${isReadOnly ? "disabled" : ""}>
-          </div>
-          <div>
-            <div class="muted">E-mail</div>
-            <input id="edEmail" value="${p.email || ""}" ${isReadOnly ? "disabled" : ""}>
-          </div>
-        </div>
-        <div class="sp"></div>
-
-        <div class="two">
-          <div>
-            <div class="muted">Categoria</div>
-            <select id="edKind" ${isReadOnly ? "disabled" : ""}>
-              <option value="health" ${p.kind === "health" ? "selected" : ""}>Saúde</option>
-              <option value="network" ${p.kind === "network" ? "selected" : ""}>Rede</option>
-              <option value="vendor" ${p.kind === "vendor" ? "selected" : ""}>Fornecedor</option>
-            </select>
-          </div>
-          <div>
-            <div class="muted">Profissão/Cargo</div>
-            <input id="edProf" value="${p.profession || ""}" ${isReadOnly ? "disabled" : ""}>
-          </div>
-        </div>
-
-        <div class="sp"></div>
-        ${
-          !isReadOnly
-            ? `
-          <div class="row" style="justify-content:flex-end">
-            <button class="primary" onclick="saveProfEdit('${p.id}')">Salvar Alterações</button>
-          </div>
-        `
-            : `<div class="muted" style="text-align:center">Modo apenas leitura</div>`
-        }
-      </div></div>
-    </div>
-  </div>`;
-
+          <div class="modalOverlay" id="teamOverlay" style="display:flex">
+            <div class="modal">
+              <div class="card"><div class="cardin">
+                <div class="row" style="justify-content:space-between">
+                  <h2>${isReadOnly ? "Ficha do Profissional" : "Editar Dados"}</h2>
+                  <button class="small danger" onclick="closeTeamModal()">Fechar</button>
+                </div>
+                <div class="divider"></div>
+                <div class="two">
+                  <div><div class="muted">Nome Completo</div><input id="edName" value="${p.name}" ${isReadOnly ? "disabled" : ""}></div>
+                  <div><div class="muted">Especialidade</div><select id="edSpec" ${isReadOnly ? "disabled" : ""}>${SPECIALTIES.map((s) => `<option value="${s}" ${s === p.spec ? "selected" : ""}>${specLabel(s)}</option>`).join("")}</select></div>
+                </div>
+                <div class="sp"></div>
+                <div class="two">
+                  <div><div class="muted">WhatsApp (Login)</div><input id="edWpp" value="${p.wpp}" ${isReadOnly ? "disabled" : ""}></div>
+                  <div><div class="muted">E-mail</div><input id="edEmail" value="${p.email || ""}" ${isReadOnly ? "disabled" : ""}></div>
+                </div>
+                <div class="sp"></div>
+                <div class="two">
+                  <div><div class="muted">Categoria</div><select id="edKind" ${isReadOnly ? "disabled" : ""}><option value="health" ${p.kind === "health" ? "selected" : ""}>Saúde</option><option value="network" ${p.kind === "network" ? "selected" : ""}>Rede</option><option value="vendor" ${p.kind === "vendor" ? "selected" : ""}>Fornecedor</option></select></div>
+                  <div><div class="muted">Profissão/Cargo</div><input id="edProf" value="${p.profession || ""}" ${isReadOnly ? "disabled" : ""}></div>
+                </div>
+                <div class="sp"></div>
+                ${!isReadOnly ? `<div class="row" style="justify-content:flex-end"><button class="primary" onclick="saveProfEdit('${p.id}')">Salvar Alterações</button></div>` : `<div class="muted" style="text-align:center">Modo apenas leitura</div>`}
+              </div></div>
+            </div>
+          </div>`;
         const anchor = document.getElementById("teamModalAnchor");
         if (anchor) anchor.innerHTML = modalHtml;
       }
 
-      window.viewProf = (id) => {
-        openProfModal(id, true);
-      };
-      window.editProf = (id) => {
-        openProfModal(id, false);
-      };
+      window.viewProf = (id) => openProfModal(id, true);
+      window.editProf = (id) => openProfModal(id, false);
       window.closeTeamModal = () => {
-        const anchor = document.getElementById("teamModalAnchor");
-        if (anchor) anchor.innerHTML = "";
+        $("teamModalAnchor").innerHTML = "";
       };
 
-      window.saveProfEdit = (id) => {
+      // 5. Salvar Edição Médico (NOVO: Atualiza na coleção 'profs')
+      window.saveProfEdit = async (id) => {
         const p = DB.profs.find((x) => x.id === id);
         if (!p) return;
 
         const newWpp = document.getElementById("edWpp").value.trim();
-        const oldWpp = p.wpp;
 
-        // Atualiza dados básicos
-        p.name = document.getElementById("edName").value.trim();
-        p.spec = document.getElementById("edSpec").value;
-        p.wpp = newWpp;
-        p.email = document.getElementById("edEmail").value.trim();
-        p.kind = document.getElementById("edKind").value;
-        p.profession = document.getElementById("edProf").value.trim();
+        toast("Salvando...");
 
-        // SE O WHATSAPP MUDOU, ATUALIZAR O LOGIN NA CONTA DE ACESSO
-        if (newWpp !== oldWpp && DB.accounts) {
-          const acc = DB.accounts.find((a) => a.profId === id);
-          if (acc) {
-            acc.user = newWpp; // Atualiza o login
-            // Opcional: acc.mustChangePwd = true; // Forçar troca de senha se mudou o número?
+        try {
+          await db
+            .collection("profs")
+            .doc(id)
+            .update({
+              name: document.getElementById("edName").value.trim(),
+              spec: document.getElementById("edSpec").value,
+              wpp: newWpp,
+              email: document.getElementById("edEmail").value.trim(),
+              kind: document.getElementById("edKind").value,
+              profession: document.getElementById("edProf").value.trim(),
+            });
+
+          // Se mudou o WhatsApp, tenta atualizar o login na coleção 'accounts'
+          if (p.wpp !== newWpp) {
+            const accSnap = await db
+              .collection("accounts")
+              .where("profId", "==", id)
+              .get();
+            if (!accSnap.empty) {
+              accSnap.docs[0].ref.update({ user: newWpp });
+            }
           }
-        }
 
-        saveDB();
-        toast("Dados atualizados com sucesso!");
-        closeTeamModal();
-        renderInternalBody("team");
+          toast("✅ Atualizado na nuvem!");
+          closeTeamModal();
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao salvar.");
+        }
       };
 
-      window.deleteProf = (id) => {
-        if (
-          !confirm(
-            "⚠️ Tem certeza absoluta? Isso apagará o acesso deste profissional.",
-          )
-        )
+      // 6. Deletar Médico (NOVO: Remove de 'profs' e 'accounts')
+      window.deleteProf = async (id) => {
+        if (!confirm("⚠️ Tem certeza? Isso apagará o médico e o acesso dele."))
           return;
 
-        DB.profs = DB.profs.filter((p) => p.id !== id);
-        if (DB.accounts)
-          DB.accounts = DB.accounts.filter((a) => a.profId !== id);
+        try {
+          await db.collection("profs").doc(id).delete();
 
-        // FORÇA A EXCLUSÃO DIRETA NA NUVEM
-        if (typeof db !== "undefined") {
-          db.collection("sistema")
-            .doc("v1")
-            .update({ profs: DB.profs, accounts: DB.accounts });
-        } else {
-          saveDB();
+          // Limpa login associado
+          const accSnap = await db
+            .collection("accounts")
+            .where("profId", "==", id)
+            .get();
+          accSnap.forEach((doc) => doc.ref.delete());
+
+          toast("🗑️ Profissional removido.");
+        } catch (e) {
+          toast("Erro ao excluir.");
         }
-
-        toast("Profissional excluído.");
-        renderInternalBody("team");
       };
 
+      // 7. BindTeam (NOVO: Ouve as coleções em tempo real)
       function bindTeam() {
-        /* Ações já vinculadas no HTML */
-      }
+        // Escuta ADMINS
+        db.collection("users").onSnapshot((snap) => {
+          const list = [];
+          snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+          DB.users = list;
 
-      function bindTeam() {
-        /* Sem binds complexos por enquanto */
+          // Se a aba estiver aberta, redesenha
+          const tab = document.querySelector(".tab.active");
+          if (tab && tab.dataset.key === "team") {
+            const modalOpen = document.getElementById("teamOverlay");
+            if (!modalOpen)
+              document.getElementById("inBody").innerHTML = renderTeam();
+          }
+        });
+
+        // Escuta MÉDICOS
+        db.collection("profs").onSnapshot((snap) => {
+          const list = [];
+          snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+          DB.profs = list;
+
+          const tab = document.querySelector(".tab.active");
+          if (tab && tab.dataset.key === "team") {
+            const modalOpen = document.getElementById("teamOverlay");
+            if (!modalOpen)
+              document.getElementById("inBody").innerHTML = renderTeam();
+          }
+        });
       }
       function renderCad() {
         const listAll = DB.cadastros.slice();
@@ -7356,14 +7346,14 @@
         // --- LÓGICA DE LOGIN (VISUAL MELHORADO & CASE INSENSITIVE) ---
         if ($("btnLoginUnified")) {
           $("btnLoginUnified").onclick = async (e) => {
-            if(e) e.preventDefault(); // Evita recarregar
+            if (e) e.preventDefault(); // Evita recarregar
 
             const btn = $("btnLoginUnified");
             const originalContent = btn.innerHTML; // Guarda o texto/ícone original
-            
+
             // Pega valores e força MINÚSCULO no usuário para bater com o banco
             const uInputRaw = $("lUser").value.trim();
-            const uInput = uInputRaw.toLowerCase(); 
+            const uInput = uInputRaw.toLowerCase();
             const pInput = $("lPass").value.trim();
 
             if (!uInput || !pInput) {
@@ -7377,65 +7367,68 @@
             btn.style.opacity = "0.7";
             btn.style.cursor = "wait";
             btn.innerHTML = `⏳ Verificando...`; // Texto temporário mais elegante
-            
-            console.log(`Tentando logar com usuário: "${uInput}" (banco espera minúsculo)`);
+
+            console.log(
+              `Tentando logar com usuário: "${uInput}" (banco espera minúsculo)`,
+            );
 
             try {
-                // 1. BUSCA NO BANCO DE DADOS (Coleção 'users' - Admins)
-                const userQuery = await db.collection('users')
-                    .where('user', '==', uInput) // Busca exata pelo user minúsculo
-                    .get();
+              // 1. BUSCA NO BANCO DE DADOS (Coleção 'users' - Admins)
+              const userQuery = await db
+                .collection("users")
+                .where("user", "==", uInput) // Busca exata pelo user minúsculo
+                .get();
 
-                if (!userQuery.empty) {
-                    const userData = userQuery.docs[0].data();
-                    console.log("Usuário encontrado:", userData);
-                    
-                    if (userData.pass === pInput) {
-                        toast(`👋 Bem-vindo(a), ${userData.name}!`);
-                        goInternal(userData.role); 
-                        return; // Sucesso!
-                    } else {
-                        toast("❌ Senha incorreta.");
-                        // Restaura botão imediatamente
-                        btn.disabled = false;
-                        btn.style.opacity = "1";
-                        btn.style.cursor = "pointer";
-                        btn.innerHTML = originalContent;
-                        return;
-                    }
+              if (!userQuery.empty) {
+                const userData = userQuery.docs[0].data();
+                console.log("Usuário encontrado:", userData);
+
+                if (userData.pass === pInput) {
+                  toast(`👋 Bem-vindo(a), ${userData.name}!`);
+                  goInternal(userData.role);
+                  return; // Sucesso!
+                } else {
+                  toast("❌ Senha incorreta.");
+                  // Restaura botão imediatamente
+                  btn.disabled = false;
+                  btn.style.opacity = "1";
+                  btn.style.cursor = "pointer";
+                  btn.innerHTML = originalContent;
+                  return;
                 }
+              }
 
-                // 2. SE NÃO ACHOU ADMIN, TENTA MÉDICO (Coleção 'accounts')
-                // (Para o futuro, quando médicos forem logar)
-                const accQuery = await db.collection('accounts')
-                    .where('user', '==', uInput) 
-                    .get();
+              // 2. SE NÃO ACHOU ADMIN, TENTA MÉDICO (Coleção 'accounts')
+              // (Para o futuro, quando médicos forem logar)
+              const accQuery = await db
+                .collection("accounts")
+                .where("user", "==", uInput)
+                .get();
 
-                if (!accQuery.empty) {
-                    const accData = accQuery.docs[0].data();
-                    if (accData.pass === pInput) {
-                         toast("👋 Bem-vindo(a), Doutor(a)!");
-                         goInternal("prof", accData.profId);
-                         return;
-                    }
+              if (!accQuery.empty) {
+                const accData = accQuery.docs[0].data();
+                if (accData.pass === pInput) {
+                  toast("👋 Bem-vindo(a), Doutor(a)!");
+                  goInternal("prof", accData.profId);
+                  return;
                 }
+              }
 
-                // Se chegou aqui, não existe
-                console.warn("Usuário não encontrado no Firestore.");
-                toast("❌ Usuário não cadastrado.");
-
+              // Se chegou aqui, não existe
+              console.warn("Usuário não encontrado no Firestore.");
+              toast("❌ Usuário não cadastrado.");
             } catch (error) {
-                console.error("Erro técnico no login:", error);
-                toast("⚠️ Erro de conexão com o servidor.");
+              console.error("Erro técnico no login:", error);
+              toast("⚠️ Erro de conexão com o servidor.");
             } finally {
-                // Restaura o botão ao estado original (se não tiver entrado)
-                // Se entrou (goInternal), a tela vai mudar, então não importa tanto.
-                if (btn.disabled) {
-                    btn.disabled = false;
-                    btn.style.opacity = "1";
-                    btn.style.cursor = "pointer";
-                    btn.innerHTML = originalContent;
-                }
+              // Restaura o botão ao estado original (se não tiver entrado)
+              // Se entrou (goInternal), a tela vai mudar, então não importa tanto.
+              if (btn.disabled) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.style.cursor = "pointer";
+                btn.innerHTML = originalContent;
+              }
             }
           };
         }
