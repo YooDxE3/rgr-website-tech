@@ -5876,59 +5876,105 @@
         }
       };
 
-      /* ========= Monthly generate/publish ========= */
-      function genMonthlySchedule(month, unitId, spec, tplKey) {
+      /* ========= GERAÇÃO DE ESCALA (CONECTADO AO FIREBASE) ========= */
+
+      // Função Auxiliar para criar em lote (Batch Write)
+      // O Firebase limita lotes a 500 itens, o que é suficiente para um mês/unidade/especialidade
+      async function genMonthlySchedule(month, unitId, spec, tplKey) {
         const tpl = getTpl(tplKey);
         if (!tpl) return false;
+
+        // Busca médicos aprovados dessa especialidade
         const pros = DB.profs.filter((p) => p.approved && p.spec === spec);
         if (!pros.length) return false;
+
+        toast("Gerando escala na nuvem...");
+        const batch = db.batch(); // Inicia lote
         const n = daysInMonth(month);
         let pi = 0;
+        let count = 0;
+
+        // Verifica duplicidade localmente para não tentar criar por cima do que já vemos
+        // (O ideal seria verificar no banco, mas para demo, o cache local serve)
+        const existingShifts = DB.shifts.filter(
+          (s) => s.month === month && s.unitId === unitId && s.spec === spec,
+        );
+
         for (let day = 1; day <= n; day++) {
           const d = `${month}-${String(day).padStart(2, "0")}`;
-          const exists = DB.shifts.find(
-            (s) =>
-              s.date === d &&
-              s.unitId === unitId &&
-              s.spec === spec &&
-              s.start === tpl.s &&
-              s.end === tpl.e,
+
+          // Pula se já existe plantão igual neste dia/horário
+          const exists = existingShifts.find(
+            (s) => s.date === d && s.start === tpl.s && s.end === tpl.e,
           );
           if (exists) continue;
-          const p = pros[pi % pros.length];
+
+          const p = pros[pi % pros.length]; // Rodízio simples de médicos
           pi++;
-          DB.shifts.push({
-            id: uid("s"),
+
+          // Cria a referência do novo documento
+          const newRef = db.collection("shifts").doc();
+
+          batch.set(newRef, {
             unitId,
             spec,
             date: d,
-            month,
+            month, // Importante para filtros
             tpl: tplKey,
             start: tpl.s,
             end: tpl.e,
             profId: p.id,
             originalProfId: p.id,
             swapped: false,
-            swappedAt: null,
-            swapNote: null,
-            createdAt: nowISO(),
             published: false,
-            publishedAt: null,
-            checkInAt: null,
-            checkOutAt: null,
+            createdAt: new Date().toISOString(),
           });
+          count++;
         }
-        saveDB();
-        return true;
+
+        if (count === 0) {
+          toast("Nenhum plantão novo necessário (dias já preenchidos).");
+          return true;
+        }
+
+        try {
+          await batch.commit(); // Envia tudo de uma vez
+          toast(`✅ ${count} plantões gerados na nuvem!`);
+          return true;
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao gerar escala.");
+          return false;
+        }
       }
-      function publishMonth(month, unitId, spec) {
-        DB.shifts.forEach((s) => {
-          if (s.month === month && s.unitId === unitId && s.spec === spec) {
-            s.published = true;
-            if (!s.publishedAt) s.publishedAt = nowISO();
-          }
+
+      // Função de Publicar (Atualiza status na nuvem)
+      async function publishMonth(month, unitId, spec) {
+        toast("Publicando...");
+        // 1. Busca os rascunhos desse mês/unidade/spec
+        const snap = await db
+          .collection("shifts")
+          .where("month", "==", month)
+          .where("unitId", "==", unitId)
+          .where("spec", "==", spec)
+          .where("published", "==", false)
+          .get();
+
+        if (snap.empty) {
+          return toast("Tudo já está publicado.");
+        }
+
+        // 2. Atualiza em lote
+        const batch = db.batch();
+        snap.forEach((doc) => {
+          batch.update(doc.ref, {
+            published: true,
+            publishedAt: new Date().toISOString(),
+          });
         });
-        saveDB();
+
+        await batch.commit();
+        toast("✅ Escala publicada!");
       }
 
       /* ========= Swap modal logic ========= */
