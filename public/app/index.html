@@ -7353,52 +7353,60 @@
           toast(L() === "pt" ? "Idioma atualizado" : "Language updated");
         });
 
-        // --- LÓGICA DO NOVO LOGIN (CONECTADO AO FIREBASE) ---
+        // --- LÓGICA DE LOGIN (VISUAL MELHORADO & CASE INSENSITIVE) ---
         if ($("btnLoginUnified")) {
           $("btnLoginUnified").onclick = async (e) => {
-            if(e) e.preventDefault(); // Evita recarregar a página
-            
+            if(e) e.preventDefault(); // Evita recarregar
+
             const btn = $("btnLoginUnified");
-            const originalText = btn.innerText;
+            const originalContent = btn.innerHTML; // Guarda o texto/ícone original
             
-            // Pega o que foi digitado e remove espaços
-            const uInput = $("lUser").value.trim(); 
+            // Pega valores e força MINÚSCULO no usuário para bater com o banco
+            const uInputRaw = $("lUser").value.trim();
+            const uInput = uInputRaw.toLowerCase(); 
             const pInput = $("lPass").value.trim();
 
             if (!uInput || !pInput) {
-              toast("Preencha usuário e senha.");
+              toast("⚠️ Preencha usuário e senha.");
               return;
             }
 
-            // Avisa o usuário que está buscando
+            // --- VISUAL DE CARREGAMENTO (Mais bonito) ---
+            // Em vez de mudar o texto, vamos adicionar transparência e mudar o cursor
             btn.disabled = true;
-            btn.innerText = "🔄 Buscando...";
+            btn.style.opacity = "0.7";
+            btn.style.cursor = "wait";
+            btn.innerHTML = `⏳ Verificando...`; // Texto temporário mais elegante
             
+            console.log(`Tentando logar com usuário: "${uInput}" (banco espera minúsculo)`);
+
             try {
-                // 1. BUSCA NO BANCO DE DADOS REAL (Coleção 'users')
-                // .toLowerCase() garante que ache 'andre' mesmo se digitar 'Andre'
+                // 1. BUSCA NO BANCO DE DADOS (Coleção 'users' - Admins)
                 const userQuery = await db.collection('users')
-                    .where('user', '==', uInput.toLowerCase()) 
+                    .where('user', '==', uInput) // Busca exata pelo user minúsculo
                     .get();
 
                 if (!userQuery.empty) {
                     const userData = userQuery.docs[0].data();
+                    console.log("Usuário encontrado:", userData);
                     
-                    // Verifica a senha
                     if (userData.pass === pInput) {
-                        toast(`✅ Bem-vindo, ${userData.name}!`);
+                        toast(`👋 Bem-vindo(a), ${userData.name}!`);
                         goInternal(userData.role); 
-                        return; // SUCESSO! Entra no sistema
+                        return; // Sucesso!
                     } else {
                         toast("❌ Senha incorreta.");
+                        // Restaura botão imediatamente
                         btn.disabled = false;
-                        btn.innerText = originalText;
+                        btn.style.opacity = "1";
+                        btn.style.cursor = "pointer";
+                        btn.innerHTML = originalContent;
                         return;
                     }
                 }
 
                 // 2. SE NÃO ACHOU ADMIN, TENTA MÉDICO (Coleção 'accounts')
-                // Isso servirá para quando tivermos médicos cadastrados
+                // (Para o futuro, quando médicos forem logar)
                 const accQuery = await db.collection('accounts')
                     .where('user', '==', uInput) 
                     .get();
@@ -7406,22 +7414,28 @@
                 if (!accQuery.empty) {
                     const accData = accQuery.docs[0].data();
                     if (accData.pass === pInput) {
-                         toast("✅ Bem-vindo, Dr(a)!");
+                         toast("👋 Bem-vindo(a), Doutor(a)!");
                          goInternal("prof", accData.profId);
                          return;
                     }
                 }
 
-                // Se chegou aqui, não existe no banco
-                toast("❌ Usuário não encontrado no banco.");
+                // Se chegou aqui, não existe
+                console.warn("Usuário não encontrado no Firestore.");
+                toast("❌ Usuário não cadastrado.");
 
             } catch (error) {
-                console.error("Erro crítico no login:", error);
-                toast("⚠️ Erro de conexão.");
+                console.error("Erro técnico no login:", error);
+                toast("⚠️ Erro de conexão com o servidor.");
             } finally {
-                // Restaura o botão
-                btn.disabled = false;
-                btn.innerText = originalText;
+                // Restaura o botão ao estado original (se não tiver entrado)
+                // Se entrou (goInternal), a tela vai mudar, então não importa tanto.
+                if (btn.disabled) {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    btn.style.cursor = "pointer";
+                    btn.innerHTML = originalContent;
+                }
             }
           };
         }
