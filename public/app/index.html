@@ -6814,29 +6814,60 @@
         $("rejOverlay").style.display = "none";
         _rejTargetId = null;
       }
-      function confirmReject() {
+
+      async function confirmReject() {
+        // Adicione async
         if (!_rejTargetId) return;
         const reason = ($("rejReason").value || "").trim();
-        if (!reason) {
-          toast(t("msgNeedReason"));
-          return;
+        if (!reason) return toast(t("msgNeedReason"));
+
+        try {
+          await db.collection("cadastros").doc(_rejTargetId).update({
+            status: "rejected",
+            rejectionReason: reason,
+            rejectedAt: new Date().toISOString(),
+          });
+          toast("Cadastro Reprovado.");
+          closeReject();
+        } catch (e) {
+          toast("Erro ao reprovar.");
         }
-        const c = DB.cadastros.find((x) => x.id === _rejTargetId);
-        if (!c) return;
-        c.status = "rejected";
-        c.rejectionReason = reason;
-        saveDB();
-        closeReject();
-        toast(t("msgRejected"));
-        renderHomeKPIs();
-        renderInternalBody("cad");
-        renderExternalStatus();
       }
       window.reject = (id) => {
         openReject(id);
       };
 
-      function bindCad() {}
+      // --- ABA DE CADASTROS (ADMIN) ---
+      function bindCad() {
+        // Escuta a coleção 'cadastros' em tempo real
+        const unsubscribe = db
+          .collection("cadastros")
+          .orderBy("submittedAt", "desc") // Mais recentes primeiro
+          .onSnapshot((snap) => {
+            const list = [];
+            snap.forEach((doc) => {
+              list.push({ id: doc.id, ...doc.data() });
+            });
+
+            DB.cadastros = list; // Atualiza memória local
+
+            // Se estiver na aba de cadastros, redesenha a tabela
+            const tab = document.querySelector(".tab.active");
+            if (tab && tab.dataset.key === "cad") {
+              // Atualiza apenas o corpo da tabela para não perder filtros
+              // Mas como o renderCad desenha tudo, vamos chamar renderInternalBody
+              // O ideal seria isolar a tabela, mas isso funciona:
+              const isModalOpen =
+                document.getElementById("rejOverlay").style.display === "flex";
+              if (!isModalOpen) {
+                document.getElementById("inBody").innerHTML = renderCad();
+              }
+            }
+
+            // Atualiza o contador de pendentes na Home
+            renderHomeKPIs();
+          });
+      }
 
       /* ========= Reports (CSV+JSON+PDF) ========= */
       function computeHoursForMonth(month) {
@@ -7297,66 +7328,81 @@
         setExtStatus("idle");
         updateExternalKind();
       }
-      function externalSubmit() {
+
+      // --- ENVIAR CADASTRO (CONECTADO AO FIREBASE) ---
+      window.externalSubmit = async () => {
+        // 1. Validação (Mantém a mesma lógica visual)
         const v = validateExternal();
         if (!v.ok) {
-          toast(t("msgMissingDoc"));
+          if (v.reason === "missingFields")
+            return toast("Preencha todos os campos obrigatórios.");
+          if (v.reason === "missingDocs")
+            return toast("Anexe os documentos obrigatórios (PDF).");
+          if (v.reason === "notPdf")
+            return toast("Apenas arquivos PDF são aceitos.");
           return;
         }
 
-        // Coleta dados
-        const kind =
-          $("extKind") && $("extKind").value ? $("extKind").value : "health";
-        const profession =
-          $("extProfession") && $("extProfession").value
-            ? $("extProfession").value
-            : "";
-        // Lógica inteligente para pegar a especialidade
-        let rawSpec = $("extSpec").value;
-        if (rawSpec === "Outro") {
-          rawSpec = $("extSpecOther").value.trim(); // Pega do campo de texto
-          if (!rawSpec) {
-            toast("Por favor, digite a especialidade.");
-            return;
-          }
-        }
-        const spec = kind === "health" ? rawSpec : "";
+        const btn = $("btnSend");
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "Enviando...";
 
+        // 2. Coleta de Dados
+        const kind = $("extKind").value || "health";
+        // Lógica para pegar especialidade ("Outro" vs Selecionada)
+        let spec = "";
+        if (kind === "health") {
+          spec = $("extSpec").value;
+          if (spec === "Outro") spec = $("extSpecOther").value.trim();
+        }
+
+        // Objeto do Cadastro (Payload)
         const app = {
-          id: uid("c"),
           kind,
-          profession: kind === "health" ? profession : "",
+          profession: kind === "health" ? $("extProfession").value || "" : "",
           name: $("extName").value.trim(),
           wpp: $("extWpp").value.trim(),
-          reg: $("extCrm").value.trim(),
-          crm: $("extCrm").value.trim(),
+          reg: $("extCrm").value.trim(), // CRM ou CNPJ
           email: $("extEmail").value.trim(),
-          spec: kind === "health" ? spec : "",
+          spec,
           uf: $("extUF").value,
           city: $("extCity").value,
           addr: $("extAddr").value.trim(),
+          // Simulando o upload (apenas nomes dos arquivos por enquanto)
           docs: {
             doc1Type: $("doc1Type").value,
-            doc1Name: $("doc1Name").textContent,
-            doc2FrontName: $("doc2FrontName").textContent,
-            doc2BackName: $("doc2BackName").textContent,
-            doc3Name: $("doc3Name").textContent,
-            doc4Name: $("doc4Name").textContent,
+            doc1Name: $("doc1Name").innerText,
+            doc2FrontName: $("doc2FrontName").innerText,
+            doc2BackName: $("doc2BackName").innerText,
+            doc3Name: $("doc3Name").innerText,
+            doc4Name: $("doc4Name").innerText,
           },
-          submittedAt: nowISO(),
-          status: "received",
+          submittedAt: new Date().toISOString(),
+          status: "received", // Estado inicial
           rejectionReason: "",
         };
 
-        DB.cadastros.unshift(app);
-        DB.lastExternalId = app.id;
-        saveDB();
+        try {
+          // 3. SALVA NA COLEÇÃO 'CADASTROS' (NOVA)
+          await db.collection("cadastros").add(app);
 
-        // CORREÇÃO: Limpa formulário e volta para Login
-        clearExternal();
-        toast("Cadastro enviado com sucesso! Aguarde aprovação.");
-        setTimeout(() => goHome(), 1500); // Volta para o início após 1.5s
-      }
+          toast("✅ Cadastro enviado! Aguarde aprovação.");
+          clearExternal(); // Limpa formulário
+
+          // Volta para a home após 2 segundos
+          setTimeout(() => {
+            goHome();
+            btn.disabled = false;
+            btn.innerText = originalText;
+          }, 2000);
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao enviar cadastro.");
+          btn.disabled = false;
+          btn.innerText = originalText;
+        }
+      };
 
       /* ===================== Boot ===================== */
       /* ===================== BOOT (O CÉREBRO CONECTADO) ===================== */
@@ -7712,71 +7758,71 @@
           .join("");
       }
 
-      window.markReview = (cid) => {
-        const c = DB.cadastros.find((x) => x.id === cid);
-        if (!c) return;
-        c.status = "in_review";
-        c.reviewedAt = nowISO();
-        saveDB();
-        audit("cad_in_review", { cid });
-        toast("Em análise.");
-        renderInternalBody("cad");
+      window.markReview = async (cid) => {
+        try {
+          await db.collection("cadastros").doc(cid).update({
+            status: "in_review",
+            reviewedAt: new Date().toISOString(),
+          });
+          toast("Marcado como Em Análise.");
+        } catch (e) {
+          toast("Erro ao atualizar.");
+        }
       };
 
       window.approve = async (cid) => {
+        // Busca o cadastro na memória (que veio do bindCad)
         const c = DB.cadastros.find((x) => x.id === cid);
         if (!c) return;
 
-        // 1. Gera senha provisória de 6 dígitos
-        const tempPass = Math.floor(100000 + Math.random() * 900000).toString();
+        toast("Processando aprovação...");
 
-        // 2. Atualiza status
-        c.status = "approved";
-        c.approvedAt = nowISO();
+        try {
+          // 1. Gera senha provisória
+          const tempPass = Math.floor(
+            100000 + Math.random() * 900000,
+          ).toString();
+          const now = new Date().toISOString();
 
-        // 3. Cria ou atualiza o profissional
-        const profId =
-          c.profId || "p" + Math.random().toString(16).slice(2, 10);
-        c.profId = profId;
-
-        let p = DB.profs.find((x) => x.id === profId || x.wpp === c.wpp);
-        if (!p) {
-          p = {
-            id: profId,
+          // 2. Cria o Profissional na coleção 'profs'
+          const profRef = await db.collection("profs").add({
+            kind: c.kind || "health",
+            profession: c.profession || "",
             name: c.name,
-            wpp: c.wpp, // WhatsApp é o Login
-            email: c.email,
-            role: "prof",
+            wpp: c.wpp,
+            spec: c.spec || "",
+            email: c.email || "",
             approved: true,
-            spec: c.spec,
-            createdAt: nowISO(),
-          };
-          DB.profs.push(p);
-        }
-
-        // 4. Cria a conta de acesso segura
-        let acc = DB.accounts.find((a) => a.profId === profId);
-        if (!acc) {
-          DB.accounts.push({
-            id: uid("a"),
-            profId: profId,
-            user: c.wpp, // Login
-            pass: tempPass, // Senha Simples (sem hash para demo fácil)
-            mustChange: true,
+            createdAt: now,
           });
-        } else {
-          acc.pass = tempPass; // Reseta senha se já existia
+
+          // 3. Cria a Conta de Acesso em 'accounts'
+          await db.collection("accounts").add({
+            profId: profRef.id,
+            user: c.wpp, // Login é o WhatsApp
+            pass: tempPass,
+            role: "prof",
+            mustChangePwd: true,
+            createdAt: now,
+          });
+
+          // 4. Atualiza o status do cadastro para 'approved'
+          await db.collection("cadastros").doc(cid).update({
+            status: "approved",
+            approvedAt: now,
+            profId: profRef.id,
+          });
+
+          // 5. Mostra credenciais
+          $("credUser").textContent = c.wpp;
+          $("credPass").textContent = tempPass;
+          $("modalCreds").style.display = "flex";
+
+          toast("✅ Cadastro Aprovado!");
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao aprovar.");
         }
-
-        saveDB();
-
-        // 5. Mostra o Modal com a senha para o Admin copiar
-        $("credUser").textContent = c.wpp;
-        $("credPass").textContent = tempPass;
-        $("modalCreds").style.display = "flex";
-
-        audit("cad_approved", { cid, profId });
-        renderInternalBody("cad");
       };
 
       window.reject = (cid) => {
