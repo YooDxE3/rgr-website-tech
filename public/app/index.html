@@ -5273,20 +5273,50 @@
       }
 
       // --- APAGAR PLANTÃO INDIVIDUAL (Conectado ao Firebase) ---
-      window.deleteShift = async (id) => {
-        // Confirmação de segurança
-        if (!confirm("Tem certeza que deseja remover este plantão?")) return;
+      /* ========= Lógica de Exclusão de Plantão (COM TRAVA DE GESTOR) ========= */
+      window.deleteShift = (id) => {
+        const s = DB.shifts.find((x) => x.id === id);
+        if (!s) return;
 
-        try {
-          // Manda o comando para o servidor do Google
-          await db.collection("shifts").doc(id).delete();
+        // 1. TRAVA DE SEGURANÇA (HIERARQUIA)
+        if (window.currentUser && window.currentUser.role === "gestor") {
+          const allowed = window.currentUser.allowedUnits || [];
+          // Se o ID da unidade desse plantão NÃO estiver na lista permitida do gestor...
+          if (!allowed.includes(s.unitId)) {
+            alert(
+              "⛔ ACESSO NEGADO: Você não tem permissão para alterar esta unidade.",
+            );
+            return;
+          }
+        }
 
-          toast("🗑️ Plantão removido!");
-          // Não precisa fazer nada na tela: o Listener (bindSchedule)
-          // vai perceber que sumiu no banco e atualizará a tabela sozinho.
-        } catch (error) {
-          console.error(error);
-          toast("❌ Erro ao excluir: " + error.message);
+        // 2. TRAVA DE AUDITORIA (Check-in)
+        if (s.checkInAt || s.checkOutAt) {
+          alert(
+            "⛔ BLOQUEADO: Plantão com ponto registrado não pode ser excluído.",
+          );
+          return;
+        }
+
+        // 3. CONFIRMAÇÃO
+        if (!confirm("Tem certeza que deseja EXCLUIR este plantão?")) return;
+
+        // 4. EXECUÇÃO
+        // Remove visualmente para dar feedback rápido
+        DB.shifts = DB.shifts.filter((x) => x.id !== id);
+        renderInternalBody("schedule");
+        toast("Excluindo...");
+
+        if (typeof db !== "undefined") {
+          db.collection("shifts")
+            .doc(id)
+            .delete()
+            .then(() => toast("🗑️ Plantão removido."))
+            .catch((err) => {
+              console.error(err);
+              toast("Erro ao excluir.");
+              // Se der erro, o Listener vai trazer o plantão de volta sozinho
+            });
         }
       };
 
@@ -5860,6 +5890,15 @@
 
       /* ========= GERAÇÃO COM PROTEÇÃO DE CONFLITOS ========= */
       async function genMonthlySchedule(month, unitId, spec, tplKey) {
+        if (window.currentUser && window.currentUser.role === "gestor") {
+          const allowed = window.currentUser.allowedUnits || [];
+          if (!allowed.includes(unitId)) {
+            return alert(
+              "⛔ Você não tem permissão para gerar escalas nesta unidade.",
+            );
+          }
+        }
+
         const tpl = getTpl(tplKey);
         if (!tpl) return false;
 
@@ -6182,7 +6221,7 @@
       function bindSchedule() {
         // --- 1. FUNÇÃO PARA OUVIR O BANCO ---
         function loadLiveShifts() {
-          // Se já tem uma conexão aberta, fecha ela antes de abrir outra (para não acumular)
+          // Se já tem uma conexão aberta, fecha ela antes de abrir outra
           if (_unsubscribeShifts) {
             _unsubscribeShifts();
             _unsubscribeShifts = null;
@@ -6209,10 +6248,18 @@
             `📡 Buscando escala: Mês ${month} | Unidade ${unitId || "Todas"}`,
           );
 
-          // Liga o ouvinte
+          // --- LIGA O OUVINTE (COM A NOVA SEGURANÇA) ---
           _unsubscribeShifts = query.onSnapshot((snap) => {
-            const list = [];
+            let list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+
+            // --- SEGURANÇA: FILTRO DE GESTOR ---
+            // Se for Gestor, remove da memória o que ele não pode ver
+            if (window.currentUser && window.currentUser.role === "gestor") {
+              const allowed = window.currentUser.allowedUnits || [];
+              list = list.filter((s) => allowed.includes(s.unitId));
+            }
+            // -----------------------------------
 
             // Atualiza cache e redesenha
             DB.shifts = list;
@@ -6221,15 +6268,7 @@
             if (
               document.getElementById("viewInternal").style.display !== "none"
             ) {
-              // Mantém a view (Calendário ou Tabela)
-              const content =
-                scheduleView === "calendar"
-                  ? renderCalendar()
-                  : renderScheduleTable();
-              // Injeta o conteúdo no lugar certo (precisamos achar o container dos cards)
-              // Como renderSchedule recria tudo, vamos chamar renderInternalBody se for seguro
-              // Mas para evitar piscar a tela toda, vamos tentar atualizar só a lista se possível.
-              // Por simplicidade na migração:
+              // Renderiza a tela (mantém tabela ou calendário)
               renderInternalBody("schedule");
 
               // Restaura o foco se estava digitando busca
