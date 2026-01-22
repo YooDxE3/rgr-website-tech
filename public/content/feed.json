@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-01-17T12:19:09.568164",
+  "generated_at": "2026-01-21T12:24:59.135867",
   "posts": [
     {
-      "id": "rgr_tip_001-pt",
+      "id": "rgr_tip_01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Pausas Ativas: Mais Foco e Energia!",
-      "excerpt": "Faça pequenas pausas para alongar ou caminhar a cada hora. Isso revitaliza sua mente, melhora a circulação e aumenta a produtividade ao longo do dia de trabalho.",
-      "content": "<p>Faça pequenas pausas para alongar ou caminhar a cada hora. Isso revitaliza sua mente, melhora a circulação e aumenta a produtividade ao longo do dia de trabalho.</p>",
+      "title": "Mexa-se: Pausas Ativas para Saúde",
+      "excerpt": "Faça pequenas pausas para alongar ou caminhar. Movimentar o corpo regularmente previne dores e aumenta sua energia para o trabalho.",
+      "content": "<p>Faça pequenas pausas para alongar ou caminhar. Movimentar o corpo regularmente previne dores e aumenta sua energia para o trabalho.</p>",
       "tags": [
-        "pausas",
         "movimento",
-        "energia"
+        "pausas",
+        "bem-estar"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_001-en",
+      "id": "rgr_tip_01-en",
       "category": "saude",
       "lang": "en",
-      "title": "Active Breaks: More Focus and Energy!",
-      "excerpt": "Take short breaks every hour to stretch or walk. This revitalizes your mind, improves circulation, and boosts productivity throughout your workday, keeping you sharp.",
-      "content": "<p>Take short breaks every hour to stretch or walk. This revitalizes your mind, improves circulation, and boosts productivity throughout your workday, keeping you sharp.</p>",
+      "title": "Move More: Active Breaks Boost",
+      "excerpt": "Take short breaks to stretch or walk. Regular movement prevents aches and boosts your energy, improving focus throughout the workday.",
+      "content": "<p>Take short breaks to stretch or walk. Regular movement prevents aches and boosts your energy, improving focus throughout the workday.</p>",
       "tags": [
-        "pausas",
         "movimento",
-        "energia"
+        "pausas",
+        "bem-estar"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_001-es",
+      "id": "rgr_tip_01-es",
       "category": "saude",
       "lang": "es",
-      "title": "Pausas Activas: ¡Más Enfoque y Energía!",
-      "excerpt": "Tome pequeñas pausas cada hora para estirar o caminar. Esto revitaliza su mente, mejora la circulación y aumenta la productividad durante su jornada laboral, manteniéndolo alerta.",
-      "content": "<p>Tome pequeñas pausas cada hora para estirar o caminar. Esto revitaliza su mente, mejora la circulación y aumenta la productividad durante su jornada laboral, manteniéndolo alerta.</p>",
+      "title": "Muévete: Pausas Activas Mejoran",
+      "excerpt": "Toma pequeños descansos para estirar o caminar. Mover tu cuerpo regularmente previene dolores y aumenta tu energía para el trabajo.",
+      "content": "<p>Toma pequeños descansos para estirar o caminar. Mover tu cuerpo regularmente previene dolores y aumenta tu energía para el trabajo.</p>",
       "tags": [
-        "pausas",
         "movimento",
-        "energia"
+        "pausas",
+        "bem-estar"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_002-pt",
+      "id": "rgr_tip_02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Mente Ativa, Corpo Saudável!",
-      "excerpt": "Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada melhora a concentração, combate a fadiga e otimiza seu desempenho profissional. Priorize sua saúde!",
-      "content": "<p>Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada melhora a concentração, combate a fadiga e otimiza seu desempenho profissional. Priorize sua saúde!</p>",
+      "title": "Hidrate-se: Foco e Vitalidade",
+      "excerpt": "Beba água ao longo do dia. A hidratação adequada é crucial para manter a concentração, energia e bem-estar geral no escritório.",
+      "content": "<p>Beba água ao longo do dia. A hidratação adequada é crucial para manter a concentração, energia e bem-estar geral no escritório.</p>",
       "tags": [
-        "hidratacao",
-        "agua",
-        "foco"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_002-en",
+      "id": "rgr_tip_02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate: Active Mind, Healthy Body!",
-      "excerpt": "Keep a water bottle nearby and drink regularly. Proper hydration improves concentration, fights fatigue, and optimizes your professional performance. Prioritize your well-being today!",
-      "content": "<p>Keep a water bottle nearby and drink regularly. Proper hydration improves concentration, fights fatigue, and optimizes your professional performance. Prioritize your well-being today!</p>",
+      "title": "Hydrate: Focus and Vitality",
+      "excerpt": "Drink water throughout the day. Proper hydration is crucial for maintaining concentration, energy, and overall well-being in the office environment.",
+      "content": "<p>Drink water throughout the day. Proper hydration is crucial for maintaining concentration, energy, and overall well-being in the office environment.</p>",
       "tags": [
-        "hidratacao",
-        "agua",
-        "foco"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_002-es",
+      "id": "rgr_tip_02-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátese: ¡Mente Activa, Cuerpo Sano!",
-      "excerpt": "Mantenga una botella de agua cerca y beba regularmente. La hidratación adecuada mejora la concentración, combate la fatiga y optimiza su rendimiento profesional. ¡Priorice su bienestar!",
-      "content": "<p>Mantenga una botella de agua cerca y beba regularmente. La hidratación adecuada mejora la concentración, combate la fatiga y optimiza su rendimiento profesional. ¡Priorice su bienestar!</p>",
+      "title": "Hidrátate: Concentración y Vitalidad",
+      "excerpt": "Bebe agua durante todo el día. La hidratación adecuada es crucial para mantener la concentración, energía y bienestar general en la oficina.",
+      "content": "<p>Bebe agua durante todo el día. La hidratación adecuada es crucial para mantener la concentración, energía y bienestar general en la oficina.</p>",
       "tags": [
-        "hidratacao",
-        "agua",
-        "foco"
+        "hidratação",
+        "foco",
+        "saúde"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_003-pt",
+      "id": "rgr_tip_03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Postura Certa: Conforto e Produtividade!",
-      "excerpt": "Ajuste sua cadeira e monitor para manter uma postura ergonômica. Costas retas e pés no chão previnem dores, aumentam o conforto e sustentam sua energia no trabalho.",
-      "content": "<p>Ajuste sua cadeira e monitor para manter uma postura ergonômica. Costas retas e pés no chão previnem dores, aumentam o conforto e sustentam sua energia no trabalho.</p>",
+      "title": "Postura Correta: Previna Dores",
+      "excerpt": "Ajuste sua cadeira e monitor. Mantenha uma postura ergonômica para evitar dores nas costas e pescoço, promovendo conforto e saúde.",
+      "content": "<p>Ajuste sua cadeira e monitor. Mantenha uma postura ergonômica para evitar dores nas costas e pescoço, promovendo conforto e saúde.</p>",
       "tags": [
         "ergonomia",
         "postura",
         "conforto"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_003-en",
+      "id": "rgr_tip_03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Right Posture: Comfort and Productivity!",
-      "excerpt": "Adjust your chair and monitor for ergonomic posture. Straight back and feet on the floor prevent pain, increase comfort, and sustain your energy levels throughout your workday.",
-      "content": "<p>Adjust your chair and monitor for ergonomic posture. Straight back and feet on the floor prevent pain, increase comfort, and sustain your energy levels throughout your workday.</p>",
+      "title": "Correct Posture: Prevent Pains",
+      "excerpt": "Adjust your chair and monitor. Maintain ergonomic posture to prevent back and neck pains, promoting comfort and long-term health at work.",
+      "content": "<p>Adjust your chair and monitor. Maintain ergonomic posture to prevent back and neck pains, promoting comfort and long-term health at work.</p>",
       "tags": [
         "ergonomia",
         "postura",
         "conforto"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_003-es",
+      "id": "rgr_tip_03-es",
       "category": "saude",
       "lang": "es",
-      "title": "Postura Correcta: ¡Comodidad y Productividad!",
-      "excerpt": "Ajuste su silla y monitor para una postura ergonómica. Espalda recta y pies en el suelo previenen dolores, aumentan la comodidad y mantienen su energía en el trabajo.",
-      "content": "<p>Ajuste su silla y monitor para una postura ergonómica. Espalda recta y pies en el suelo previenen dolores, aumentan la comodidad y mantienen su energía en el trabajo.</p>",
+      "title": "Postura Correcta: Evita Dolores",
+      "excerpt": "Ajusta tu silla y monitor. Mantén una postura ergonómica para evitar dolores de espalda y cuello, promoviendo comodidad y salud.",
+      "content": "<p>Ajusta tu silla y monitor. Mantén una postura ergonómica para evitar dolores de espalda y cuello, promoviendo comodidad y salud.</p>",
       "tags": [
         "ergonomia",
         "postura",
         "conforto"
       ],
-      "published_at": "2026-01-17T12:19:09.568164",
+      "published_at": "2026-01-21T12:24:59.135867",
       "author": "RGR Saúde (IA)"
     }
   ]
