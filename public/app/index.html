@@ -455,14 +455,98 @@
         gap: 6px;
       }
       .calShift {
-        border: 1px solid rgba(34, 48, 74, 0.8);
+        border: 1px solid var(--line);
         border-radius: 12px;
-        padding: 8px 8px;
-        background: rgba(15, 22, 36, 0.65);
+        padding: 10px;
+        background: rgba(30, 41, 59, 0.7); /* Fundo mais limpo */
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        transition: transform 0.2s;
       }
       .calShift.mine {
-        border-color: rgba(106, 163, 255, 0.55);
-        background: rgba(106, 163, 255, 0.1);
+        border-left: 3px solid var(--accent); /* Tarja azul para indicar "Meu" */
+        background: linear-gradient(
+          90deg,
+          rgba(106, 163, 255, 0.08),
+          rgba(106, 163, 255, 0.02)
+        );
+      }
+      .cs-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .cs-time {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.5px;
+      }
+      /* Corpo: Unidade e Especialidade */
+      .cs-body {
+        display: flex;
+        flex-direction: column;
+      }
+      .cs-unit {
+        font-size: 12px;
+        font-weight: 600;
+        color: #e2e8f0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .cs-spec {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      /* Rodapé: Botões alinhados */
+      .cs-actions {
+        display: grid;
+        grid-template-columns: 1fr auto; /* Botão grande + Botão troca */
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .btn-action {
+        padding: 6px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-in {
+        background: rgba(55, 214, 122, 0.15);
+        color: #4ade80;
+        border-color: rgba(55, 214, 122, 0.3);
+      }
+      .btn-in:hover {
+        background: rgba(55, 214, 122, 0.25);
+      }
+
+      .btn-out {
+        background: rgba(255, 92, 106, 0.15);
+        color: #f87171;
+        border-color: rgba(255, 92, 106, 0.3);
+      }
+      .btn-out:hover {
+        background: rgba(255, 92, 106, 0.25);
+      }
+
+      .btn-swap {
+        background: rgba(255, 176, 32, 0.1);
+        color: var(--warn);
+        border-color: rgba(255, 176, 32, 0.3);
+        width: 36px;
+      }
+
+      .cs-info {
+        font-size: 10px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: -2px;
       }
       .calShift.selected {
         outline: 2px solid rgba(154, 107, 255, 0.85);
@@ -5728,72 +5812,90 @@
         const role = session.role;
         const u = getUnit(s.unitId);
         const p = getProf(s.profId);
-        const orig = getProf(s.originalProfId);
-        const swappedTag = s.swapped
-          ? ` <span class="swapTag">↔ ${orig?.name || ""}</span>`
-          : "";
+
+        // Verifica se é meu plantão
         const isMine =
           role === "prof" &&
           profScheduleMode === "mine" &&
           s.profId === session.profId;
-        const isSelected = isMine && calSelectedMyShiftId === s.id;
-        const cls = [
-          "calShift",
-          isMine ? "mine" : "other",
-          s.swapped ? "swapped" : "",
-          isSelected ? "selected" : "",
-        ]
-          .filter(Boolean)
-          .join(" ");
-        const ci = s.checkInAt ? s.checkInAt.slice(11, 16) : "—";
-        const co = s.checkOutAt ? s.checkOutAt.slice(11, 16) : "—";
-        const nameLine =
-          role === "prof" && profScheduleMode !== "mine"
-            ? `${p?.name || "—"}`
-            : p?.name || "—";
 
-        // Botões do Profissional
-        let mini = "";
-        if (role === "prof" && profScheduleMode === "mine" && isMine) {
-          mini = `
-      <div class="mini">
-        <button class="icon ${!s.checkInAt ? "primary" : ""}" ${s.checkInAt ? "disabled" : ""} onclick="doCheckIn('${s.id}')">IN</button>
-        <button class="icon ${s.checkInAt && !s.checkOutAt ? "primary" : ""}" ${!s.checkInAt || s.checkOutAt ? "disabled" : ""} onclick="doCheckOut('${s.id}')">OUT</button>
-        <button class="icon warn" ${s.checkInAt ? "disabled" : ""} onclick="openSwap('${s.id}')">↔</button>
-      </div>`;
-        }
+        // Formatações
+        const ci = s.checkInAt ? s.checkInAt.slice(11, 16) : null;
+        const co = s.checkOutAt ? s.checkOutAt.slice(11, 16) : null;
 
-        // --- BOTÃO DE EXCLUIR PARA ADMIN (NO CALENDÁRIO) ---
-        let adminAction = "";
-        if (role !== "prof") {
-          // Se NÃO tem check-in, mostra lixeira. Se tem, não mostra nada.
-          if (!s.checkInAt && !s.checkOutAt) {
-            adminAction = `<div style="margin-top:8px; text-align:right; border-top:1px solid rgba(255,255,255,0.1); padding-top:4px;">
-                    <button class="small danger" style="padding:2px 8px; font-size:10px" onclick="deleteShift('${s.id}')">Excluir</button>
+        // Define o Status visual (Badge no topo)
+        let statusBadge = "";
+        if (s.published)
+          statusBadge = `<span class="badge bGood" style="padding:2px 6px; font-size:9px">PUB</span>`;
+        else
+          statusBadge = `<span class="badge bWarn" style="padding:2px 6px; font-size:9px">RASC</span>`;
+        if (s.swapped)
+          statusBadge = `<span class="badge bWarn" style="padding:2px 6px; font-size:9px">TROCA</span>`;
+
+        // --- LÓGICA DE AÇÃO (BOTÕES) ---
+        let actionArea = "";
+
+        if (isMine) {
+          // Cenário 1: Ainda não entrou
+          if (!ci) {
+            actionArea = `
+                <div class="cs-actions">
+                    <button class="btn-action btn-in" onclick="doCheckIn('${s.id}')">ENTRAR (IN)</button>
+                    <button class="btn-action btn-swap" onclick="openSwap('${s.id}')" title="Trocar">↔</button>
                 </div>`;
-          } else {
-            adminAction = `<div style="margin-top:8px; text-align:right; font-size:10px" class="muted">🔒 Auditado</div>`;
+          }
+          // Cenário 2: Já entrou, falta sair
+          else if (ci && !co) {
+            actionArea = `
+                <div class="cs-info">Entrada às ${ci}</div>
+                <div class="cs-actions">
+                    <button class="btn-action btn-out" onclick="doCheckOut('${s.id}')">SAÍDA (OUT)</button>
+                    <button class="btn-action btn-swap" disabled style="opacity:0.3">↔</button>
+                </div>`;
+          }
+          // Cenário 3: Finalizado
+          else {
+            actionArea = `
+                <div style="margin-top:6px; padding:6px; background:rgba(55,214,122,0.1); border-radius:6px; border:1px solid rgba(55,214,122,0.3); text-align:center">
+                    <div style="font-size:10px; color:var(--muted)">Finalizado</div>
+                    <div style="font-size:12px; font-weight:bold; color:var(--good)">${ci} — ${co}</div>
+                </div>`;
+          }
+        } else {
+          // Visualização de plantão de OUTRO (ou Admin vendo)
+          const profName = p
+            ? p.name.split(" ")[0] + " " + (p.name.split(" ")[1] || "")
+            : "—";
+          actionArea = `<div style="margin-top:6px; font-size:11px; color:var(--muted); border-top:1px solid rgba(255,255,255,0.1); padding-top:4px">
+                👨‍⚕️ ${profName}
+            </div>`;
+
+          // Se for admin, adiciona botão de excluir discreto
+          if (role !== "prof" && !ci) {
+            actionArea += `<div style="text-align:right; margin-top:4px"><button class="small danger" style="padding:2px 6px; font-size:10px" onclick="deleteShift('${s.id}')">Excluir</button></div>`;
           }
         }
 
-        const click =
-          role === "prof" && profScheduleMode === "mine" && isMine
-            ? `onclick="selectMyShift('${s.id}')"`
-            : "";
+        // --- RENDERIZAÇÃO FINAL ---
+        const click = isMine && !ci ? `onclick="selectMyShift('${s.id}')"` : ""; // Só seleciona se não tiver iniciado
+        const activeClass = calSelectedMyShiftId === s.id ? "selected" : "";
 
         return `
-    <div class="${cls}" ${click}>
-      <div class="top">
-        <b>${s.start}–${s.end}</b>
-        ${s.published ? `<span class="badge bGood" style="padding:4px 8px">${t("schedPublished")}</span>` : `<span class="badge bWarn" style="padding:4px 8px">${t("schedDraft")}</span>`}
-      </div>
-      <div class="meta">${fmtUnit(u)} • ${specLabel(s.spec)}</div>
-      <div class="meta"><b>${nameLine}</b>${swappedTag}</div>
-      <div class="meta">IN ${ci} • OUT ${co}</div>
-      ${mini}
-      ${adminAction}
-    </div>
-  `;
+        <div class="calShift ${isMine ? "mine" : "other"} ${activeClass}" ${click}>
+            
+            <div class="cs-head">
+                <span class="cs-time">${s.start} - ${s.end}</span>
+                ${statusBadge}
+            </div>
+            
+            <div class="cs-body">
+                <div class="cs-unit">${u ? u.name : "Unidade Desconhecida"}</div>
+                <div class="cs-spec">${specLabel(s.spec)}</div>
+            </div>
+
+            ${actionArea}
+            
+        </div>`;
       }
 
       /* --- Calendar: add colleague shifts for swap view (mine mode) --- */
