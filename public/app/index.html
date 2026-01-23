@@ -6284,48 +6284,55 @@
       function bindSchedule() {
         // --- 1. FUNÇÃO PARA OUVIR O BANCO ---
         function loadLiveShifts() {
+          // SEGREDO 1: Sempre mata o ouvinte anterior para criar um novo fresco
           if (_unsubscribeShifts) {
             _unsubscribeShifts();
             _unsubscribeShifts = null;
           }
 
-          const month = $("fMonth") ? $("fMonth").value : isoMonth(nowISO());
-          const unitId = $("fUnit") ? $("fUnit").value : "";
+          const monthEl = $("fMonth");
+          const unitEl = $("fUnit");
+
+          // Se os elementos não existirem (troca de tela rápida), aborta
+          if (!monthEl) return;
+
+          const month = monthEl.value;
+          const unitId = unitEl ? unitEl.value : "";
           const role = session.role;
 
           let query = db.collection("shifts").where("month", "==", month);
 
+          // Filtros de Admin/Gestor
           if (role !== "prof" && unitId) {
             query = query.where("unitId", "==", unitId);
           }
 
+          // Filtros de Médico (O Bug do Perfil sumindo corrigido aqui)
           if (role === "prof" && profScheduleMode === "mine") {
             query = query.where("profId", "==", session.profId);
           }
 
-          console.log(
-            `📡 Buscando escala: Mês ${month} | Unidade ${unitId || "Todas"}`,
-          );
+          console.log(`📡 Sincronizando escala: ${month} (Role: ${role})`);
 
           _unsubscribeShifts = query.onSnapshot((snap) => {
             let list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
 
-            // --- SEGURANÇA: FILTRO DE GESTOR ---
+            // Filtro de segurança visual para Gestor
             if (window.currentUser && window.currentUser.role === "gestor") {
               const allowed = window.currentUser.allowedUnits || [];
               list = list.filter((s) => allowed.includes(s.unitId));
             }
-            // -----------------------------------
 
             DB.shifts = list;
 
+            // Só desenha se a aba ainda estiver visível
             if (
               document.getElementById("viewInternal").style.display !== "none"
             ) {
               renderInternalBody("schedule");
 
-              // Restaura foco da busca se necessário
+              // SEGREDO 2: Restaura o foco se estava digitando busca
               if (window.tempSpecOther && $("fSpecOther")) {
                 $("fSpecOther").value = window.tempSpecOther;
                 $("fSpecOther").focus();
@@ -6365,6 +6372,19 @@
             renderInternalBody("schedule");
           };
 
+        // Input de busca textual (Especialidade: Outro)
+        const fSpecOther = $("fSpecOther");
+        if (fSpecOther) {
+          fSpecOther.oninput = (e) => {
+            window.tempSpecOther = e.target.value;
+            // Pequeno delay para não renderizar a cada letra loucamente
+            clearTimeout(window._searchTimer);
+            window._searchTimer = setTimeout(() => {
+              renderInternalBody("schedule");
+            }, 400);
+          };
+        }
+
         // --- 3. LÓGICA ESPECÍFICA POR PERFIL ---
         if (session.role === "prof") {
           const bMine = $("btnModeMine");
@@ -6382,7 +6402,6 @@
           injectColleagueShiftsIntoCalendar();
         } else {
           // === ADMIN / GESTOR ===
-
           const btnGen = $("btnGen");
           const btnPub = $("btnPub");
 
@@ -6406,18 +6425,13 @@
               publishMonth(m, u, s);
             };
 
-          // --- CORREÇÃO AQUI: LÓGICA DO CARD "ADICIONAR PLANTÃO" ---
+          // Preencher lista de médicos no modal
           const sSpec = $("sSpec");
           const sProf = $("sProf");
-
-          // Função que preenche o dropdown de médicos com base na especialidade
           const fillShiftProfs = () => {
             if (!sSpec || !sProf) return;
             const val = sSpec.value;
-
-            // Filtra: Aprovado E da mesma especialidade
             const list = DB.profs.filter((p) => p.approved && p.spec === val);
-
             if (list.length === 0) {
               sProf.innerHTML =
                 '<option value="">Sem médicos nesta área</option>';
@@ -6427,14 +6441,12 @@
                 .join("");
             }
           };
-
           if (sSpec) {
-            sSpec.onchange = fillShiftProfs; // Atualiza ao trocar especialidade
-            fillShiftProfs(); // Atualiza agora (no carregamento da tela)
+            sSpec.onchange = fillShiftProfs;
+            fillShiftProfs();
           }
-          // ---------------------------------------------------------
 
-          // Botão Criar Plantão (Manual)
+          // Criar Plantão Manual
           const btnCreate = $("btnShiftCreate");
           if (btnCreate)
             btnCreate.onclick = async () => {
@@ -6453,26 +6465,21 @@
               btn.innerText = "Verificando...";
 
               try {
-                // Checa conflito
                 const isBusy = await checkConflict(profId, date, start);
-
                 if (isBusy) {
-                  alert(
-                    "🚫 CONFLITO: Este profissional já tem plantão neste dia/horário em outra unidade.",
-                  );
+                  alert("🚫 CONFLITO: Médico já ocupado neste horário.");
                   btn.disabled = false;
                   btn.innerText = originalText;
                   return;
                 }
 
-                // Salva
                 await db.collection("shifts").add({
                   unitId: unit,
                   spec,
                   date,
                   month: isoMonth(date),
                   tpl: $("sTpl").value,
-                  start: start,
+                  start,
                   end: $("sEnd").value,
                   profId,
                   originalProfId: profId,
@@ -6491,10 +6498,9 @@
             };
         }
 
-        // --- 4. INICIALIZAÇÃO ---
-        if (!_unsubscribeShifts) {
-          loadLiveShifts();
-        }
+        // --- 4. INICIALIZAÇÃO OBRIGATÓRIA (Correção do Bug) ---
+        // Removemos o 'if' que bloqueava o recarregamento
+        loadLiveShifts();
       }
 
       /* ========= Approvals ========= */
