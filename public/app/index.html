@@ -5534,10 +5534,15 @@
 
       function renderSchedule() {
         const role = session.role;
-        const me = role === "prof" ? getProf(session.profId) : null;
+        // Proteção contra dados nulos
+        const me =
+          role === "prof" && session.profId ? getProf(session.profId) : null;
+
         // Ícone muda se está ativo ou não
         const bioIcon = me && me.bioCredId ? "👤✅" : "👤";
         const bioClass = me && me.bioCredId ? "bGood" : "";
+        const bioLabel =
+          me && me.bioCredId ? "Face ID Ativo" : "Ativar Face ID";
 
         const currentUnit = window.tempUnitFilter || "";
         const unitOpt = DB.units
@@ -5548,8 +5553,11 @@
           .join("");
 
         const currentSpec = window.tempSpecFilter || "";
+        // Proteção se SPECIALTIES não estiver definido
+        const safeSpecs = typeof SPECIALTIES !== "undefined" ? SPECIALTIES : [];
         const specOpt =
-          SPECIALTIES.filter((x) => x !== "Sem especialidade registrada")
+          safeSpecs
+            .filter((x) => x !== "Sem especialidade registrada")
             .map(
               (s) =>
                 `<option value="${s}" ${s === currentSpec ? "selected" : ""}>${specLabel(s)}</option>`,
@@ -5597,7 +5605,6 @@
                     <div class="selectWrap" style="flex:1"><select id="fMonth" style="padding:8px">${monthOpt}</select></div>
                     <button class="small ${bioClass}" id="btnBio" title="${t("bioTitle")}" style="height:38px">${bioLabel}</button>
                 </div>
-
                 <div class="row" style="gap:8px; align-items:stretch">
                     ${viewGroup}
                     ${modeGroup}
@@ -5611,14 +5618,11 @@
                     <div class="selectWrap" style="flex:1"><select id="fMonth">${monthOpt}</select></div>
                     <div class="selectWrap" style="flex:1.5"><select id="fUnit"><option value="">Unidade...</option>${unitOpt}</select></div>
                 </div>
-                
                 <div class="row" style="gap:8px">
                     <div class="selectWrap" style="flex:2"><select id="fSpec"><option value="">Especialidade...</option>${specOpt}</select></div>
                     ${viewGroup}
                 </div>
-                
                 <input id="fSpecOther" placeholder="Buscar..." style="display:${currentSpec === "Outro" ? "block" : "none"}; border-color:var(--accent);" value="${window.tempSpecOther || ""}"/>
-
                 <div class="row" style="justify-content:flex-end; margin-top:5px">
                     <button class="small" id="btnGen">${t("schedGenerate")}</button>
                     <button class="small primary" id="btnPub">${t("schedPublish")}</button>
@@ -5631,11 +5635,7 @@
             ? renderCalendar()
             : renderScheduleTable();
 
-        // (Mantive os editores de template/plantão do Admin iguais, omitidos aqui para brevidade, mas devem estar no seu código original)
-        // ... (resto do código igual: tplEditor, shiftCreator) ...
-        // Para garantir que não quebre, vou retornar apenas a estrutura principal simplificada para o mobile:
-
-        // RECUPERANDO EDITOR DE ADMIN (Minimizado para focar na resposta)
+        // Editor de Plantão (Apenas Admin) - Removido do Profissional para evitar erro
         const tplEditor =
           role === "prof"
             ? ""
@@ -5665,12 +5665,9 @@
                     <h2 style="margin:0">${t("schedTitle")}</h2>
                     ${role === "prof" ? `<button class="small" style="padding:4px 8px; font-size:10px" onclick="editTemplates()">⚙️</button>` : ""} 
                 </div>
-                
                 ${headerControls}
-                
                 <div class="sp"></div>
                 ${content}
-                
                 <div class="calFooterHint" style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05)">
                     ✅ <b>Publicar</b> libera visão completa. ↔ <b>Trocar</b> destaca na escala.
                 </div>
