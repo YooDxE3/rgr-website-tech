@@ -8257,33 +8257,6 @@
         box.appendChild(wrap);
       })();
 
-      /* ===== Offers (Vagas) ===== */
-      function ensureOffersSeed() {
-        if (DB.offers && DB.offers.length) return;
-        // create some offers from open shifts template
-        const monthNow = isoMonth(isoDateAdd(0));
-        const unitIds = DB.units.map((u) => u.id);
-        for (let i = 0; i < 8; i++) {
-          const unitId = unitIds[i % unitIds.length];
-          const date = isoDateAdd(i + 1);
-          DB.offers.push({
-            id: "o" + Math.random().toString(16).slice(2, 10),
-            clientId:
-              DB.clients && DB.clients[0] ? DB.clients[0].id : "c_default",
-            unitId,
-            month: monthNow,
-            date,
-            start: "07:00",
-            end: "19:00",
-            spec: "Clínica Geral",
-            status: "open",
-            createdAt: nowISO(),
-          });
-        }
-        saveDB();
-      }
-      ensureOffersSeed();
-
       function renderOffers() {
         const isProf = session.role === "prof";
         const profId = session.profId;
