@@ -5534,15 +5534,17 @@
 
       function renderSchedule() {
         const role = session.role;
-        // Proteção contra dados nulos
+        // Proteção: só busca médico se tiver ID na sessão
         const me =
           role === "prof" && session.profId ? getProf(session.profId) : null;
 
-        // Ícone muda se está ativo ou não
+        // --- CORREÇÃO DO ERRO ---
+        // Definimos todas as variáveis do botão Face ID aqui
         const bioIcon = me && me.bioCredId ? "👤✅" : "👤";
         const bioClass = me && me.bioCredId ? "bGood" : "";
-        const bioLabel =
-          me && me.bioCredId ? "Face ID Ativo" : "Ativar Face ID";
+        // A LINHA QUE FALTAVA:
+        const bioLabel = me && me.bioCredId ? t("bioBtnOn") : t("bioBtnOff");
+        // ------------------------
 
         const currentUnit = window.tempUnitFilter || "";
         const unitOpt = DB.units
@@ -5635,7 +5637,7 @@
             ? renderCalendar()
             : renderScheduleTable();
 
-        // Editor de Plantão (Apenas Admin) - Removido do Profissional para evitar erro
+        // Editor de Plantão (Apenas Admin) - Removido do Profissional para evitar erro visual
         const tplEditor =
           role === "prof"
             ? ""
