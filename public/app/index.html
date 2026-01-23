@@ -3889,6 +3889,7 @@
     </div></div>`;
       }
 
+      /* ========= Connect (CORRIGIDO PARA ATUALIZAR UNITS NA NUVEM) ========= */
       function bindConnect() {
         const unitSel = $("cUnit");
         if (!unitSel) return;
@@ -3909,31 +3910,36 @@
 
         // --- Eventos ---
 
-        // 1. Troca de unidade recarrega a tela (para atualizar a barra de status)
+        // 1. Troca de unidade
         unitSel.onchange = () => {
           CTX.connectUnitId = unitSel.value;
           renderInternalBody("connect");
         };
 
-        // 2. Salvar configurações automaticamente
+        // 2. Salvar configurações automaticamente (MUDOU AQUI)
         const elSys = $("cSys");
         if (elSys)
-          elSys.onchange = () => {
-            const u = getUnit(unitSel.value);
-            if (!u) return;
-            u.system = elSys.value;
-            saveDB();
-            toast("Sistema atualizado.");
+          elSys.onchange = async () => {
+            const uId = unitSel.value;
+            if (!uId) return;
+            // Atualiza direto no documento da unidade
+            await db
+              .collection("units")
+              .doc(uId)
+              .update({ system: elSys.value });
+            toast("Sistema atualizado na nuvem.");
           };
 
         const elMode = $("cMode");
         if (elMode)
-          elMode.onchange = () => {
-            const u = getUnit(unitSel.value);
-            if (!u) return;
-            u.integrationMode = elMode.value;
-            saveDB();
-            toast("Modo atualizado.");
+          elMode.onchange = async () => {
+            const uId = unitSel.value;
+            if (!uId) return;
+            await db
+              .collection("units")
+              .doc(uId)
+              .update({ integrationMode: elMode.value });
+            toast("Modo atualizado na nuvem.");
           };
 
         // 3. Ações
@@ -3943,39 +3949,43 @@
 
         const btnSync = $("btnCSync");
         if (btnSync)
-          btnSync.onclick = () => {
-            const u = getUnit(unitSel.value);
-            if (!u) return;
+          btnSync.onclick = async () => {
+            const uId = unitSel.value;
+            if (!uId) return;
             toast("🔄 Sincronizando...");
-            setTimeout(() => {
-              u.lastSync = nowISO();
-              saveDB();
-              renderInternalBody("connect");
+            // Simula delay e salva
+            setTimeout(async () => {
+              await db
+                .collection("units")
+                .doc(uId)
+                .update({ lastSync: new Date().toISOString() });
+              // O listener de units vai atualizar a tela sozinho
               toast("✅ Sincronizado!");
             }, 800);
           };
 
         const btnActivate = $("btnCActivate");
         if (btnActivate)
-          btnActivate.onclick = () => {
-            const u = getUnit(unitSel.value);
-            if (!u) return;
-            u.integrationStatus = "conectado";
-            u.lastSync = nowISO();
-            saveDB();
-            renderInternalBody("connect");
+          btnActivate.onclick = async () => {
+            const uId = unitSel.value;
+            if (!uId) return;
+            await db.collection("units").doc(uId).update({
+              integrationStatus: "conectado",
+              lastSync: new Date().toISOString(),
+            });
             toast("Integração ATIVADA.");
           };
 
         const btnDeactivate = $("btnCDeactivate");
         if (btnDeactivate)
-          btnDeactivate.onclick = () => {
+          btnDeactivate.onclick = async () => {
             if (!confirm("Deseja realmente desativar esta integração?")) return;
-            const u = getUnit(unitSel.value);
-            if (!u) return;
-            u.integrationStatus = "pendente";
-            saveDB();
-            renderInternalBody("connect");
+            const uId = unitSel.value;
+            if (!uId) return;
+            await db
+              .collection("units")
+              .doc(uId)
+              .update({ integrationStatus: "pendente" });
             toast("Integração PAUSADA.");
           };
 
@@ -4879,99 +4889,131 @@
   </div></div>`;
       }
 
+      /* ========= MARKET (MIGRADO PARA FIREBASE) ========= */
       function bindMarket() {
         const createModal = $("marketCreateModal");
 
-        // Busca com foco automático
-        const searchInput = $("mSearch");
-        if (searchInput) {
-          searchInput.oninput = (e) => {
-            window.marketSearch = e.target.value;
-            renderInternalBody("market");
-            setTimeout(() => {
-              const el = document.getElementById("mSearch");
-              if (el) {
-                el.focus();
-                el.setSelectionRange(el.value.length, el.value.length);
-              }
-            }, 0);
-          };
+        // --- 1. OUVINTE EM TEMPO REAL (Coleção 'partners') ---
+        if (!window._marketListener) {
+          window._marketListener = true;
+
+          db.collection("partners").onSnapshot((snap) => {
+            const list = [];
+            snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+
+            // Separa em duas listas para manter a lógica visual
+            if (!DB.market) DB.market = {};
+            DB.market.network = list.filter((x) => x.section === "network");
+            DB.market.vendors = list.filter((x) => x.section === "vendor");
+
+            // Se a aba estiver aberta, redesenha
+            if (document.querySelector(".tab.active[data-key='market']")) {
+              const container = document.getElementById("inBody");
+              // Preserva o termo de busca se houver
+              const currentSearch = document.getElementById("mSearch")?.value;
+              if (container) container.innerHTML = renderMarket();
+              rebindMarketEvents(currentSearch);
+            }
+          });
         }
 
-        // --- CRIAR REDE ---
-        $("btnNAdd").onclick = () => {
+        // --- 2. RECONECTAR EVENTOS (Após render) ---
+        function rebindMarketEvents(restoredSearchVal) {
+          const searchInput = $("mSearch");
+          if (searchInput) {
+            if (restoredSearchVal) {
+              searchInput.value = restoredSearchVal;
+              // Foca e coloca cursor no final
+              searchInput.focus();
+            }
+
+            searchInput.oninput = (e) => {
+              window.marketSearch = e.target.value;
+              // A renderização é local para busca (filtragem visual),
+              // não precisa ir no banco, então chamamos renderInternalBody
+              renderInternalBody("market");
+              // O foco é mantido pelo próprio input pois o renderInternalBody
+              // substitui o HTML. Truque para manter foco:
+              setTimeout(() => {
+                const el = document.getElementById("mSearch");
+                if (el) {
+                  el.focus();
+                  el.setSelectionRange(el.value.length, el.value.length);
+                }
+              }, 0);
+            };
+          }
+
+          // Botões de Abrir Modal
+          $("btnNAdd").onclick = () => openCreateModal("network");
+          $("btnVAdd").onclick = () => openCreateModal("vendor");
+        }
+
+        // --- 3. LÓGICA DE CRIAÇÃO ---
+        window.openCreateModal = (type) => {
+          const isNet = type === "network";
           createModal.style.display = "flex";
           createModal.innerHTML = `
             <div class="modal" style="max-width:400px"><div class="card"><div class="cardin">
-                <h3>Nova Credenciada</h3>
+                <h3>${isNet ? "Nova Credenciada" : "Novo Fornecedor"}</h3>
                 <div class="sp"></div>
-                <div class="muted">Nome</div><input id="newNName">
+                <div class="muted">Nome</div><input id="newMName">
                 <div class="sp"></div>
                 <div class="two">
-                    <div><div class="muted">Tipo</div><select id="newNType"><option>Laboratório</option><option>Clínica</option><option>Hospital</option></select></div>
-                    <div><div class="muted">Cidade</div><input id="newNCity"></div>
+                    ${
+                      isNet
+                        ? `<div><div class="muted">Tipo</div><select id="newMType"><option>Laboratório</option><option>Clínica</option><option>Hospital</option></select></div>
+                           <div><div class="muted">Cidade</div><input id="newMCity"></div>`
+                        : `<div><div class="muted">Categoria</div><input id="newMCat" placeholder="Ex: TI, Limpeza"></div>
+                           <div><div class="muted">Contato</div><input id="newMContact"></div>`
+                    }
                 </div>
                 <div class="sp"></div>
                 <div class="row" style="justify-content:flex-end">
                     <button class="small" onclick="$('marketCreateModal').style.display='none'">Cancelar</button>
-                    <button class="primary" id="btnCreateN">Salvar</button>
+                    <button class="primary" id="btnCreateM">Salvar</button>
                 </div>
             </div></div></div>`;
 
-          $("btnCreateN").onclick = () => {
-            const name = $("newNName").value;
+          $("btnCreateM").onclick = async () => {
+            const name = $("newMName").value.trim();
             if (!name) return toast("Informe o nome");
-            DB.market.network.unshift({
-              id: uid("n"),
-              name: name,
-              type: $("newNType").value,
-              city: $("newNCity").value,
-              sla: "24h",
-              rating: 5,
-            });
-            saveDB();
-            createModal.style.display = "none";
-            renderInternalBody("market");
+
+            $("btnCreateM").disabled = true;
+            $("btnCreateM").textContent = "Salvando...";
+
+            try {
+              const payload = {
+                section: type, // 'network' ou 'vendor'
+                name: name,
+                createdAt: new Date().toISOString(),
+              };
+
+              if (isNet) {
+                payload.type = $("newMType").value;
+                payload.city = $("newMCity").value;
+                payload.sla = "24h";
+                payload.rating = 5;
+              } else {
+                payload.cat = $("newMCat").value;
+                payload.contact = $("newMContact").value;
+                payload.status = "em análise";
+              }
+
+              await db.collection("partners").add(payload);
+              toast("✅ Cadastrado com sucesso!");
+              createModal.style.display = "none";
+            } catch (e) {
+              console.error(e);
+              toast("Erro ao salvar.");
+              $("btnCreateM").disabled = false;
+            }
           };
         };
 
-        // --- CRIAR FORNECEDOR ---
-        $("btnVAdd").onclick = () => {
-          createModal.style.display = "flex";
-          createModal.innerHTML = `
-            <div class="modal" style="max-width:400px"><div class="card"><div class="cardin">
-                <h3>Novo Fornecedor</h3>
-                <div class="sp"></div>
-                <div class="muted">Nome</div><input id="newVName">
-                <div class="sp"></div>
-                <div class="two">
-                    <div><div class="muted">Categoria</div><input id="newVCat"></div>
-                    <div><div class="muted">Contato</div><input id="newVContact"></div>
-                </div>
-                <div class="sp"></div>
-                <div class="row" style="justify-content:flex-end">
-                    <button class="small" onclick="$('marketCreateModal').style.display='none'">Cancelar</button>
-                    <button class="primary" id="btnCreateV">Salvar</button>
-                </div>
-            </div></div></div>`;
+        // --- 4. LÓGICA DE EDIÇÃO E EXCLUSÃO ---
 
-          $("btnCreateV").onclick = () => {
-            const name = $("newVName").value;
-            if (!name) return toast("Informe o nome");
-            DB.market.vendors.unshift({
-              id: uid("v"),
-              name: name,
-              cat: $("newVCat").value,
-              contact: $("newVContact").value,
-              status: "em análise",
-            });
-            saveDB();
-            createModal.style.display = "none";
-            renderInternalBody("market");
-          };
-        };
-
-        // --- EDIÇÃO REDE ---
+        // Rede
         let editId = null;
         window.openEditNetwork = (id) => {
           const item = DB.market.network.find((x) => x.id === id);
@@ -4985,59 +5027,83 @@
           $("editNetworkModal").style.display = "flex";
         };
 
-        $("btnSaveEditN").onclick = () => {
-          const item = DB.market.network.find((x) => x.id === editId);
-          if (item) {
-            item.name = $("edNName").value;
-            item.type = $("edNType").value;
-            item.city = $("edNCity").value;
-            item.sla = $("edNSla").value;
-            item.rating = $("edNRating").value;
-            saveDB();
-            renderInternalBody("market");
+        $("btnSaveEditN").onclick = async () => {
+          const btn = $("btnSaveEditN");
+          btn.textContent = "Salvando...";
+          try {
+            await db
+              .collection("partners")
+              .doc(editId)
+              .update({
+                name: $("edNName").value,
+                type: $("edNType").value,
+                city: $("edNCity").value,
+                sla: $("edNSla").value,
+                rating: $("edNRating").value,
+              });
+            toast("Atualizado!");
+            $("editNetworkModal").style.display = "none";
+          } catch (e) {
+            toast("Erro ao editar.");
           }
-          $("editNetworkModal").style.display = "none";
+          btn.textContent = "Salvar";
         };
 
-        // --- EDIÇÃO FORNECEDOR ---
+        // Fornecedor
         window.openEditVendor = (id) => {
           const item = DB.market.vendors.find((x) => x.id === id);
           if (!item) return;
           editId = id;
           $("edVName").value = item.name;
-          $("edVCat").value = item.cat;
+          $("edVCat").value = item.cat || "";
           $("edVContact").value = item.contact || "";
           $("edVStatus").value = item.status;
           $("editVendorModal").style.display = "flex";
         };
 
-        $("btnSaveEditV").onclick = () => {
-          const item = DB.market.vendors.find((x) => x.id === editId);
-          if (item) {
-            item.name = $("edVName").value;
-            item.cat = $("edVCat").value;
-            item.contact = $("edVContact").value;
-            item.status = $("edVStatus").value;
-            saveDB();
-            renderInternalBody("market");
+        $("btnSaveEditV").onclick = async () => {
+          const btn = $("btnSaveEditV");
+          btn.textContent = "Salvando...";
+          try {
+            await db
+              .collection("partners")
+              .doc(editId)
+              .update({
+                name: $("edVName").value,
+                cat: $("edVCat").value,
+                contact: $("edVContact").value,
+                status: $("edVStatus").value,
+              });
+            toast("Atualizado!");
+            $("editVendorModal").style.display = "none";
+          } catch (e) {
+            toast("Erro ao editar.");
           }
-          $("editVendorModal").style.display = "none";
+          btn.textContent = "Salvar";
         };
 
-        window.delNetworkItem = (id) => {
-          if (confirm("Remover este parceiro?")) {
-            DB.market.network = DB.market.network.filter((x) => x.id !== id);
-            saveDB();
-            renderInternalBody("market");
+        // Excluir (Unificado)
+        window.delNetworkItem = async (id) => {
+          if (!confirm("Remover este parceiro?")) return;
+          try {
+            await db.collection("partners").doc(id).delete();
+            toast("🗑️ Removido.");
+          } catch (e) {
+            toast("Erro ao remover.");
           }
         };
-        window.delVendorItem = (id) => {
-          if (confirm("Remover este fornecedor?")) {
-            DB.market.vendors = DB.market.vendors.filter((x) => x.id !== id);
-            saveDB();
-            renderInternalBody("market");
+        window.delVendorItem = async (id) => {
+          if (!confirm("Remover este fornecedor?")) return;
+          try {
+            await db.collection("partners").doc(id).delete();
+            toast("🗑️ Removido.");
+          } catch (e) {
+            toast("Erro ao remover.");
           }
         };
+
+        // Inicialização
+        rebindMarketEvents(window.marketSearch);
       }
 
       /* ========= Autopilot ========= */
