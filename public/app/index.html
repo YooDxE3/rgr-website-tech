@@ -3686,7 +3686,7 @@
           const name = $("uName").value.trim();
           if (!name) return toast("Informe o nome da unidade");
 
-          // Prepara o objeto
+          // Prepara o objeto (payload)
           const dados = {
             name: name,
             type: $("uType").value,
@@ -3706,11 +3706,11 @@
             btn.textContent = "Salvando na nuvem...";
 
             if (editingId) {
-              // UPDATE NO FIREBASE
+              // UPDATE: Atualiza apenas este documento na coleção 'units'
               await db.collection("units").doc(editingId).update(dados);
               toast("✅ Unidade atualizada!");
             } else {
-              // CREATE NO FIREBASE
+              // CREATE: Cria um novo documento na coleção 'units'
               await db.collection("units").add({
                 ...dados,
                 integrationMode: "Export/CSV",
@@ -3720,8 +3720,10 @@
               });
               toast("✅ Unidade criada!");
             }
+
             closeUnitModal();
-            // Não precisa chamar renderInternalBody, o Listener (onSnapshot) fará isso sozinho!
+            // NÃO precisamos chamar renderUnits() aqui, pois o onSnapshot
+            // lá no início da função vai perceber a mudança e atualizar a tela sozinho!
           } catch (error) {
             console.error(error);
             toast("❌ Erro ao salvar: " + error.message);
@@ -3757,17 +3759,12 @@
 
         // --- DELETAR NO FIREBASE ---
         window.deleteUnit = async (id) => {
-          if (
-            !confirm(
-              "Tem certeza? Essa ação apaga a unidade DO SERVIDOR para todos os usuários.",
-            )
-          )
+          if (!confirm("Tem certeza? Essa ação apaga a unidade DO SERVIDOR."))
             return;
 
           try {
             await db.collection("units").doc(id).delete();
             toast("🗑️ Unidade removida da nuvem.");
-            // O listener vai atualizar a tabela automaticamente
           } catch (error) {
             console.error(error);
             toast("Erro ao excluir: " + error.message);
