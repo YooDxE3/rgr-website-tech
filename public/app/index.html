@@ -3586,12 +3586,11 @@
       function bindUnits() {
         let editingId = null;
 
-        // --- 1. FUNÇÃO DE CIDADES (Agora busca o elemento atualizado no DOM) ---
+        // --- 1. FUNÇÃO DE CIDADES ---
         function fillCities() {
-          const ufEl = $("uUF"); // Busca o elemento vivo na tela
-          const cityEl = $("uCity"); // Busca o elemento vivo na tela
-
-          if (!ufEl || !cityEl) return; // Proteção contra erro
+          const ufEl = $("uUF");
+          const cityEl = $("uCity");
+          if (!ufEl || !cityEl) return;
 
           const ufv = ufEl.value || "SC";
           const list = UF_CITIES[ufv] || ["—"];
@@ -3615,10 +3614,9 @@
               const activeTab = document.querySelector(".tab.active");
               if (activeTab && activeTab.dataset.key === "units") {
                 const modalOpen = $("unitModal").style.display === "flex";
-                // Só redesenha o fundo se o modal estiver fechado, para não fechar na cara do usuário
                 if (!modalOpen) {
                   $("inBody").innerHTML = renderUnits();
-                  bindUnitsEventsOnly(); // <--- RECONECTA TUDO
+                  bindUnitsEventsOnly(); // <--- Reconecta os botões
                 }
               }
             },
@@ -3626,22 +3624,21 @@
           );
         }
 
-        // --- 3. RECONECTAR EVENTOS (Crucial!) ---
-        // Essa função roda toda vez que o HTML é desenhado
+        // --- 3. RECONECTAR EVENTOS (Essa função roda a cada atualização de tela) ---
         function bindUnitsEventsOnly() {
+          // Botão Nova Unidade
           const btnAdd = $("btnAddUnit");
           if (btnAdd) btnAdd.onclick = () => openUnitModal(false);
 
+          // Botão Geo Search
           const btnGeo = $("btnGeoSearch");
           if (btnGeo) btnGeo.onclick = handleGeoSearch;
 
-          // --- CORREÇÃO AQUI: Ligar o evento do UF toda vez ---
+          // Select de UF (para carregar cidades)
           const ufEl = $("uUF");
-          if (ufEl) {
-            ufEl.onchange = fillCities; // Reconecta a função de preencher cidades
-          }
-          // ---------------------------------------------------
+          if (ufEl) ufEl.onchange = fillCities;
 
+          // Botões da Tabela
           document.querySelectorAll(".btnCfg").forEach((btn) => {
             btn.onclick = () => {
               setConnectUnit(btn.dataset.unit);
@@ -3649,6 +3646,57 @@
               toast("Abrindo integrações…");
             };
           });
+
+          // --- CORREÇÃO AQUI: O BOTÃO SALVAR AGORA É RECONECTADO SEMPRE ---
+          const btnSave = $("btnSaveUnit");
+          if (btnSave) {
+            btnSave.onclick = async () => {
+              const originalText = btnSave.textContent;
+              const name = $("uName").value.trim();
+              if (!name) return toast("Informe o nome da unidade");
+
+              const dados = {
+                name: name,
+                type: $("uType").value,
+                uf: $("uUF").value,
+                city: $("uCity").value,
+                subtype: $("uSub").value.trim(),
+                system: $("uSys").value,
+                address: $("uAddr").value.trim(),
+                lat: $("uLat").value,
+                lon: $("uLon").value,
+                radiusM: parseInt($("uRadius").value) || 200,
+                updatedAt: new Date().toISOString(),
+              };
+
+              try {
+                btnSave.disabled = true;
+                btnSave.textContent = "Salvando...";
+
+                if (editingId) {
+                  await db.collection("units").doc(editingId).update(dados);
+                  toast("✅ Unidade atualizada!");
+                } else {
+                  await db.collection("units").add({
+                    ...dados,
+                    integrationMode: "Export/CSV",
+                    integrationStatus: "pendente",
+                    biEnabled: false,
+                    createdAt: new Date().toISOString(),
+                  });
+                  toast("✅ Unidade criada!");
+                }
+                closeUnitModal();
+                // O onSnapshot vai atualizar a tela sozinho
+              } catch (error) {
+                console.error(error);
+                toast("Erro: " + error.message);
+              } finally {
+                btnSave.disabled = false;
+                btnSave.textContent = originalText;
+              }
+            };
+          }
         }
 
         // --- CONTROLE DO MODAL ---
@@ -3660,13 +3708,11 @@
 
           if (!isEdit) {
             editingId = null;
-            // Reseta usando os elementos vivos
             const ufEl = $("uUF");
             if (ufEl) {
               ufEl.value = "PR";
-              fillCities(); // Preenche cidades do PR
+              fillCities();
             }
-
             $("uName").value = "";
             $("uSub").value = "";
             $("uSys").value = "Tasy";
@@ -3681,54 +3727,6 @@
 
         window.closeUnitModal = () => {
           $("unitModal").style.display = "none";
-        };
-
-        // --- SALVAR (Firebase) ---
-        $("btnSaveUnit").onclick = async () => {
-          const btn = $("btnSaveUnit");
-          const originalText = btn.textContent;
-          const name = $("uName").value.trim();
-          if (!name) return toast("Informe o nome da unidade");
-
-          const dados = {
-            name: name,
-            type: $("uType").value,
-            uf: $("uUF").value,
-            city: $("uCity").value,
-            subtype: $("uSub").value.trim(),
-            system: $("uSys").value,
-            address: $("uAddr").value.trim(),
-            lat: $("uLat").value,
-            lon: $("uLon").value,
-            radiusM: parseInt($("uRadius").value) || 200,
-            updatedAt: new Date().toISOString(),
-          };
-
-          try {
-            btn.disabled = true;
-            btn.textContent = "Salvando...";
-
-            if (editingId) {
-              await db.collection("units").doc(editingId).update(dados);
-              toast("✅ Unidade atualizada!");
-            } else {
-              await db.collection("units").add({
-                ...dados,
-                integrationMode: "Export/CSV",
-                integrationStatus: "pendente",
-                biEnabled: false,
-                createdAt: new Date().toISOString(),
-              });
-              toast("✅ Unidade criada!");
-            }
-            closeUnitModal();
-          } catch (error) {
-            console.error(error);
-            toast("Erro: " + error.message);
-          } finally {
-            btn.disabled = false;
-            btn.textContent = originalText;
-          }
         };
 
         // --- GEO SEARCH ---
@@ -3755,6 +3753,7 @@
           }
         };
 
+        // --- DELETAR ---
         window.deleteUnit = async (id) => {
           if (!confirm("Apagar unidade da nuvem?")) return;
           try {
@@ -3765,6 +3764,7 @@
           }
         };
 
+        // --- EDITAR ---
         window.editUnit = (id) => {
           const u = DB.units.find((x) => x.id === id);
           if (!u) return;
@@ -3774,13 +3774,12 @@
           $("uSys").value = u.system || "Tasy";
           $("uSub").value = u.subtype || "";
 
-          // Preenche UF e Cidades corretamente na edição
           const ufEl = $("uUF");
           if (ufEl) {
             ufEl.value = u.uf || "SC";
-            fillCities(); // Gera as cidades baseado no UF do banco
+            fillCities();
             setTimeout(() => {
-              $("uCity").value = u.city || ""; // Seleciona a cidade correta após gerar a lista
+              $("uCity").value = u.city || "";
             }, 0);
           }
 
@@ -3797,7 +3796,7 @@
           openUnitModal(true);
         };
 
-        // Inicialização
+        // Inicializa a primeira vez
         bindUnitsEventsOnly();
       }
 
