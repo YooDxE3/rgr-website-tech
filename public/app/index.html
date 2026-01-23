@@ -3347,28 +3347,39 @@
         if (mobLinks) mobLinks.innerHTML = "";
 
         const role = session.role;
-        const list =
-          role === "prof"
-            ? [
-                { k: "schedule", t: "tabSchedule" },
-                { k: "offers", t: "tabOffers" },
-                //{ k: "passport", t: "tabPassport" },
-              ]
-            : [
-                { k: "schedule", t: "tabSchedule" },
-                { k: "units", t: "tabUnits" },
-                { k: "connect", t: "tabConnect" },
-                { k: "bi", t: "tabBI" },
-                { k: "pay", t: "tabPay" },
-                { k: "market", t: "tabMarket" },
-                { k: "cad", t: "tabCad" },
-                { k: "team", t: "Equipe (Gerenciar)" },
-                { k: "rep", t: "tabRep" },
-                { k: "autopilot", t: "tabAutopilot" },
-                { k: "twin", t: "tabTwin" },
-                { k: "passport", t: "tabPassport" },
-                { k: "diag", t: "tabDiag" },
-              ];
+        // DENTRO DE renderInternalTabs...
+
+        let list = [];
+
+        if (role === "prof") {
+          list = [
+            { k: "schedule", t: "tabSchedule" },
+            { k: "offers", t: "tabOffers" },
+            { k: "passport", t: "tabPassport" },
+          ];
+        } else {
+          // Lista Base (Comum a Admin e Gestor)
+          list = [
+            { k: "schedule", t: "tabSchedule" },
+            { k: "cad", t: "tabCad" }, // Aprovar médicos
+            { k: "team", t: "Equipe (Gerenciar)" },
+            { k: "units", t: "tabUnits" },
+            { k: "market", t: "tabMarket" },
+            { k: "pay", t: "tabPay" },
+            { k: "rep", t: "tabRep" },
+          ];
+
+          // Itens EXCLUSIVOS de Admin (Configurações críticas e técnicas)
+          if (role === "admin") {
+            list.push(
+              { k: "autopilot", t: "tabAutopilot" },
+              { k: "connect", t: "tabConnect" }, // Gestor não mexe em integração
+              { k: "bi", t: "tabBI" },
+              { k: "twin", t: "Simulador" },
+              { k: "diag", t: "tabDiag" },
+            );
+          }
+        }
 
         list.forEach((item, idx) => {
           // 1. Cria a aba normal (Desktop)
@@ -3538,12 +3549,12 @@
                 </div>
               </td>
               <td style="text-align:right">
-                <div class="row" style="justify-content:flex-end; gap:4px">
-                    <button class="small btnCfg" data-unit="${u.id}" title="Configurar Integração">⚙️</button>
-                    <button class="small" onclick="editUnit('${u.id}')" title="Editar Dados">✏️</button>
-                    <button class="small danger" onclick="deleteUnit('${u.id}')" title="Excluir">🗑️</button>
-                </div>
-              </td>
+  <div class="row" style="justify-content:flex-end; gap:4px">
+      ${session.role === "admin" ? `<button class="small btnCfg" data-unit="${u.id}" title="Configurar Integração">⚙️</button>` : ""}
+      <button class="small" onclick="editUnit('${u.id}')" title="Editar Dados">✏️</button>
+      ${session.role === "admin" ? `<button class="small danger" onclick="deleteUnit('${u.id}')" title="Excluir">🗑️</button>` : ""}
+  </div>
+</td>
             </tr>`;
           })
           .join("");
@@ -3567,7 +3578,7 @@
             <h2 data-i18n="unitsTitle">${t("unitsTitle")}</h2>
             <div class="muted" data-i18n="unitsHint">Gerencie hospitais, clínicas e postos de atendimento.</div>
         </div>
-        <button class="primary" id="btnAddUnit" style="box-shadow: 0 4px 12px rgba(106, 163, 255, 0.2)">+ Nova Unidade</button>
+        ${session.role === "admin" ? `<button class="primary" id="btnAddUnit" style="box-shadow: 0 4px 12px rgba(106, 163, 255, 0.2)">+ Nova Unidade</button>` : ""}
       </div>
 
       <div class="sp"></div>
@@ -4351,7 +4362,11 @@
             </div>
 
             <div class="row" style="gap:10px">
-                <button class="small" id="btnOpenRules" style="border:1px solid var(--accent); color:var(--accent)">⚙️ Configurar Regras</button>
+                ${
+                  session.role === "admin"
+                    ? `<button class="small" id="btnOpenRules" style="border:1px solid var(--accent); color:var(--accent)">⚙️ Configurar Regras</button>`
+                    : `<div class="badge">Regras: Visualizar Apenas</div>`
+                }
                 ${
                   !isClosed
                     ? `<button class="primary" id="btnGenBatch" style="box-shadow:0 4px 12px rgba(106,163,255,0.3)">🔒 Fechar Folha</button>`
@@ -6697,71 +6712,76 @@
       }
       /* ===================== GERENCIAR EQUIPE (ADMINS + PROFS) ===================== */
       function renderTeam() {
-        // 1. Tabela de Usuários do Sistema (Admins/Gestores)
-        const userRows = (DB.users || [])
-          .map(
-            (u) => `
-      <tr>
-        <td><b>${u.name || u.user}</b><div class="muted">Login: ${u.user}</div></td>
-        <td><span class="badge ${u.role === "admin" ? "bGood" : "bWarn"}">${u.role.toUpperCase()}</span></td>
-        <td style="text-align:right">
-          <button class="small danger" onclick="deleteSystemUser('${u.id}')">🗑️</button>
-        </td>
-      </tr>
-    `,
-          )
-          .join("");
+        const isAdmin = session.role === "admin";
 
-        // 2. Tabela de Profissionais (Médicos)
+        // 1. Tabela de Usuários do Sistema (SÓ ADMIN VÊ)
+        let systemUsersSection = "";
+
+        if (isAdmin) {
+          const userRows = (DB.users || [])
+            .map(
+              (u) => `
+              <tr>
+                <td><b>${u.name || u.user}</b><div class="muted">Login: ${u.user}</div></td>
+                <td><span class="badge ${u.role === "admin" ? "bGood" : "bWarn"}">${u.role.toUpperCase()}</span></td>
+                <td style="text-align:right">
+                  <button class="small danger" onclick="deleteSystemUser('${u.id}')">🗑️</button>
+                </td>
+              </tr>`,
+            )
+            .join("");
+
+          systemUsersSection = `
+            <div class="card"><div class="cardin">
+              <div class="row" style="justify-content:space-between; align-items:center">
+                <div>
+                  <h2>Usuários do Sistema</h2>
+                  <div class="muted">Admins e Gestores que acessam o painel administrativo.</div>
+                </div>
+                <button class="primary small" onclick="openAddUserModal()">+ Novo Admin/Gestor</button>
+              </div>
+              <div class="sp"></div>
+              <div class="tableWrap">
+                <table class="table">
+                  <thead><tr><th>Nome/Login</th><th>Perfil</th><th style="text-align:right">Ações</th></tr></thead>
+                  <tbody>${userRows || '<tr><td colspan="3" class="muted">Nenhum usuário.</td></tr>'}</tbody>
+                </table>
+              </div>
+            </div></div>
+            <div class="sp"></div>`;
+        }
+
+        // 2. Tabela de Profissionais (TODOS VEEM)
         const profRows = (DB.profs || [])
           .map(
             (p) => `
-      <tr>
-        <td><b>${p.name}</b><div class="muted">${p.spec || "—"}</div></td>
-        <td><div>${p.wpp}</div><div class="muted" style="font-size:11px">${p.email || ""}</div></td>
-        <td style="text-align:right">
-          <button class="small" onclick="editProf('${p.id}')">✏️</button>
-          <button class="small danger" onclick="deleteProf('${p.id}')">🗑️</button>
-        </td>
-      </tr>
-    `,
+          <tr>
+            <td><b>${p.name}</b><div class="muted">${p.spec || "—"}</div></td>
+            <td><div>${p.wpp}</div><div class="muted" style="font-size:11px">${p.email || ""}</div></td>
+            <td style="text-align:right">
+              <button class="small" onclick="editProf('${p.id}')">✏️</button>
+              ${isAdmin ? `<button class="small danger" onclick="deleteProf('${p.id}')">🗑️</button>` : ""} 
+            </td>
+          </tr>`,
           )
           .join("");
+        // Note acima: Só admin vê o botão de EXCLUIR médico. Gestor só edita.
 
         return `
-    <div class="card"><div class="cardin">
-      <div class="row" style="justify-content:space-between; align-items:center">
-        <div>
-          <h2>Usuários do Sistema</h2>
-          <div class="muted">Admins e Gestores que acessam o painel administrativo.</div>
-        </div>
-        <button class="primary small" onclick="openAddUserModal()">+ Novo Admin/Gestor</button>
-      </div>
-      <div class="sp"></div>
-      <div class="tableWrap">
-        <table class="table">
-          <thead><tr><th>Nome/Login</th><th>Perfil</th><th style="text-align:right">Ações</th></tr></thead>
-          <tbody>${userRows || '<tr><td colspan="3" class="muted">Nenhum usuário.</td></tr>'}</tbody>
-        </table>
-      </div>
-    </div></div>
-
-    <div class="sp"></div>
-
-    <div class="card"><div class="cardin">
-      <h2>Profissionais de Saúde</h2>
-      <div class="muted">Médicos e equipe técnica (via Aprovação ou Cadastro Manual).</div>
-      <div class="sp"></div>
-      <div class="tableWrap">
-        <table class="table">
-          <thead><tr><th>Profissional</th><th>Contato (Login)</th><th style="text-align:right">Ações</th></tr></thead>
-          <tbody>${profRows || '<tr><td colspan="3" class="muted">Nenhum profissional.</td></tr>'}</tbody>
-        </table>
-      </div>
-    </div></div>
-    
-    <div id="teamModalAnchor"></div>
-  `;
+        ${systemUsersSection}
+        <div class="card"><div class="cardin">
+          <h2>Profissionais de Saúde</h2>
+          <div class="muted">Médicos e equipe técnica (via Aprovação ou Cadastro Manual).</div>
+          <div class="sp"></div>
+          <div class="tableWrap">
+            <table class="table">
+              <thead><tr><th>Profissional</th><th>Contato (Login)</th><th style="text-align:right">Ações</th></tr></thead>
+              <tbody>${profRows || '<tr><td colspan="3" class="muted">Nenhum profissional.</td></tr>'}</tbody>
+            </table>
+          </div>
+        </div></div>
+        <div id="teamModalAnchor"></div>
+      `;
       }
 
       /* --- LÓGICA DE USUÁRIOS DO SISTEMA --- */
