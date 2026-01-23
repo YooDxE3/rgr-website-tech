@@ -6222,7 +6222,6 @@
       function bindSchedule() {
         // --- 1. FUNÇÃO PARA OUVIR O BANCO ---
         function loadLiveShifts() {
-          // Se já tem uma conexão aberta, fecha ela antes de abrir outra
           if (_unsubscribeShifts) {
             _unsubscribeShifts();
             _unsubscribeShifts = null;
@@ -6232,15 +6231,12 @@
           const unitId = $("fUnit") ? $("fUnit").value : "";
           const role = session.role;
 
-          // Prepara a Query
           let query = db.collection("shifts").where("month", "==", month);
 
-          // Se for Admin/Gestor e filtrou unidade, refina a busca
           if (role !== "prof" && unitId) {
             query = query.where("unitId", "==", unitId);
           }
 
-          // Se for Profissional e modo "Meus Plantões", filtra pelo ID dele
           if (role === "prof" && profScheduleMode === "mine") {
             query = query.where("profId", "==", session.profId);
           }
@@ -6249,30 +6245,25 @@
             `📡 Buscando escala: Mês ${month} | Unidade ${unitId || "Todas"}`,
           );
 
-          // --- LIGA O OUVINTE (COM A NOVA SEGURANÇA) ---
           _unsubscribeShifts = query.onSnapshot((snap) => {
             let list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
 
             // --- SEGURANÇA: FILTRO DE GESTOR ---
-            // Se for Gestor, remove da memória o que ele não pode ver
             if (window.currentUser && window.currentUser.role === "gestor") {
               const allowed = window.currentUser.allowedUnits || [];
               list = list.filter((s) => allowed.includes(s.unitId));
             }
             // -----------------------------------
 
-            // Atualiza cache e redesenha
             DB.shifts = list;
 
-            // Só redesenha se a aba de escala estiver visível
             if (
               document.getElementById("viewInternal").style.display !== "none"
             ) {
-              // Renderiza a tela (mantém tabela ou calendário)
               renderInternalBody("schedule");
 
-              // Restaura o foco se estava digitando busca
+              // Restaura foco da busca se necessário
               if (window.tempSpecOther && $("fSpecOther")) {
                 $("fSpecOther").value = window.tempSpecOther;
                 $("fSpecOther").focus();
@@ -6282,8 +6273,6 @@
         }
 
         // --- 2. VINCULA EVENTOS DE FILTRO ---
-
-        // Troca de visualização (Tabela/Calendário)
         const btnTable = $("btnViewTable");
         const btnCal = $("btnViewCal");
         if (btnTable)
@@ -6297,46 +6286,41 @@
             renderInternalBody("schedule");
           };
 
-        // Filtros (Mês, Unidade, Especialidade)
         const fMonth = $("fMonth");
         const fUnit = $("fUnit");
         const fSpec = $("fSpec");
 
-        if (fMonth)
-          fMonth.onchange = () => {
-            loadLiveShifts();
-          }; // Mudou mês -> Busca nova no banco
+        if (fMonth) fMonth.onchange = () => loadLiveShifts();
         if (fUnit)
           fUnit.onchange = (e) => {
             window.tempUnitFilter = e.target.value;
-            loadLiveShifts(); // Mudou unidade -> Busca nova no banco
+            loadLiveShifts();
           };
         if (fSpec)
           fSpec.onchange = (e) => {
             window.tempSpecFilter = e.target.value;
             if (e.target.value !== "Outro") window.tempSpecOther = "";
-            renderInternalBody("schedule"); // Filtro de especialidade é visual (local), não precisa ir no banco de novo
+            renderInternalBody("schedule");
           };
 
-        // Profissional: Modos de Visualização
+        // --- 3. LÓGICA ESPECÍFICA POR PERFIL ---
         if (session.role === "prof") {
           const bMine = $("btnModeMine");
           const bFull = $("btnModeFull");
           if (bMine)
             bMine.onclick = () => {
               profScheduleMode = "mine";
-              loadLiveShifts(); // Recarrega do banco filtrando só os meus
+              loadLiveShifts();
             };
           if (bFull)
             bFull.onclick = () => {
               profScheduleMode = "publishedFull";
-              loadLiveShifts(); // Recarrega trazendo todos (publicados)
+              loadLiveShifts();
             };
-
-          // Injeta turnos de colegas (se necessário)
           injectColleagueShiftsIntoCalendar();
         } else {
-          // Admin: Botões de Ação
+          // === ADMIN / GESTOR ===
+
           const btnGen = $("btnGen");
           const btnPub = $("btnPub");
 
@@ -6360,7 +6344,35 @@
               publishMonth(m, u, s);
             };
 
-          // Criação Manual de Plantão
+          // --- CORREÇÃO AQUI: LÓGICA DO CARD "ADICIONAR PLANTÃO" ---
+          const sSpec = $("sSpec");
+          const sProf = $("sProf");
+
+          // Função que preenche o dropdown de médicos com base na especialidade
+          const fillShiftProfs = () => {
+            if (!sSpec || !sProf) return;
+            const val = sSpec.value;
+
+            // Filtra: Aprovado E da mesma especialidade
+            const list = DB.profs.filter((p) => p.approved && p.spec === val);
+
+            if (list.length === 0) {
+              sProf.innerHTML =
+                '<option value="">Sem médicos nesta área</option>';
+            } else {
+              sProf.innerHTML = list
+                .map((p) => `<option value="${p.id}">${p.name}</option>`)
+                .join("");
+            }
+          };
+
+          if (sSpec) {
+            sSpec.onchange = fillShiftProfs; // Atualiza ao trocar especialidade
+            fillShiftProfs(); // Atualiza agora (no carregamento da tela)
+          }
+          // ---------------------------------------------------------
+
+          // Botão Criar Plantão (Manual)
           const btnCreate = $("btnShiftCreate");
           if (btnCreate)
             btnCreate.onclick = async () => {
@@ -6379,19 +6391,19 @@
               btn.innerText = "Verificando...";
 
               try {
-                // 1. CHECAGEM DE CONFLITO
+                // Checa conflito
                 const isBusy = await checkConflict(profId, date, start);
 
                 if (isBusy) {
                   alert(
-                    "🚫 CONFLITO DETECTADO:\n\nEste profissional já está escalado em outra unidade nesta data/horário.\nO sistema prioriza a escala existente.",
+                    "🚫 CONFLITO: Este profissional já tem plantão neste dia/horário em outra unidade.",
                   );
                   btn.disabled = false;
                   btn.innerText = originalText;
                   return;
                 }
 
-                // 2. SALVA SE ESTIVER LIVRE
+                // Salva
                 await db.collection("shifts").add({
                   unitId: unit,
                   spec,
@@ -6417,8 +6429,7 @@
             };
         }
 
-        // --- 3. INICIALIZAÇÃO ---
-        // Se for a primeira vez rodando nesta tela, carrega os dados
+        // --- 4. INICIALIZAÇÃO ---
         if (!_unsubscribeShifts) {
           loadLiveShifts();
         }
