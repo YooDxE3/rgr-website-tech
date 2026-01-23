@@ -3219,8 +3219,8 @@
             ? [
                 { k: "schedule", t: "tabSchedule" },
                 { k: "offers", t: "tabOffers" },
-                { k: "passport", t: "tabPassport" },
-              ] // Adicionei Passport para médicos verem perfil
+                //{ k: "passport", t: "tabPassport" },
+              ]
             : [
                 { k: "schedule", t: "tabSchedule" },
                 { k: "units", t: "tabUnits" },
@@ -3333,11 +3333,11 @@
           bindTwin();
           return;
         }
-        if (key === "passport") {
+        /* if (key === "passport") {
           body.innerHTML = renderPassport();
           bindPassport();
           return;
-        }
+        } */
         if (key === "cad") {
           body.innerHTML = renderCad();
           bindCad();
