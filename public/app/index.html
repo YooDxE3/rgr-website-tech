@@ -7251,41 +7251,116 @@
           },
         };
       }
+      /* ========= DIAGNÓSTICO & LOGS (MIGRADO) ========= */
       function renderDiag() {
         return `
-  <div class="card"><div class="cardin">
-    <h2>${t("diagTitle")}</h2>
-    <div class="muted">Pacote para validação no ChatGPT.</div>
-    <div class="sp"></div>
-    <div class="row">
-      <button class="primary" id="btnDiagRun">${t("diagRun")}</button>
-      <button id="btnDiagCopy">${t("diagCopy")}</button>
-      <button class="small danger" id="btnResetDemo">Reset demo</button>
-    </div>
-    <div class="sp"></div>
-    <div class="card" style="background:rgba(255,255,255,.02)"><div class="cardin">
-      <div class="muted" id="diagOut">—</div>
-    </div></div>
-  </div></div>`;
+          <div class="card"><div class="cardin">
+            <div class="row" style="justify-content:space-between">
+                <h2>🔎 Auditoria & Logs do Sistema</h2>
+                <button class="small" id="btnRefreshLogs">🔄 Atualizar</button>
+            </div>
+            <div class="muted">Rastreamento de ações críticas em tempo real.</div>
+            
+            <div class="sp"></div>
+            
+            <div class="tableWrap" style="max-height:400px; overflow-y:auto; border:1px solid var(--line); border-radius:12px">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Usuário</th>
+                            <th>Ação</th>
+                            <th>Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsBody">
+                        <tr><td colspan="4" class="muted" style="text-align:center; padding:20px">Carregando logs da nuvem...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="sp"></div>
+            <div class="divider"></div>
+            
+            <h3>Ferramentas de Suporte</h3>
+            <div class="row">
+              <button id="btnDiagCopy">Copiar Estado para Suporte</button>
+              <button class="small danger" id="btnResetDemo">Resetar Dados Locais</button>
+            </div>
+          </div></div>`;
       }
+
       function bindDiag() {
-        $("btnDiagRun").onclick = () => {
-          $("diagOut").innerHTML =
-            `<pre style="white-space:pre-wrap;margin:0">${JSON.stringify(buildDiagPack(), null, 2)}</pre>`;
+        // Função para buscar os últimos 20 logs do servidor
+        const fetchLogs = async () => {
+          const tbody = document.getElementById("logsBody");
+          if (!tbody) return;
+
+          try {
+            // Busca os últimos 30 registros ordenados por data
+            const snap = await db
+              .collection("audit")
+              .orderBy("ts", "desc")
+              .limit(30)
+              .get();
+
+            if (snap.empty) {
+              tbody.innerHTML =
+                '<tr><td colspan="4" class="muted" style="text-align:center">Nenhum registro encontrado.</td></tr>';
+              return;
+            }
+
+            tbody.innerHTML = snap.docs
+              .map((doc) => {
+                const d = doc.data();
+                const date = new Date(d.ts).toLocaleString();
+                // Formata o detalhe para não ficar um JSON feio
+                let det = JSON.stringify(d.detail);
+                if (det.length > 50) det = det.substring(0, 50) + "...";
+
+                return `
+                        <tr style="font-size:11px">
+                            <td style="white-space:nowrap">${date}</td>
+                            <td><b>${d.user}</b></td>
+                            <td><span class="badge">${d.action}</span></td>
+                            <td class="muted" title="${JSON.stringify(d.detail)}">${det}</td>
+                        </tr>
+                    `;
+              })
+              .join("");
+          } catch (e) {
+            console.error(e);
+            tbody.innerHTML =
+              '<tr><td colspan="4" style="color:var(--bad)">Erro ao carregar logs (verifique permissões).</td></tr>';
+          }
         };
+
+        // Botão Atualizar
+        const btnRef = document.getElementById("btnRefreshLogs");
+        if (btnRef) btnRef.onclick = fetchLogs;
+
+        // Carrega logs ao abrir
+        fetchLogs();
+
+        // --- MANTÉM AS FERRAMENTAS ANTIGAS ---
         $("btnDiagCopy").onclick = async () => {
-          await navigator.clipboard.writeText(
-            JSON.stringify(buildDiagPack(), null, 2),
-          );
-          toast("OK");
+          const pack = {
+            app: "viaRGR",
+            session: session,
+            counts: {
+              units: DB.units.length,
+              shifts: DB.shifts.length,
+            },
+          };
+          await navigator.clipboard.writeText(JSON.stringify(pack, null, 2));
+          toast("Copiado!");
         };
+
         $("btnResetDemo").onclick = () => {
+          if (!confirm("Isso limpa o cache do navegador. Continuar?")) return;
           localStorage.removeItem(KEY);
           localStorage.removeItem("viargr_session_v19");
-          DB = defaultDB();
-          saveDB();
-          toast("Reset OK");
-          goHome();
+          location.reload();
         };
       }
 
@@ -7958,16 +8033,26 @@
       })();
 
       function audit(action, detail) {
+        if (typeof db === "undefined") return;
+
         try {
-          DB.audit.unshift({
-            ts: nowISO(),
-            user: session ? session.role : "—",
-            action,
-            detail,
-          });
-          DB.audit = DB.audit.slice(0, 500);
-          saveDB();
-        } catch (e) {}
+          const logEntry = {
+            ts: new Date().toISOString(), // Timestamp real
+            user: session
+              ? session.role + ":" + (session.profId || "admin")
+              : "anon",
+            action: action,
+            detail: detail || {},
+            userAgent: navigator.userAgent, // Para saber se foi no celular ou PC
+          };
+
+          // Envia para a coleção 'audit' (sem esperar resposta para não travar a tela)
+          db.collection("audit")
+            .add(logEntry)
+            .catch((err) => console.error("Falha ao auditar:", err));
+        } catch (e) {
+          console.error("Erro interno de auditoria:", e);
+        }
       }
 
       function genAccessCode() {
