@@ -6392,13 +6392,20 @@
 
             DB.shifts = list;
 
-            // Só desenha se a aba ainda estiver visível
+            // --- CORREÇÃO DO BUG DO PULO DE TELA ---
+            // Verifica se o painel está aberto E se a aba ativa é realmente a "schedule"
+            const activeTab = document.querySelector(".tab.active");
+            const isScheduleTab =
+              activeTab && activeTab.dataset.key === "schedule";
+
             if (
-              document.getElementById("viewInternal").style.display !== "none"
+              document.getElementById("viewInternal").style.display !==
+                "none" &&
+              isScheduleTab
             ) {
               renderInternalBody("schedule");
 
-              // SEGREDO 2: Restaura o foco se estava digitando busca
+              // Restaura o foco se estava digitando busca
               if (window.tempSpecOther && $("fSpecOther")) {
                 $("fSpecOther").value = window.tempSpecOther;
                 $("fSpecOther").focus();
