@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-01-23T12:23:53.195445",
+  "generated_at": "2026-01-23T20:02:20.143086",
   "posts": [
     {
-      "id": "rgr-01-pt",
+      "id": "saude_rgr_001-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Faça Pausas Breves, Movimente-se!",
-      "excerpt": "Levante-se a cada hora para alongar ou caminhar um pouco. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade.",
-      "content": "<p>Levante-se a cada hora para alongar ou caminhar um pouco. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade.</p>",
+      "title": "Mexa-se: Pausas Ativas para Melhorar o Dia",
+      "excerpt": "Faça pequenas pausas para levantar e alongar. Isso alivia a tensão muscular, melhora a circulação e aumenta sua energia e produtividade. Cuide do seu corpo.",
+      "content": "<p>Faça pequenas pausas para levantar e alongar. Isso alivia a tensão muscular, melhora a circulação e aumenta sua energia e produtividade. Cuide do seu corpo.</p>",
       "tags": [
-        "pausas",
         "movimento",
-        "produtividade"
+        "pausa",
+        "ergonomia"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-01-en",
+      "id": "saude_rgr_001-en",
       "category": "saude",
       "lang": "en",
-      "title": "Take Short Breaks, Move!",
-      "excerpt": "Stand up every hour to stretch or walk briefly. This relieves muscle tension, improves circulation, and boosts productivity and focus.",
-      "content": "<p>Stand up every hour to stretch or walk briefly. This relieves muscle tension, improves circulation, and boosts productivity and focus.</p>",
+      "title": "Move More: Active Breaks Boost Focus",
+      "excerpt": "Take short breaks to stand and stretch. This relieves muscle tension, improves circulation, and boosts your energy and productivity. Prioritize your body's well-being.",
+      "content": "<p>Take short breaks to stand and stretch. This relieves muscle tension, improves circulation, and boosts your energy and productivity. Prioritize your body's well-being.</p>",
       "tags": [
-        "pausas",
         "movimento",
-        "produtividade"
+        "pausa",
+        "ergonomia"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-01-es",
+      "id": "saude_rgr_001-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Haz Pausas Breves, Muévete!",
-      "excerpt": "Ponte de pie cada hora para estirar o caminar un poco. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad y el enfoque.",
-      "content": "<p>Ponte de pie cada hora para estirar o caminar un poco. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad y el enfoque.</p>",
+      "title": "Muévete Más: Pausas Activas Energizan",
+      "excerpt": "Haz pequeñas pausas para levantarte y estirar. Alivia la tensión muscular, mejora la circulación y aumenta tu energía y productividad. Cuida tu bienestar físico.",
+      "content": "<p>Haz pequeñas pausas para levantarte y estirar. Alivia la tensión muscular, mejora la circulación y aumenta tu energía y productividad. Cuida tu bienestar físico.</p>",
       "tags": [
-        "pausas",
         "movimento",
-        "produtividade"
+        "pausa",
+        "ergonomia"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-02-pt",
+      "id": "saude_rgr_002-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se Bem: Água é Vital!",
-      "excerpt": "Mantenha-se hidratado ao longo do dia. A água melhora a concentração, combate a fadiga e otimiza sua energia. Tenha sempre uma garrafa por perto.",
-      "content": "<p>Mantenha-se hidratado ao longo do dia. A água melhora a concentração, combate a fadiga e otimiza sua energia. Tenha sempre uma garrafa por perto.</p>",
+      "title": "Hidrate-se: Energia e Foco Garantidos",
+      "excerpt": "Mantenha uma garrafa de água sempre por perto. A hidratação adequada é fundamental para manter o cérebro ativo, melhorar a concentração e combater a fadiga ao longo do dia. Beba água!",
+      "content": "<p>Mantenha uma garrafa de água sempre por perto. A hidratação adequada é fundamental para manter o cérebro ativo, melhorar a concentração e combater a fadiga ao longo do dia. Beba água!</p>",
       "tags": [
         "hidratação",
-        "foco",
-        "energia"
+        "água",
+        "saúde"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-02-en",
+      "id": "saude_rgr_002-en",
       "category": "saude",
       "lang": "en",
-      "title": "Stay Hydrated: Water is Vital!",
-      "excerpt": "Stay hydrated throughout the day. Water improves concentration, fights fatigue, and optimizes your energy levels. Keep a bottle nearby.",
-      "content": "<p>Stay hydrated throughout the day. Water improves concentration, fights fatigue, and optimizes your energy levels. Keep a bottle nearby.</p>",
+      "title": "Hydrate Well: Boost Energy and Focus",
+      "excerpt": "Keep a water bottle close at hand. Proper hydration is essential for keeping your brain active, improving concentration, and fighting fatigue throughout the day. Drink water!",
+      "content": "<p>Keep a water bottle close at hand. Proper hydration is essential for keeping your brain active, improving concentration, and fighting fatigue throughout the day. Drink water!</p>",
       "tags": [
         "hidratação",
-        "foco",
-        "energia"
+        "água",
+        "saúde"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-02-es",
+      "id": "saude_rgr_002-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate Bien: ¡Agua es Vital!",
-      "excerpt": "Mantente hidratado durante todo el día. El agua mejora la concentración, combate la fatiga y optimiza tu energía. Ten siempre una botella cerca.",
-      "content": "<p>Mantente hidratado durante todo el día. El agua mejora la concentración, combate la fatiga y optimiza tu energía. Ten siempre una botella cerca.</p>",
+      "title": "Hidrátate: Más Energía y Concentración",
+      "excerpt": "Ten una botella de agua siempre cerca. La hidratación adecuada es clave para mantener el cerebro activo, mejorar la concentración y combatir la fatiga durante el día. ¡Bebe agua!",
+      "content": "<p>Ten una botella de agua siempre cerca. La hidratación adecuada es clave para mantener el cerebro activo, mejorar la concentración y combatir la fatiga durante el día. ¡Bebe agua!</p>",
       "tags": [
         "hidratação",
-        "foco",
-        "energia"
+        "água",
+        "saúde"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-03-pt",
+      "id": "saude_rgr_003-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Alimentação Consciente: Lanches Saudáveis",
-      "excerpt": "Opte por lanches nutritivos para manter a energia. Frutas, castanhas e iogurte são ótimas opções. Evite açúcares, que causam picos e quedas.",
-      "content": "<p>Opte por lanches nutritivos para manter a energia. Frutas, castanhas e iogurte são ótimas opções. Evite açúcares, que causam picos e quedas.</p>",
+      "title": "Desconecte-se: Revitalize a Mente Rapidamente",
+      "excerpt": "Tire 5 minutos para uma \"mini-pausa mental\". Respire fundo, olhe pela janela ou ouça uma música calma. Isso ajuda a reduzir o estresse e a clarear as ideias para novas tarefas.",
+      "content": "<p>Tire 5 minutos para uma \"mini-pausa mental\". Respire fundo, olhe pela janela ou ouça uma música calma. Isso ajuda a reduzir o estresse e a clarear as ideias para novas tarefas.</p>",
       "tags": [
-        "nutrição",
-        "saudável",
-        "bem-estar"
+        "bem-estar",
+        "mente",
+        "pausa"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-03-en",
+      "id": "saude_rgr_003-en",
       "category": "saude",
       "lang": "en",
-      "title": "Mindful Eating: Healthy Snacks",
-      "excerpt": "Choose nutritious snacks to maintain energy. Fruits, nuts, and yogurt are great options. Avoid sugary treats that cause energy spikes and crashes.",
-      "content": "<p>Choose nutritious snacks to maintain energy. Fruits, nuts, and yogurt are great options. Avoid sugary treats that cause energy spikes and crashes.</p>",
+      "title": "Unplug Briefly: Recharge Your Mind",
+      "excerpt": "Take 5 minutes for a \"mini mental break.\" Breathe deeply, look out a window, or listen to calm music. This helps reduce stress and clear your mind for new tasks. Recharge!",
+      "content": "<p>Take 5 minutes for a \"mini mental break.\" Breathe deeply, look out a window, or listen to calm music. This helps reduce stress and clear your mind for new tasks. Recharge!</p>",
       "tags": [
-        "nutrição",
-        "saudável",
-        "bem-estar"
+        "bem-estar",
+        "mente",
+        "pausa"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-03-es",
+      "id": "saude_rgr_003-es",
       "category": "saude",
       "lang": "es",
-      "title": "Alimentación Consciente: Snacks Saludables",
-      "excerpt": "Opta por snacks nutritivos para mantener la energía. Frutas, frutos secos y yogur son excelentes opciones. Evita azúcares, que causan picos y bajones.",
-      "content": "<p>Opta por snacks nutritivos para mantener la energía. Frutas, frutos secos y yogur son excelentes opciones. Evita azúcares, que causan picos y bajones.</p>",
+      "title": "Desconéctate: Recarga Mental Rápida",
+      "excerpt": "Tómate 5 minutos para una \"mini pausa mental\". Respira profundo, mira por la ventana o escucha música tranquila. Esto ayuda a reducir el estrés y aclarar tu mente para nuevas tareas.",
+      "content": "<p>Tómate 5 minutos para una \"mini pausa mental\". Respira profundo, mira por la ventana o escucha música tranquila. Esto ayuda a reducir el estrés y aclarar tu mente para nuevas tareas.</p>",
       "tags": [
-        "nutrição",
-        "saudável",
-        "bem-estar"
+        "bem-estar",
+        "mente",
+        "pausa"
       ],
-      "published_at": "2026-01-23T12:23:53.195445",
+      "published_at": "2026-01-23T20:02:20.143086",
       "author": "RGR Saúde (IA)"
     }
   ]
