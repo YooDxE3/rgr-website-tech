@@ -8114,127 +8114,230 @@
       }
 
       function bindOffers() {
-        if (session.role !== "prof") {
-          const btn = document.getElementById("btnNewOffer");
-          if (btn) {
-            btn.onclick = () => {
-              const unitId = document.getElementById("ofUnit").value || "";
-              if (!unitId) {
-                toast("Selecione a unidade.");
-                return;
+        // --- LISTENERS (Ouvintes em Tempo Real) ---
+        // Só liga se ainda não estiverem ligados para evitar duplicidade
+        if (!window._offersListenerActive) {
+          window._offersListenerActive = true;
+
+          // A. Escuta VAGAS (Offers)
+          db.collection("offers")
+            .where("status", "==", "open") // Traz apenas as abertas para economizar dados
+            .onSnapshot((snap) => {
+              const list = [];
+              snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+
+              // Atualiza memória e tela se estiver na aba
+              DB.offers = list;
+              if (document.querySelector(".tab.active[data-key='offers']")) {
+                const container = document.querySelector(
+                  "#inBody .table tbody",
+                );
+                if (container)
+                  document.getElementById("inBody").innerHTML = renderOffers();
+                rebindOffersEvents(); // Reconecta botões após redesenhar
               }
-              const monthNow = isoMonth(isoDateAdd(0));
-              const id = "o" + Math.random().toString(16).slice(2, 10);
-              DB.offers.unshift({
-                id,
-                clientId: "c_default",
-                unitId,
-                month: monthNow,
-                date: isoDateAdd(1),
-                start: "07:00",
-                end: "19:00",
-                spec: "Clínica Geral",
-                status: "open",
-                createdAt: nowISO(),
-              });
-              saveDB();
-              audit("offer_created", { id, unitId });
-              toast("Vaga criada.");
-              renderInternalBody("offers");
-            };
-          }
-          return;
+            });
+
+          // B. Escuta DISPONIBILIDADE (Availability)
+          db.collection("availability").onSnapshot((snap) => {
+            const list = [];
+            snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+            DB.availability = list;
+
+            // Se for médico vendo a tela, atualiza a lista de "Minha disponibilidade"
+            if (
+              session.role === "prof" &&
+              document.querySelector(".tab.active[data-key='offers']")
+            ) {
+              renderAvailList();
+            }
+          });
         }
 
-        const profId = session.profId;
-        const avList = document.getElementById("avList");
-        const renderAvail = () => {
-          const list = DB.availability.filter((a) => a.profId === profId);
+        // Função auxiliar para religar eventos manuais (Botões de criar)
+        function rebindOffersEvents() {
+          // ADMIN: Criar Nova Vaga
+          const btnNew = document.getElementById("btnNewOffer");
+          if (btnNew) {
+            btnNew.onclick = async () => {
+              const unitId = document.getElementById("ofUnit").value;
+              if (!unitId) return toast("Selecione a unidade.");
+
+              const btn = btnNew;
+              btn.disabled = true;
+              btn.textContent = "Criando...";
+
+              try {
+                // Cria na nuvem
+                await db.collection("offers").add({
+                  clientId: "c_default",
+                  unitId,
+                  month: isoMonth(isoDateAdd(1)), // Mês seguinte ou atual (simplificado)
+                  date: isoDateAdd(1), // Amanhã (padrão)
+                  start: "07:00",
+                  end: "19:00",
+                  spec: "Clínica Geral",
+                  status: "open",
+                  createdAt: new Date().toISOString(),
+                });
+                toast("✅ Vaga publicada!");
+                // Listener atualiza a tela
+              } catch (e) {
+                toast("Erro ao criar.");
+              } finally {
+                btn.disabled = false;
+                btn.textContent = "Criar vaga";
+              }
+            };
+          }
+
+          // PROFISSIONAL: Salvar Disponibilidade
+          const btnAvail = document.getElementById("btnSaveAvail");
+          if (btnAvail) {
+            btnAvail.onclick = async () => {
+              const unitId = document.getElementById("avUnit").value;
+              const day = parseInt(document.getElementById("avDay").value);
+              const start = document.getElementById("avStart").value;
+              const end = document.getElementById("avEnd").value;
+
+              if (!unitId) return toast("Selecione a unidade.");
+
+              toast("Salvando...");
+
+              try {
+                // Verifica se já existe regra igual para atualizar (Upsert)
+                // Como o Firestore não tem "chave composta", vamos procurar antes
+                const profId = session.profId;
+                const snap = await db
+                  .collection("availability")
+                  .where("profId", "==", profId)
+                  .where("unitId", "==", unitId)
+                  .where("dayOfWeek", "==", day)
+                  .get();
+
+                if (!snap.empty) {
+                  // Atualiza existente
+                  await snap.docs[0].ref.update({
+                    start,
+                    end,
+                    updatedAt: new Date().toISOString(),
+                  });
+                } else {
+                  // Cria novo
+                  await db.collection("availability").add({
+                    profId,
+                    unitId,
+                    dayOfWeek: day,
+                    start,
+                    end,
+                    updatedAt: new Date().toISOString(),
+                  });
+                }
+                toast("✅ Disponibilidade salva.");
+              } catch (e) {
+                console.error(e);
+                toast("Erro ao salvar.");
+              }
+            };
+          }
+        }
+
+        // Função auxiliar para renderizar a listinha de disponibilidade (local)
+        function renderAvailList() {
+          const avList = document.getElementById("avList");
+          if (!avList) return;
+
+          const list = DB.availability.filter(
+            (a) => a.profId === session.profId,
+          );
+          const days = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
           avList.innerHTML = list.length
             ? list
                 .map((a) => {
                   const u = DB.units.find((x) => x.id === a.unitId);
-                  return `• ${u ? u.name : "—"} • dia ${a.dayOfWeek} • ${a.start}→${a.end}`;
+                  return `<div><small>🗓️ ${days[a.dayOfWeek] || "Dia " + a.dayOfWeek} • ${a.start}-${a.end} • <b>${u ? u.name : "Unidade removida"}</b></small></div>`;
                 })
-                .join("<br>")
+                .join("")
             : "Nenhuma disponibilidade registrada.";
-        };
-        renderAvail();
-
-        const btn = document.getElementById("btnSaveAvail");
-        if (btn) {
-          btn.onclick = () => {
-            const unitId = document.getElementById("avUnit").value || "";
-            if (!unitId) {
-              toast("Selecione a unidade.");
-              return;
-            }
-            const day = parseInt(document.getElementById("avDay").value, 10);
-            const start = (
-              document.getElementById("avStart").value || ""
-            ).trim();
-            const end = (document.getElementById("avEnd").value || "").trim();
-            const idx = DB.availability.findIndex(
-              (a) =>
-                a.profId === profId &&
-                a.unitId === unitId &&
-                a.dayOfWeek === day,
-            );
-            const obj = {
-              profId,
-              unitId,
-              dayOfWeek: day,
-              start,
-              end,
-              updatedAt: nowISO(),
-            };
-            if (idx >= 0) DB.availability[idx] = obj;
-            else DB.availability.push(obj);
-            saveDB();
-            audit("availability_saved", obj);
-            toast("Disponibilidade salva.");
-            renderAvail();
-          };
         }
+
+        // Inicialização
+        rebindOffersEvents();
+        if (session.role === "prof") renderAvailList();
       }
 
-      window.applyOffer = (offerId) => {
+      window.applyOffer = async (offerId) => {
         const o = DB.offers.find((x) => x.id === offerId);
-        if (!o) return;
-        if (session.role !== "prof") {
-          return;
-        }
-        const profId = session.profId;
+        if (!o) return toast("Vaga não encontrada.");
 
-        // create shift for that doctor (auto-assign for pilot)
-        const shiftId = "s" + Math.random().toString(16).slice(2, 10);
-        DB.shifts.push({
-          id: shiftId,
-          month: o.month,
-          date: o.date,
-          unitId: o.unitId,
-          profId,
-          spec: o.spec || "Clínica Geral",
-          start: o.start,
-          end: o.end,
-          status: "published",
-          createdAt: nowISO(),
-        });
-        o.status = "filled";
-        saveDB();
-        audit("offer_filled", { offerId, shiftId, profId });
-        toast("Vaga selecionada. Já entrou na sua escala.");
-        renderInternalBody("schedule");
+        if (session.role !== "prof")
+          return toast("Apenas profissionais podem aceitar vagas.");
+
+        const profId = session.profId;
+        const btn = event.target; // Pega o botão clicado para feedback visual
+        const originalText = btn.textContent;
+
+        if (
+          !confirm(
+            "Confirmar interesse nesta vaga? Ela entrará na sua escala imediatamente.",
+          )
+        )
+          return;
+
+        try {
+          btn.disabled = true;
+          btn.textContent = "Processando...";
+
+          const batch = db.batch();
+
+          // A. Atualiza status da vaga para 'preenchida'
+          const offerRef = db.collection("offers").doc(offerId);
+          batch.update(offerRef, {
+            status: "filled",
+            filledBy: profId,
+            filledAt: new Date().toISOString(),
+          });
+
+          // B. Cria o plantão na escala (shifts)
+          const shiftRef = db.collection("shifts").doc();
+          batch.set(shiftRef, {
+            month: o.month,
+            date: o.date,
+            unitId: o.unitId,
+            profId: profId,
+            spec: o.spec || "Clínica Geral",
+            start: o.start,
+            end: o.end,
+            tpl: "CUSTOM_OFFER",
+            published: true, // Já nasce publicado pois foi "match"
+            swapped: false,
+            createdAt: new Date().toISOString(),
+          });
+
+          await batch.commit();
+          toast("✅ Vaga aceita! Plantão adicionado à sua escala.");
+          // O listener vai atualizar a tela sozinho
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao aceitar vaga: " + e.message);
+          btn.disabled = false;
+          btn.textContent = originalText;
+        }
       };
 
-      window.closeOffer = (offerId) => {
-        const o = DB.offers.find((x) => x.id === offerId);
-        if (!o) return;
-        o.status = "closed";
-        saveDB();
-        audit("offer_closed", { offerId });
-        toast("Vaga fechada.");
-        renderInternalBody("offers");
+      window.closeOffer = async (offerId) => {
+        if (!confirm("Deseja fechar/cancelar esta vaga?")) return;
+        try {
+          await db
+            .collection("offers")
+            .doc(offerId)
+            .update({ status: "closed" });
+          toast("🗑️ Vaga fechada.");
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao fechar vaga.");
+        }
       };
 
       /* ===== Face ID / Biometria (WebAuthn) ===== */
