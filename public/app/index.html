@@ -1638,67 +1638,17 @@
           lastExternalId: null,
         };
       }
-      /* ===================== SALVAR NA NUVEM ===================== */
+      /* ===================== SALVAR (APENAS LOCAL/CACHE) ===================== */
       async function saveDB() {
-        setCloudStatus("syncing");
-        // 1. Backup Local
-        localStorage.setItem(KEY, JSON.stringify(DB));
+        // O sistema agora é 100% em tempo real na nuvem.
+        // O saveDB agora serve apenas para persistir preferências locais (como idioma)
+        // no navegador do usuário, sem tocar no banco de dados.
 
-        if (typeof db !== "undefined") {
-          const docRef = db.collection("sistema").doc("v1");
-
-          try {
-            // A. Baixa a versão mais recente da nuvem antes de salvar
-            const doc = await docRef.get();
-            const cloudData = doc.exists ? doc.data() : {};
-
-            // B. Função para misturar listas (Local + Nuvem) sem duplicar
-            const merge = (localArr, cloudArr) => {
-              const map = new Map();
-              // 1º Coloca os itens da nuvem (preserva o que o outro device fez)
-              (cloudArr || []).forEach((item) => map.set(item.id, item));
-              // 2º Atualiza com os itens locais (se você editou algo, sua versão ganha)
-              (localArr || []).forEach((item) => map.set(item.id, item));
-              return Array.from(map.values());
-            };
-
-            // C. Prepara o pacote de dados misturado
-            // (Nota: Estou garantindo que 'shifts' e 'schedule' sejam tratados corretamente)
-            const finalData = {
-              profs: merge(DB.profs, cloudData.profs),
-              units: merge(DB.units, cloudData.units),
-              schedule: merge(
-                DB.shifts || DB.schedule,
-                cloudData.schedule || cloudData.shifts,
-              ),
-              users: merge(DB.users, cloudData.users),
-              cadastros: merge(DB.cadastros, cloudData.cadastros),
-              accounts: merge(DB.accounts, cloudData.accounts),
-              offers: merge(DB.offers, cloudData.offers),
-              availability: merge(DB.availability, cloudData.availability),
-              payRules: DB.payRules || cloudData.payRules || {},
-              market: DB.market || cloudData.market || {},
-              audit: merge(DB.audit, cloudData.audit),
-              meta: { lastUpdate: new Date().toISOString() },
-            };
-
-            // D. Salva a versão misturada na nuvem
-            await docRef.set(finalData);
-
-            // E. Atualiza o seu visual local com o resultado da mistura
-            // (Assim, se o celular tinha criado algo, aparece no PC agora)
-            DB.profs = finalData.profs;
-            DB.units = finalData.units;
-            DB.shifts = finalData.schedule;
-            DB.cadastros = finalData.cadastros;
-            // ... atualiza o resto conforme necessário
-
-            setCloudStatus("success"); // <--- 2. FICOU VERDE
-            console.log("☁️ Fusão e Upload OK!");
-          } catch (e) {
-            console.error(e);
-            setCloudStatus("error"); // <--- 3. FICOU VERMELHO SE DER RUIM
-          }
+        try {
+          localStorage.setItem(KEY, JSON.stringify(DB));
+          // Não chamamos mais o setCloudStatus("syncing") pois não há sync de arquivo
+        } catch (e) {
+          console.warn("Falha ao salvar cache local", e);
         }
       }
       let DB = loadDB();
@@ -8173,21 +8123,34 @@
         }
       };
 
-      window.reject = (cid) => {
+      // --- REPROVAR CADASTRO (MIGRADO PARA FIREBASE) ---
+      window.reject = async (cid) => {
         const c = DB.cadastros.find((x) => x.id === cid);
         if (!c) return;
+
         const reason =
           prompt(
             "Motivo da reprovação (ex.: foto ilegível, documento vencido):",
             "",
           ) || "";
-        c.status = "rejected";
-        c.rejectionReason = reason.trim();
-        c.rejectedAt = nowISO();
-        saveDB();
-        audit("cad_rejected", { cid, reason: c.rejectionReason });
-        toast("Reprovado.");
-        renderInternalBody("cad");
+        if (!reason.trim()) return toast("Motivo obrigatório.");
+
+        try {
+          await db.collection("cadastros").doc(cid).update({
+            status: "rejected",
+            rejectionReason: reason.trim(),
+            rejectedAt: new Date().toISOString(),
+          });
+
+          // Grava auditoria (já migrada)
+          audit("cad_rejected", { cid, reason: reason.trim() });
+
+          toast("⛔ Cadastro Reprovado.");
+          // O listener do bindCad vai atualizar a tela sozinho
+        } catch (e) {
+          console.error(e);
+          toast("Erro ao reprovar.");
+        }
       };
 
       // Professional login: require code if account exists and mustChangePwd handled
