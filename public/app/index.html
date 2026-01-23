@@ -4338,98 +4338,175 @@
     <div id="receiptModalOverlay" class="modalOverlay" style="display:none; z-index:999"></div>
     `;
       }
+      /* ========= PAYMENTS (MIGRADO PARA FIREBASE) ========= */
       function bindPay() {
-        // --- 1. HELPERS ---
-        function parseHM(hm) {
-          const [h, m] = String(hm || "0:0")
-            .split(":")
-            .map((x) => parseInt(x, 10) || 0);
-          return h + m / 60;
-        }
-        function hoursBetween(start, end) {
-          let s = parseHM(start),
-            e = parseHM(end);
-          if (e <= s) e += 24;
-          return e - s;
-        }
-        function isWeekend(dateStr) {
-          const d = new Date(dateStr + "T00:00:00");
-          const g = d.getDay();
-          return g === 0 || g === 6;
-        }
+        // --- 1. OUVINTE DE DADOS (Payroll) ---
+        // Escuta os fechamentos de folha em tempo real
+        if (!window._payListener) {
+          window._payListener = true; // Evita duplicar listener
+          db.collection("payroll")
+            .orderBy("closedAt", "desc")
+            .onSnapshot((snap) => {
+              const list = [];
+              snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+              DB.payBatches = list; // Atualiza memória
 
-        // --- 2. LISTENERS DE FILTRO ---
-        const mInput = $("payMonth");
-        const uInput = $("payUnit");
-
-        if (mInput)
-          mInput.onchange = () => {
-            window.payFilterMonth = mInput.value;
-            renderInternalBody("pay");
-          };
-        if (uInput)
-          uInput.onchange = () => {
-            window.payFilterUnit = uInput.value;
-            renderInternalBody("pay");
-          };
-
-        // --- 3. CONTROLE DO MODAL DE REGRAS ---
-        const btnRules = $("btnOpenRules");
-        if (btnRules) {
-          btnRules.onclick = () => {
-            $("rulesModal").style.display = "flex";
-          };
+              // Se a tela estiver aberta, redesenha
+              if (document.querySelector(".tab.active[data-key='pay']")) {
+                // Salva posição do scroll ou estado se necessário
+                // Por simplicidade, redesenha o corpo:
+                const container = document.getElementById("inBody");
+                if (container) container.innerHTML = renderPay();
+                rebindPayEvents(); // Reconecta os botões
+              }
+            });
         }
 
-        const btnSaveRules = $("btnSaveRules");
-        if (btnSaveRules) {
-          btnSaveRules.onclick = () => {
-            $("rulesModal").style.display = "none";
-            renderInternalBody("pay"); // Recalcula ao fechar
-            toast("Regras aplicadas.");
-          };
+        // Função para reconectar eventos após redesenhar a tela
+        function rebindPayEvents() {
+          // Filtros
+          const mInput = $("payMonth");
+          const uInput = $("payUnit");
+          if (mInput)
+            mInput.onchange = () => {
+              window.payFilterMonth = mInput.value;
+              renderInternalBody("pay");
+            };
+          if (uInput)
+            uInput.onchange = () => {
+              window.payFilterUnit = uInput.value;
+              renderInternalBody("pay");
+            };
+
+          // Botão Regras
+          const btnRules = $("btnOpenRules");
+          if (btnRules)
+            btnRules.onclick = () => ($("rulesModal").style.display = "flex");
+
+          // Botão Salvar Regras (Ainda salva no v1, pois são globais)
+          const btnSaveRules = $("btnSaveRules");
+          if (btnSaveRules)
+            btnSaveRules.onclick = async () => {
+              const newRules = {
+                baseHour: parseFloat($("payRate").value),
+                taxRate: parseFloat($("payTaxRate").value),
+                nightMult: parseFloat($("payMultN").value),
+                weekendMult: parseFloat($("payMultW").value),
+                holidayMult: parseFloat($("payMultF").value),
+                useCheckIO: $("paySource").value === "real",
+              };
+
+              // Atualiza no arquivo de config global (v1)
+              await db
+                .collection("sistema")
+                .doc("v1")
+                .update({ payRules: newRules });
+              $("rulesModal").style.display = "none";
+              toast("Regras atualizadas!");
+            };
+
+          // Botão FECHAR FOLHA (Cria documento na coleção payroll)
+          const btnGen = $("btnGenBatch");
+          if (btnGen)
+            btnGen.onclick = async () => {
+              if (
+                !confirm(
+                  "Deseja fechar a folha e gerar os pagamentos? Isso congela os valores.",
+                )
+              )
+                return;
+
+              btnGen.disabled = true;
+              btnGen.textContent = "Processando...";
+
+              try {
+                const data = calculateCurrentData(); // Calcula com base na tela atual
+                const totalV = data.reduce((a, b) => a + b.value, 0);
+                const totalH = data.reduce((a, b) => a + b.hours, 0);
+
+                await db.collection("payroll").add({
+                  month: window.payFilterMonth || isoMonth(nowISO()),
+                  unitId: window.payFilterUnit || "",
+                  closedAt: new Date().toISOString(),
+                  closedBy: session.role, // Auditoria
+                  totalValue: totalV,
+                  totalHours: totalH,
+                  items: data,
+                  status: "closed",
+                });
+
+                toast("✅ Folha fechada com sucesso!");
+              } catch (e) {
+                console.error(e);
+                toast("Erro ao fechar folha.");
+                btnGen.disabled = false;
+                btnGen.textContent = "🔒 Fechar Folha";
+              }
+            };
         }
 
-        // --- 4. LÓGICA DE CÁLCULO ---
+        // --- 2. LÓGICA DE CÁLCULO (Mantida original, mas desacoplada) ---
         function calculateCurrentData() {
-          // Pega valores dos inputs (mesmo que estejam no modal escondido, eles existem no DOM)
-          const rate = parseFloat($("payRate")?.value || 120);
-          const taxRate = parseFloat($("payTaxRate")?.value || 0);
-          const multN = parseFloat($("payMultN")?.value || 1.2);
-          const multW = parseFloat($("payMultW")?.value || 1.15);
-          const useReal = $("paySource")?.value === "real";
+          // Pega regras do banco ou padrão
+          const r = DB.payRules || {};
+          const rate = r.baseHour || 120;
+          const taxRate = r.taxRate || 0;
+          const multN = r.nightMult || 1.2;
+          const multW = r.weekendMult || 1.15;
+          const useReal = r.useCheckIO;
 
           const month = window.payFilterMonth || isoMonth(nowISO());
           const unit = window.payFilterUnit;
 
+          // Filtra plantões na memória (que já vem do Firestore)
           const rawShifts = DB.shifts.filter(
             (s) =>
               s.month === month && (!unit || s.unitId === unit) && s.profId,
           );
+
           const map = {};
+
+          // Helper de horas
+          const parseHM = (hm) => {
+            const [h, m] = String(hm || "0:0")
+              .split(":")
+              .map(Number);
+            return h + m / 60;
+          };
+          const timeDiff = (s, e) => {
+            let v = parseHM(e) - parseHM(s);
+            if (v < 0) v += 24;
+            return v;
+          };
+          const isWeekend = (dStr) => {
+            const d = new Date(dStr + "T00:00:00");
+            const g = d.getDay();
+            return g === 0 || g === 6;
+          };
 
           rawShifts.forEach((s) => {
             if (!map[s.profId])
               map[s.profId] = { profId: s.profId, hours: 0, value: 0 };
 
-            let h = hoursBetween(s.start, s.end);
+            // Define horas: Planejado vs Real
+            let h = timeDiff(s.start, s.end);
             if (useReal && s.checkInAt && s.checkOutAt) {
-              const rs = s.checkInAt.slice(11, 16);
-              const re = s.checkOutAt.slice(11, 16);
-              h = hoursBetween(rs, re);
+              h = timeDiff(
+                s.checkInAt.slice(11, 16),
+                s.checkOutAt.slice(11, 16),
+              );
             }
 
-            let mult = 1.0;
+            // Calcula Multiplicador
+            let m = 1.0;
             const sH = parseHM(s.start),
               eH = parseHM(s.end);
             const isNight = sH >= 19 || eH <= 7 || eH < sH;
-            const isWk = isWeekend(s.date);
-
-            if (isWk) mult = Math.max(mult, multW);
-            if (isNight) mult = Math.max(mult, multN);
+            if (isWeekend(s.date)) m = Math.max(m, multW);
+            if (isNight) m = Math.max(m, multN);
 
             map[s.profId].hours += h;
-            map[s.profId].value += h * rate * mult;
+            map[s.profId].value += h * rate * m;
           });
 
           return Object.values(map).map((item) => {
@@ -4444,130 +4521,115 @@
           });
         }
 
-        // --- 5. BOTÃO FECHAR FOLHA ---
-        const btnGen = $("btnGenBatch");
-        if (btnGen)
-          btnGen.onclick = () => {
-            if (!confirm("Deseja fechar a folha e gerar os pagamentos?"))
-              return;
-            const data = calculateCurrentData();
-            const totalV = data.reduce((a, b) => a + b.value, 0);
-            const totalH = data.reduce((a, b) => a + b.hours, 0);
+        // --- 3. AÇÕES GLOBAIS (Conectadas ao documento específico) ---
 
-            const batch = {
-              id: uid("batch"),
-              month: window.payFilterMonth || isoMonth(nowISO()),
-              unitId: window.payFilterUnit || "",
-              closedAt: nowISO(),
-              totalValue: totalV,
-              totalHours: totalH,
-              items: data,
-            };
+        // Pagar Individualmente
+        window.approvePay = async (idx) => {
+          const batch = getBatch();
+          if (!batch) return;
 
-            DB.payBatches.push(batch);
-            saveDB();
-            renderInternalBody("pay");
-            toast("✅ Folha fechada com sucesso!");
-          };
+          // Atualiza status do item no array local e manda pro Firestore
+          // Firestore não atualiza item de array fácil, então mandamos o array items todo de volta
+          // (Para produção real, usaríamos subcoleções, mas para demo isso funciona bem)
+          batch.items[idx].status = "PAGO";
 
-        // --- 6. FUNÇÕES GLOBAIS DE TABELA ---
-        window.uploadInvoice = (idx) => {
-          const batch = DB.payBatches.find(
-            (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
-          );
+          try {
+            await db
+              .collection("payroll")
+              .doc(batch.id)
+              .update({ items: batch.items });
+            toast("✅ Pago!");
+          } catch (e) {
+            toast("Erro ao pagar.");
+          }
+        };
+
+        // Desfazer Pagamento
+        window.togglePayStatus = async (idx) => {
+          const batch = getBatch();
+          if (!batch) return;
+          const current = batch.items[idx].status;
+          batch.items[idx].status = current === "PAGO" ? "PENDENTE" : "PAGO";
+
+          try {
+            await db
+              .collection("payroll")
+              .doc(batch.id)
+              .update({ items: batch.items });
+            toast("Status atualizado.");
+          } catch (e) {
+            toast("Erro ao atualizar.");
+          }
+        };
+
+        // Anexar Nota (Simulação)
+        window.uploadInvoice = async (idx) => {
+          const batch = getBatch();
           if (!batch) return;
           toast("Enviando...");
-          setTimeout(() => {
-            batch.items[idx].hasInvoice = true;
-            saveDB();
-            renderInternalBody("pay");
-            toast("Nota Fiscal anexada.");
-          }, 600);
+          // Simula upload
+          batch.items[idx].hasInvoice = true;
+          try {
+            await db
+              .collection("payroll")
+              .doc(batch.id)
+              .update({ items: batch.items });
+            toast("📎 Nota Fiscal anexada.");
+          } catch (e) {
+            toast("Erro ao anexar.");
+          }
         };
 
-        window.approvePay = (idx) => {
-          const batch = DB.payBatches.find(
-            (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
-          );
-          if (!batch) return;
-          batch.items[idx].status = "PAGO";
-          saveDB();
-          renderInternalBody("pay");
-          toast("Pago!");
-        };
-
-        window.togglePayStatus = (idx) => {
-          const batch = DB.payBatches.find(
-            (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
-          );
-          if (!batch) return;
-          batch.items[idx].status =
-            batch.items[idx].status === "PAGO" ? "PENDENTE" : "PAGO";
-          saveDB();
-          renderInternalBody("pay");
-        };
-
-        window.deleteBatch = () => {
-          if (!confirm("Reabrir o mês excluirá o fechamento atual. Continuar?"))
+        // Reabrir Mês (Deletar Lote)
+        window.deleteBatch = async () => {
+          if (
+            !confirm(
+              "⚠️ PERIGO: Reabrir excluirá este fechamento e todos os registros de pagamento dele.\n\nDeseja continuar?",
+            )
+          )
             return;
+          const batch = getBatch();
+          if (!batch) return;
+
+          try {
+            await db.collection("payroll").doc(batch.id).delete();
+            toast("🗑️ Mês reaberto para edição.");
+          } catch (e) {
+            toast("Erro ao reabrir.");
+          }
+        };
+
+        // Helper para achar o lote atual na tela
+        function getBatch() {
           const m = window.payFilterMonth || isoMonth(nowISO());
-          DB.payBatches = DB.payBatches.filter((b) => b.month !== m);
-          saveDB();
-          renderInternalBody("pay");
-          toast("Mês reaberto.");
-        };
+          const u = window.payFilterUnit || "";
+          // O DB.payBatches agora vem do Firestore via listener acima
+          return DB.payBatches.find((b) => b.month === m && b.unitId === u);
+        }
 
-        window.viewReceipt = (idx) => {
-          const batch = DB.payBatches.find(
-            (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
-          );
-          if (!batch) return;
-          const item = batch.items[idx];
-          const prof = getProf(item.profId);
-
-          const html = `
-                <div class="modal" style="width:350px; background:#fff; color:#000; padding:20px; font-family:monospace">
-                    <div style="text-align:center; border-bottom:1px dashed #000; margin-bottom:10px">
-                        <b>RECIBO DE PAGAMENTO</b><br>${batch.month}
-                    </div>
-                    <div><b>Prof:</b> ${prof ? prof.name : "-"}</div>
-                    <div style="margin-top:10px">
-                        <div style="display:flex; justify-content:space-between"><span>Bruto:</span><span>R$ ${item.value.toFixed(2)}</span></div>
-                        <div style="display:flex; justify-content:space-between; color:red"><span>Impostos:</span><span>- R$ ${item.taxValue.toFixed(2)}</span></div>
-                        <div style="border-top:1px solid #000; margin-top:5px; padding-top:5px; display:flex; justify-content:space-between; font-weight:bold">
-                            <span>LÍQUIDO:</span><span>R$ ${item.netValue.toFixed(2)}</span>
-                        </div>
-                    </div>
-                    <div style="margin-top:20px; text-align:center"><button onclick="document.getElementById('receiptModalOverlay').style.display='none'">Fechar</button></div>
-                </div>`;
-
-          const ov = document.getElementById("receiptModalOverlay");
-          if (ov) {
-            ov.innerHTML = html;
-            ov.style.display = "flex";
-          }
-        };
-
+        // Helper de Exportação (CSV) - Não precisa de banco, usa dados locais
         window.exportPay = (type) => {
-          const batch = DB.payBatches.find(
-            (b) => b.month === (window.payFilterMonth || isoMonth(nowISO())),
-          );
-          if (!batch) {
-            toast("Feche a folha primeiro.");
-            return;
-          }
-          let csv = "Nome,Horas,Valor,Pix,Status\n";
+          const batch = getBatch();
+          if (!batch) return toast("Nada para exportar.");
+
+          let csv =
+            "Nome,Horas,Valor Bruto,Impostos,Valor Liquido,Pix,Status\n";
           batch.items.forEach((i) => {
-            const p = getProf(i.profId);
-            csv += `${p ? p.name : "?"},${i.hours},${i.netValue},${p ? p.pixKey : ""},${i.status}\n`;
+            const p = DB.profs.find((x) => x.id === i.profId);
+            csv += `${p ? p.name : "?"},${i.hours.toFixed(2)},${i.value.toFixed(2)},${i.taxValue.toFixed(2)},${i.netValue.toFixed(2)},${p ? p.pixKey || "" : ""},${i.status}\n`;
           });
+          const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+          const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
-          a.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+          a.href = url;
           a.download = `folha_${batch.month}.csv`;
           document.body.appendChild(a);
           a.click();
           a.remove();
         };
+
+        // Inicializa eventos da primeira renderização
+        rebindPayEvents();
       }
 
       /* ========= Market (Rede & Fornecedores - Layout Definitivo v4) ========= */
