@@ -5838,10 +5838,11 @@
         if (isMine) {
           // Cenário 1: Ainda não entrou
           if (!ci) {
+            // CORREÇÃO: O botão de troca abre o modal direto (openSwap), sem seleção confusa
             actionArea = `
                 <div class="cs-actions">
                     <button class="btn-action btn-in" onclick="doCheckIn('${s.id}')">ENTRAR (IN)</button>
-                    <button class="btn-action btn-swap" onclick="openSwap('${s.id}')" title="Trocar">↔</button>
+                    <button class="btn-action btn-swap" onclick="openSwap('${s.id}')" title="Trocar ou Doar Plantão">↔</button>
                 </div>`;
           }
           // Cenário 2: Já entrou, falta sair
@@ -5850,7 +5851,7 @@
                 <div class="cs-info">Entrada às ${ci}</div>
                 <div class="cs-actions">
                     <button class="btn-action btn-out" onclick="doCheckOut('${s.id}')">SAÍDA (OUT)</button>
-                    <button class="btn-action btn-swap" disabled style="opacity:0.3">↔</button>
+                    <button class="btn-action btn-swap" disabled style="opacity:0.3; cursor:not-allowed">↔</button>
                 </div>`;
           }
           // Cenário 3: Finalizado
@@ -5876,12 +5877,11 @@
           }
         }
 
-        // --- RENDERIZAÇÃO FINAL ---
-        const click = isMine && !ci ? `onclick="selectMyShift('${s.id}')"` : ""; // Só seleciona se não tiver iniciado
-        const activeClass = calSelectedMyShiftId === s.id ? "selected" : "";
+        // --- RENDERIZAÇÃO FINAL (SEM ONCLICK NO CONTAINER) ---
+        // Removido o 'onclick="selectMyShift..."' daqui. Agora o card é inerte.
 
         return `
-        <div class="calShift ${isMine ? "mine" : "other"} ${activeClass}" ${click}>
+        <div class="calShift ${isMine ? "mine" : "other"}">
             
             <div class="cs-head">
                 <span class="cs-time">${s.start} - ${s.end}</span>
