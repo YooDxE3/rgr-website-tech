@@ -3584,62 +3584,64 @@
       }
 
       function bindUnits() {
-        const uf = $("uUF");
-        const city = $("uCity");
         let editingId = null;
 
-        // --- 1. OUVINTE EM TEMPO REAL (A Mágica do Back-end) ---
-        // Assim que alguém mudar algo no banco, essa função roda e atualiza a tela.
+        // --- 1. FUNÇÃO DE CIDADES (Agora busca o elemento atualizado no DOM) ---
+        function fillCities() {
+          const ufEl = $("uUF"); // Busca o elemento vivo na tela
+          const cityEl = $("uCity"); // Busca o elemento vivo na tela
+
+          if (!ufEl || !cityEl) return; // Proteção contra erro
+
+          const ufv = ufEl.value || "SC";
+          const list = UF_CITIES[ufv] || ["—"];
+
+          cityEl.innerHTML = list
+            .map((c) => `<option value="${c}">${c}</option>`)
+            .join("");
+        }
+
+        // --- 2. OUVINTE EM TEMPO REAL (FIREBASE) ---
         if (typeof db !== "undefined") {
-          const unsubscribe = db.collection("units").onSnapshot(
+          db.collection("units").onSnapshot(
             (snapshot) => {
               const cloudUnits = [];
               snapshot.forEach((doc) => {
                 cloudUnits.push({ id: doc.id, ...doc.data() });
               });
 
-              // Atualiza a memória local com a verdade da nuvem
               DB.units = cloudUnits;
 
-              // Se estivermos na aba de unidades, redesenha a tabela
               const activeTab = document.querySelector(".tab.active");
               if (activeTab && activeTab.dataset.key === "units") {
-                // Nota: recarregar o HTML inteiro pode fechar modais abertos,
-                // idealmente faríamos uma função renderUnitsTable(DB.units),
-                // mas por enquanto vamos forçar o render da aba.
                 const modalOpen = $("unitModal").style.display === "flex";
+                // Só redesenha o fundo se o modal estiver fechado, para não fechar na cara do usuário
                 if (!modalOpen) {
                   $("inBody").innerHTML = renderUnits();
-                  // Precisamos re-vincular os eventos após redesenhar o HTML
-                  bindUnitsEventsOnly();
+                  bindUnitsEventsOnly(); // <--- RECONECTA TUDO
                 }
               }
             },
-            (error) => {
-              console.error("Erro ao sincronizar unidades:", error);
-            },
+            (error) => console.error("Erro units:", error),
           );
         }
 
-        // Função auxiliar para preencher cidades
-        function fillCities() {
-          const ufv = uf.value || "SC";
-          const list = UF_CITIES[ufv] || ["—"];
-          city.innerHTML = list
-            .map((c) => `<option value="${c}">${c}</option>`)
-            .join("");
-        }
-
-        // Função que liga os cliques (separada para poder ser rechamada)
+        // --- 3. RECONECTAR EVENTOS (Crucial!) ---
+        // Essa função roda toda vez que o HTML é desenhado
         function bindUnitsEventsOnly() {
-          // Re-seleciona elementos pois o HTML foi recriado
           const btnAdd = $("btnAddUnit");
           if (btnAdd) btnAdd.onclick = () => openUnitModal(false);
 
           const btnGeo = $("btnGeoSearch");
           if (btnGeo) btnGeo.onclick = handleGeoSearch;
 
-          // Re-liga botões da tabela (Editar/Excluir/Configurar)
+          // --- CORREÇÃO AQUI: Ligar o evento do UF toda vez ---
+          const ufEl = $("uUF");
+          if (ufEl) {
+            ufEl.onchange = fillCities; // Reconecta a função de preencher cidades
+          }
+          // ---------------------------------------------------
+
           document.querySelectorAll(".btnCfg").forEach((btn) => {
             btn.onclick = () => {
               setConnectUnit(btn.dataset.unit);
@@ -3656,11 +3658,15 @@
             ? "Editar Unidade"
             : "Nova Unidade";
 
-          // Se for nova, reseta. Se for edição, o window.editUnit já preencheu.
           if (!isEdit) {
             editingId = null;
-            uf.value = "PR";
-            fillCities();
+            // Reseta usando os elementos vivos
+            const ufEl = $("uUF");
+            if (ufEl) {
+              ufEl.value = "PR";
+              fillCities(); // Preenche cidades do PR
+            }
+
             $("uName").value = "";
             $("uSub").value = "";
             $("uSys").value = "Tasy";
@@ -3675,18 +3681,15 @@
 
         window.closeUnitModal = () => {
           $("unitModal").style.display = "none";
-          // Ao fechar, se houve atualização via listener, a tabela já estará atualizada
         };
 
-        // --- SALVAR NO FIREBASE (CREATE / UPDATE) ---
+        // --- SALVAR (Firebase) ---
         $("btnSaveUnit").onclick = async () => {
           const btn = $("btnSaveUnit");
           const originalText = btn.textContent;
-
           const name = $("uName").value.trim();
           if (!name) return toast("Informe o nome da unidade");
 
-          // Prepara o objeto (payload)
           const dados = {
             name: name,
             type: $("uType").value,
@@ -3703,14 +3706,12 @@
 
           try {
             btn.disabled = true;
-            btn.textContent = "Salvando na nuvem...";
+            btn.textContent = "Salvando...";
 
             if (editingId) {
-              // UPDATE: Atualiza apenas este documento na coleção 'units'
               await db.collection("units").doc(editingId).update(dados);
               toast("✅ Unidade atualizada!");
             } else {
-              // CREATE: Cria um novo documento na coleção 'units'
               await db.collection("units").add({
                 ...dados,
                 integrationMode: "Export/CSV",
@@ -3720,13 +3721,10 @@
               });
               toast("✅ Unidade criada!");
             }
-
             closeUnitModal();
-            // NÃO precisamos chamar renderUnits() aqui, pois o onSnapshot
-            // lá no início da função vai perceber a mudança e atualizar a tela sozinho!
           } catch (error) {
             console.error(error);
-            toast("❌ Erro ao salvar: " + error.message);
+            toast("Erro: " + error.message);
           } finally {
             btn.disabled = false;
             btn.textContent = originalText;
@@ -3757,34 +3755,35 @@
           }
         };
 
-        // --- DELETAR NO FIREBASE ---
         window.deleteUnit = async (id) => {
-          if (!confirm("Tem certeza? Essa ação apaga a unidade DO SERVIDOR."))
-            return;
-
+          if (!confirm("Apagar unidade da nuvem?")) return;
           try {
             await db.collection("units").doc(id).delete();
-            toast("🗑️ Unidade removida da nuvem.");
-          } catch (error) {
-            console.error(error);
-            toast("Erro ao excluir: " + error.message);
+            toast("🗑️ Removida.");
+          } catch (e) {
+            toast("Erro ao excluir.");
           }
         };
 
-        // --- PREPARAR EDIÇÃO ---
         window.editUnit = (id) => {
           const u = DB.units.find((x) => x.id === id);
           if (!u) return;
           editingId = id;
-
-          // Preenche o form
           $("uName").value = u.name;
           $("uType").value = u.type;
           $("uSys").value = u.system || "Tasy";
           $("uSub").value = u.subtype || "";
-          $("uUF").value = u.uf || "SC";
-          fillCities(); // Atualiza cidades do UF
-          $("uCity").value = u.city || "";
+
+          // Preenche UF e Cidades corretamente na edição
+          const ufEl = $("uUF");
+          if (ufEl) {
+            ufEl.value = u.uf || "SC";
+            fillCities(); // Gera as cidades baseado no UF do banco
+            setTimeout(() => {
+              $("uCity").value = u.city || ""; // Seleciona a cidade correta após gerar a lista
+            }, 0);
+          }
+
           $("uAddr").value = u.address || "";
           $("uLat").value = u.lat || "";
           $("uLon").value = u.lon || "";
@@ -3798,8 +3797,7 @@
           openUnitModal(true);
         };
 
-        // Inicializa eventos
-        if (uf) uf.onchange = fillCities;
+        // Inicialização
         bindUnitsEventsOnly();
       }
 
