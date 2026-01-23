@@ -6444,6 +6444,8 @@
         if (session.role === "prof") {
           const bMine = $("btnModeMine");
           const bFull = $("btnModeFull");
+          const bBio = $("btnBio");
+
           if (bMine)
             bMine.onclick = () => {
               profScheduleMode = "mine";
@@ -6454,6 +6456,9 @@
               profScheduleMode = "publishedFull";
               loadLiveShifts();
             };
+          if (bBio) {
+            bBio.onclick = () => openBioModal();
+          }
           injectColleagueShiftsIntoCalendar();
         } else {
           // Admin/Gestor botões...
