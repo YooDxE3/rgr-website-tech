@@ -5885,8 +5885,9 @@
         return isBusy;
       }
 
-      /* ========= GERAÇÃO COM PROTEÇÃO DE CONFLITOS ========= */
+      /* ========= GERAÇÃO DE ESCALA (VERSÃO FINAL: SEGURA + INTELIGENTE + RÁPIDA) ========= */
       async function genMonthlySchedule(month, unitId, spec, tplKey) {
+        // 1. SEGURANÇA: Verifica se o Gestor tem permissão nesta unidade
         if (window.currentUser && window.currentUser.role === "gestor") {
           const allowed = window.currentUser.allowedUnits || [];
           if (!allowed.includes(unitId)) {
@@ -5903,33 +5904,37 @@
         if (!pros.length)
           return toast("Sem médicos habilitados nesta especialidade.");
 
-        toast("🔍 Analisando conflitos globais...");
+        toast("🔍 Analisando conflitos em todas as unidades...");
 
-        // 1. MAPA DE OCUPAÇÃO GLOBAL
-        // Baixa TODOS os plantões deste mês (de todas as unidades) para saber quem está ocupado
-        // Isso garante que o Bracinni veja a ocupação da escala do Adilson
-        const busyMap = new Set(); // Guarda chaves do tipo "ID_MEDICO|DATA"
+        // 2. INTELIGÊNCIA: Mapeia ocupação global (Bracinni vê a agenda do Adilson)
+        const busyMap = new Set(); // Guarda chaves "ID_MEDICO|DATA"
 
-        const globalSnap = await db
-          .collection("shifts")
-          .where("month", "==", month)
-          .get();
+        try {
+          const globalSnap = await db
+            .collection("shifts")
+            .where("month", "==", month)
+            .get();
 
-        globalSnap.forEach((doc) => {
-          const s = doc.data();
-          // Marca que o médico X está ocupado no dia Y
-          // (Poderíamos adicionar horário na chave para refinar)
-          busyMap.add(`${s.profId}|${s.date}`);
-        });
+          globalSnap.forEach((doc) => {
+            const s = doc.data();
+            // Marca que o médico X está ocupado no dia Y em QUALQUER unidade
+            busyMap.add(`${s.profId}|${s.date}`);
+          });
+        } catch (e) {
+          console.error("Erro ao verificar conflitos:", e);
+          return toast("Erro de conexão ao verificar conflitos.");
+        }
 
         toast("Gerando escala...");
+
+        // 3. PERFORMANCE: Prepara gravação em lote (Batch Write)
         const batch = db.batch();
         const n = daysInMonth(month);
         let pi = 0;
         let count = 0;
         let conflicts = 0;
 
-        // Verifica o que já existe NESTA unidade (para não duplicar visualmente)
+        // Verifica o que já existe NESTA unidade (para não duplicar visualmente na tela)
         const localShifts = DB.shifts.filter(
           (s) => s.month === month && s.unitId === unitId && s.spec === spec,
         );
@@ -5937,7 +5942,7 @@
         for (let day = 1; day <= n; day++) {
           const d = `${month}-${String(day).padStart(2, "0")}`;
 
-          // Pula se já existe plantão na minha própria unidade
+          // Pula se já existe plantão criado na MINHA unidade (visual)
           if (localShifts.find((s) => s.date === d && s.start === tpl.s))
             continue;
 
@@ -5950,14 +5955,14 @@
             pi++; // Avança a fila
             attempts++;
 
-            // CHEQUE DE CONFLITO: O candidato já está no mapa de ocupados?
+            // O PULO DO GATO: Verifica se o médico está livre no Mapa Global
             if (!busyMap.has(`${candidate.id}|${d}`)) {
               pickedProf = candidate;
             }
           }
 
           if (pickedProf) {
-            // Achou médico livre! Agenda.
+            // Achou médico livre! Prepara a gravação.
             const newRef = db.collection("shifts").doc();
             batch.set(newRef, {
               unitId,
@@ -5974,11 +5979,11 @@
               createdAt: new Date().toISOString(),
             });
 
-            // Marca ele como ocupado para os próximos dias do loop (caso rode 2x no mesmo dia)
+            // Marca ele como ocupado agora (para não agendar 2x no mesmo dia se rodar o loop)
             busyMap.add(`${pickedProf.id}|${d}`);
             count++;
           } else {
-            conflicts++; // Ninguém livre neste dia
+            conflicts++; // Ninguém livre neste dia (todos ocupados em outras unidades)
           }
         }
 
@@ -5986,8 +5991,10 @@
           return toast("Dias já preenchidos.");
 
         if (count > 0) {
+          // 4. DISPARO: Envia tudo para o banco de uma vez só
           await batch.commit();
           toast(`✅ ${count} plantões gerados!`);
+
           if (conflicts > 0)
             alert(
               `Aviso: ${conflicts} dias ficaram vazios pois todos os médicos da equipe já estavam escalados em outras unidades nestas datas.`,
