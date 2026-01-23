@@ -6302,9 +6302,12 @@
 
       /* ========= CONTROLE DE ESCALA (LISTENER INTELIGENTE) ========= */
 
-      let _unsubscribeShifts = null; // Variável para guardar a conexão aberta
+      // Variáveis de controle FORA da função para não resetarem
+      let _unsubscribeShifts = null;
+      let _lastShiftQuery = "";
 
       function bindSchedule() {
+        // Botão para Editar Templates (Mantendo a feature que adicionamos antes)
         window.editTemplates = () => {
           const json = prompt(
             "Edite os templates (JSON):",
@@ -6314,7 +6317,6 @@
           try {
             const list = JSON.parse(json);
             if (!Array.isArray(list)) throw new Error("Deve ser uma lista");
-
             db.collection("config")
               .doc("templates")
               .set({ list })
@@ -6324,43 +6326,55 @@
             alert("JSON Inválido");
           }
         };
-        // --- 1. FUNÇÃO PARA OUVIR O BANCO ---
+
+        // --- 1. FUNÇÃO DE CARGA INTELIGENTE ---
         function loadLiveShifts() {
-          // SEGREDO 1: Sempre mata o ouvinte anterior para criar um novo fresco
+          const monthEl = $("fMonth");
+          const unitEl = $("fUnit");
+
+          // Se os inputs ainda não existem (renderizando), usa padrão ou memória
+          const month = monthEl ? monthEl.value : isoMonth(nowISO());
+          const unitId = unitEl ? unitEl.value : window.tempUnitFilter || "";
+          const role = session.role;
+          const mode = profScheduleMode;
+
+          // CRIA UMA ASSINATURA DA BUSCA ATUAL
+          const currentQueryKey = `${role}|${month}|${unitId}|${mode}|${session.profId}`;
+
+          // [CORREÇÃO DO LOOP]
+          // Se já existe conexão aberta E a busca é idêntica à anterior, PARE AQUI.
+          if (_unsubscribeShifts && _lastShiftQuery === currentQueryKey) {
+            console.log("♻️ Conexão de escala já ativa. Mantendo.");
+            return;
+          }
+
+          // Se mudou a busca, fecha a conexão anterior
           if (_unsubscribeShifts) {
             _unsubscribeShifts();
             _unsubscribeShifts = null;
           }
 
-          const monthEl = $("fMonth");
-          const unitEl = $("fUnit");
+          // Atualiza a assinatura
+          _lastShiftQuery = currentQueryKey;
 
-          // Se os elementos não existirem (troca de tela rápida), aborta
-          if (!monthEl) return;
-
-          const month = monthEl.value;
-          const unitId = unitEl ? unitEl.value : "";
-          const role = session.role;
-
+          // Monta a Query
           let query = db.collection("shifts").where("month", "==", month);
 
-          // Filtros de Admin/Gestor
           if (role !== "prof" && unitId) {
             query = query.where("unitId", "==", unitId);
           }
 
-          // Filtros de Médico (O Bug do Perfil sumindo corrigido aqui)
           if (role === "prof" && profScheduleMode === "mine") {
             query = query.where("profId", "==", session.profId);
           }
 
-          console.log(`📡 Sincronizando escala: ${month} (Role: ${role})`);
+          console.log(`📡 Nova conexão: ${currentQueryKey}`);
 
           _unsubscribeShifts = query.onSnapshot((snap) => {
             let list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
 
-            // Filtro de segurança visual para Gestor
+            // Filtro de segurança (Gestor)
             if (window.currentUser && window.currentUser.role === "gestor") {
               const allowed = window.currentUser.allowedUnits || [];
               list = list.filter((s) => allowed.includes(s.unitId));
@@ -6368,20 +6382,14 @@
 
             DB.shifts = list;
 
-            // --- CORREÇÃO DO BUG DO PULO DE TELA ---
-            // Verifica se o painel está aberto E se a aba ativa é realmente a "schedule"
+            // Só renderiza se estiver na aba certa
             const activeTab = document.querySelector(".tab.active");
-            const isScheduleTab =
-              activeTab && activeTab.dataset.key === "schedule";
-
-            if (
-              document.getElementById("viewInternal").style.display !==
-                "none" &&
-              isScheduleTab
-            ) {
+            if (activeTab && activeTab.dataset.key === "schedule") {
+              // Ao chamar isso, o bindSchedule vai rodar de novo,
+              // mas vai cair no IF de proteção lá em cima e parar o loop!
               renderInternalBody("schedule");
 
-              // Restaura o foco se estava digitando busca
+              // Restaura foco da busca
               if (window.tempSpecOther && $("fSpecOther")) {
                 $("fSpecOther").value = window.tempSpecOther;
                 $("fSpecOther").focus();
@@ -6390,7 +6398,7 @@
           });
         }
 
-        // --- 2. VINCULA EVENTOS DE FILTRO ---
+        // --- 2. EVENTOS ---
         const btnTable = $("btnViewTable");
         const btnCal = $("btnViewCal");
         if (btnTable)
@@ -6408,7 +6416,7 @@
         const fUnit = $("fUnit");
         const fSpec = $("fSpec");
 
-        if (fMonth) fMonth.onchange = () => loadLiveShifts();
+        if (fMonth) fMonth.onchange = () => loadLiveShifts(); // Aqui forçamos nova busca
         if (fUnit)
           fUnit.onchange = (e) => {
             window.tempUnitFilter = e.target.value;
@@ -6421,12 +6429,10 @@
             renderInternalBody("schedule");
           };
 
-        // Input de busca textual (Especialidade: Outro)
         const fSpecOther = $("fSpecOther");
         if (fSpecOther) {
           fSpecOther.oninput = (e) => {
             window.tempSpecOther = e.target.value;
-            // Pequeno delay para não renderizar a cada letra loucamente
             clearTimeout(window._searchTimer);
             window._searchTimer = setTimeout(() => {
               renderInternalBody("schedule");
@@ -6434,7 +6440,7 @@
           };
         }
 
-        // --- 3. LÓGICA ESPECÍFICA POR PERFIL ---
+        // --- 3. LÓGICA DE BOTÕES (ADMIN/PROF) ---
         if (session.role === "prof") {
           const bMine = $("btnModeMine");
           const bFull = $("btnModeFull");
@@ -6450,10 +6456,9 @@
             };
           injectColleagueShiftsIntoCalendar();
         } else {
-          // === ADMIN / GESTOR ===
+          // Admin/Gestor botões...
           const btnGen = $("btnGen");
           const btnPub = $("btnPub");
-
           if (btnGen)
             btnGen.onclick = () => {
               const m = fMonth.value;
@@ -6464,7 +6469,6 @@
                 DB.defaultTimeKey || DB.timeTemplates[0]?.k || "07-19";
               genMonthlySchedule(m, u, s, tpl);
             };
-
           if (btnPub)
             btnPub.onclick = () => {
               const m = fMonth.value;
@@ -6474,51 +6478,48 @@
               publishMonth(m, u, s);
             };
 
-          // Preencher lista de médicos no modal
+          // Preencher selects do modal
           const sSpec = $("sSpec");
           const sProf = $("sProf");
           const fillShiftProfs = () => {
             if (!sSpec || !sProf) return;
             const val = sSpec.value;
             const list = DB.profs.filter((p) => p.approved && p.spec === val);
-            if (list.length === 0) {
-              sProf.innerHTML =
-                '<option value="">Sem médicos nesta área</option>';
-            } else {
-              sProf.innerHTML = list
-                .map((p) => `<option value="${p.id}">${p.name}</option>`)
-                .join("");
-            }
+            sProf.innerHTML =
+              list.length === 0
+                ? '<option value="">Sem médicos nesta área</option>'
+                : list
+                    .map((p) => `<option value="${p.id}">${p.name}</option>`)
+                    .join("");
           };
           if (sSpec) {
             sSpec.onchange = fillShiftProfs;
             fillShiftProfs();
           }
 
-          // Criar Plantão Manual
           const btnCreate = $("btnShiftCreate");
           if (btnCreate)
             btnCreate.onclick = async () => {
+              // ... (Lógica de criar plantão mantida igual) ...
               const date = $("sDate").value;
               const unit = $("sUnit").value;
               const spec = $("sSpec").value;
               const profId = $("sProf").value;
               const start = $("sStart").value;
-
               if (!date || !unit || !spec || !profId)
-                return toast("Preencha todos os campos.");
+                return toast("Preencha tudo.");
 
               const btn = $("btnShiftCreate");
-              const originalText = btn.innerText;
+              const txt = btn.innerText;
               btn.disabled = true;
               btn.innerText = "Verificando...";
 
               try {
                 const isBusy = await checkConflict(profId, date, start);
                 if (isBusy) {
-                  alert("🚫 CONFLITO: Médico já ocupado neste horário.");
+                  alert("🚫 Conflito de horário.");
                   btn.disabled = false;
-                  btn.innerText = originalText;
+                  btn.innerText = txt;
                   return;
                 }
 
@@ -6536,19 +6537,18 @@
                   published: false,
                   createdAt: new Date().toISOString(),
                 });
-                toast("✅ Plantão criado!");
+                toast("✅ Criado!");
               } catch (e) {
                 console.error(e);
-                toast("Erro ao criar.");
+                toast("Erro.");
               } finally {
                 btn.disabled = false;
-                btn.innerText = originalText;
+                btn.innerText = txt;
               }
             };
         }
 
-        // --- 4. INICIALIZAÇÃO OBRIGATÓRIA (Correção do Bug) ---
-        // Removemos o 'if' que bloqueava o recarregamento
+        // --- 4. INICIALIZAÇÃO ---
         loadLiveShifts();
       }
 
