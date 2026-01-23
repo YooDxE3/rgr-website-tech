@@ -7480,6 +7480,28 @@
           });
         }
 
+        if (typeof db !== "undefined") {
+          db.collection("units").onSnapshot((snap) => {
+            const list = [];
+            snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+
+            DB.units = list; // Atualiza a memória global
+            console.log("🏥 Unidades carregadas:", list.length);
+
+            // Se o dropdown de unidade estiver na tela (filtro ou criar plantão), atualiza ele
+            const sUnit = document.getElementById("sUnit");
+            const fUnit = document.getElementById("fUnit");
+
+            // Recarrega a tela de escalas se estiver aberta para preencher os selects
+            if (sUnit || fUnit) {
+              const activeTab = document.querySelector(".tab.active");
+              if (activeTab && activeTab.dataset.key === "schedule") {
+                renderInternalBody("schedule");
+              }
+            }
+          });
+        }
+
         // 1. OUVIR A NUVEM (A parte que faltava!)
         // Assim que algo mudar no banco, essa função roda e atualiza a tela
         if (typeof db !== "undefined") {
@@ -7490,7 +7512,6 @@
                 const data = doc.data();
 
                 // Atualiza a memória local com o que veio do Google
-                DB.units = data.units || [];
                 DB.shifts = data.schedule || data.shifts || [];
                 DB.schedule = DB.shifts;
                 DB.users = data.users || [];
