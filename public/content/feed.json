@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-01-21T12:24:59.135867",
+  "generated_at": "2026-01-23T12:23:53.195445",
   "posts": [
     {
-      "id": "rgr_tip_01-pt",
+      "id": "rgr-01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas para Saúde",
-      "excerpt": "Faça pequenas pausas para alongar ou caminhar. Movimentar o corpo regularmente previne dores e aumenta sua energia para o trabalho.",
-      "content": "<p>Faça pequenas pausas para alongar ou caminhar. Movimentar o corpo regularmente previne dores e aumenta sua energia para o trabalho.</p>",
+      "title": "Faça Pausas Breves, Movimente-se!",
+      "excerpt": "Levante-se a cada hora para alongar ou caminhar um pouco. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade.",
+      "content": "<p>Levante-se a cada hora para alongar ou caminhar um pouco. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade.</p>",
       "tags": [
-        "movimento",
         "pausas",
-        "bem-estar"
+        "movimento",
+        "produtividade"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_01-en",
+      "id": "rgr-01-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks Boost",
-      "excerpt": "Take short breaks to stretch or walk. Regular movement prevents aches and boosts your energy, improving focus throughout the workday.",
-      "content": "<p>Take short breaks to stretch or walk. Regular movement prevents aches and boosts your energy, improving focus throughout the workday.</p>",
+      "title": "Take Short Breaks, Move!",
+      "excerpt": "Stand up every hour to stretch or walk briefly. This relieves muscle tension, improves circulation, and boosts productivity and focus.",
+      "content": "<p>Stand up every hour to stretch or walk briefly. This relieves muscle tension, improves circulation, and boosts productivity and focus.</p>",
       "tags": [
-        "movimento",
         "pausas",
-        "bem-estar"
+        "movimento",
+        "produtividade"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_01-es",
+      "id": "rgr-01-es",
       "category": "saude",
       "lang": "es",
-      "title": "Muévete: Pausas Activas Mejoran",
-      "excerpt": "Toma pequeños descansos para estirar o caminar. Mover tu cuerpo regularmente previene dolores y aumenta tu energía para el trabajo.",
-      "content": "<p>Toma pequeños descansos para estirar o caminar. Mover tu cuerpo regularmente previene dolores y aumenta tu energía para el trabajo.</p>",
+      "title": "¡Haz Pausas Breves, Muévete!",
+      "excerpt": "Ponte de pie cada hora para estirar o caminar un poco. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad y el enfoque.",
+      "content": "<p>Ponte de pie cada hora para estirar o caminar un poco. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad y el enfoque.</p>",
       "tags": [
-        "movimento",
         "pausas",
-        "bem-estar"
+        "movimento",
+        "produtividade"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_02-pt",
+      "id": "rgr-02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Foco e Vitalidade",
-      "excerpt": "Beba água ao longo do dia. A hidratação adequada é crucial para manter a concentração, energia e bem-estar geral no escritório.",
-      "content": "<p>Beba água ao longo do dia. A hidratação adequada é crucial para manter a concentração, energia e bem-estar geral no escritório.</p>",
+      "title": "Hidrate-se Bem: Água é Vital!",
+      "excerpt": "Mantenha-se hidratado ao longo do dia. A água melhora a concentração, combate a fadiga e otimiza sua energia. Tenha sempre uma garrafa por perto.",
+      "content": "<p>Mantenha-se hidratado ao longo do dia. A água melhora a concentração, combate a fadiga e otimiza sua energia. Tenha sempre uma garrafa por perto.</p>",
       "tags": [
         "hidratação",
         "foco",
-        "saúde"
+        "energia"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_02-en",
+      "id": "rgr-02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate: Focus and Vitality",
-      "excerpt": "Drink water throughout the day. Proper hydration is crucial for maintaining concentration, energy, and overall well-being in the office environment.",
-      "content": "<p>Drink water throughout the day. Proper hydration is crucial for maintaining concentration, energy, and overall well-being in the office environment.</p>",
+      "title": "Stay Hydrated: Water is Vital!",
+      "excerpt": "Stay hydrated throughout the day. Water improves concentration, fights fatigue, and optimizes your energy levels. Keep a bottle nearby.",
+      "content": "<p>Stay hydrated throughout the day. Water improves concentration, fights fatigue, and optimizes your energy levels. Keep a bottle nearby.</p>",
       "tags": [
         "hidratação",
         "foco",
-        "saúde"
+        "energia"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_02-es",
+      "id": "rgr-02-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate: Concentración y Vitalidad",
-      "excerpt": "Bebe agua durante todo el día. La hidratación adecuada es crucial para mantener la concentración, energía y bienestar general en la oficina.",
-      "content": "<p>Bebe agua durante todo el día. La hidratación adecuada es crucial para mantener la concentración, energía y bienestar general en la oficina.</p>",
+      "title": "Hidrátate Bien: ¡Agua es Vital!",
+      "excerpt": "Mantente hidratado durante todo el día. El agua mejora la concentración, combate la fatiga y optimiza tu energía. Ten siempre una botella cerca.",
+      "content": "<p>Mantente hidratado durante todo el día. El agua mejora la concentración, combate la fatiga y optimiza tu energía. Ten siempre una botella cerca.</p>",
       "tags": [
         "hidratação",
         "foco",
-        "saúde"
+        "energia"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_03-pt",
+      "id": "rgr-03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Postura Correta: Previna Dores",
-      "excerpt": "Ajuste sua cadeira e monitor. Mantenha uma postura ergonômica para evitar dores nas costas e pescoço, promovendo conforto e saúde.",
-      "content": "<p>Ajuste sua cadeira e monitor. Mantenha uma postura ergonômica para evitar dores nas costas e pescoço, promovendo conforto e saúde.</p>",
+      "title": "Alimentação Consciente: Lanches Saudáveis",
+      "excerpt": "Opte por lanches nutritivos para manter a energia. Frutas, castanhas e iogurte são ótimas opções. Evite açúcares, que causam picos e quedas.",
+      "content": "<p>Opte por lanches nutritivos para manter a energia. Frutas, castanhas e iogurte são ótimas opções. Evite açúcares, que causam picos e quedas.</p>",
       "tags": [
-        "ergonomia",
-        "postura",
-        "conforto"
+        "nutrição",
+        "saudável",
+        "bem-estar"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_03-en",
+      "id": "rgr-03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Correct Posture: Prevent Pains",
-      "excerpt": "Adjust your chair and monitor. Maintain ergonomic posture to prevent back and neck pains, promoting comfort and long-term health at work.",
-      "content": "<p>Adjust your chair and monitor. Maintain ergonomic posture to prevent back and neck pains, promoting comfort and long-term health at work.</p>",
+      "title": "Mindful Eating: Healthy Snacks",
+      "excerpt": "Choose nutritious snacks to maintain energy. Fruits, nuts, and yogurt are great options. Avoid sugary treats that cause energy spikes and crashes.",
+      "content": "<p>Choose nutritious snacks to maintain energy. Fruits, nuts, and yogurt are great options. Avoid sugary treats that cause energy spikes and crashes.</p>",
       "tags": [
-        "ergonomia",
-        "postura",
-        "conforto"
+        "nutrição",
+        "saudável",
+        "bem-estar"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_03-es",
+      "id": "rgr-03-es",
       "category": "saude",
       "lang": "es",
-      "title": "Postura Correcta: Evita Dolores",
-      "excerpt": "Ajusta tu silla y monitor. Mantén una postura ergonómica para evitar dolores de espalda y cuello, promoviendo comodidad y salud.",
-      "content": "<p>Ajusta tu silla y monitor. Mantén una postura ergonómica para evitar dolores de espalda y cuello, promoviendo comodidad y salud.</p>",
+      "title": "Alimentación Consciente: Snacks Saludables",
+      "excerpt": "Opta por snacks nutritivos para mantener la energía. Frutas, frutos secos y yogur son excelentes opciones. Evita azúcares, que causan picos y bajones.",
+      "content": "<p>Opta por snacks nutritivos para mantener la energía. Frutas, frutos secos y yogur son excelentes opciones. Evita azúcares, que causan picos y bajones.</p>",
       "tags": [
-        "ergonomia",
-        "postura",
-        "conforto"
+        "nutrição",
+        "saudável",
+        "bem-estar"
       ],
-      "published_at": "2026-01-21T12:24:59.135867",
+      "published_at": "2026-01-23T12:23:53.195445",
       "author": "RGR Saúde (IA)"
     }
   ]
