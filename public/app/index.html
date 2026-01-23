@@ -7652,46 +7652,53 @@
         console.log("🚀 Iniciando sistema...");
 
         if (typeof db !== "undefined") {
+          // 1. MÉDICOS (Profs)
           db.collection("profs").onSnapshot((snap) => {
             const list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
-
-            // Atualiza a memória global
             DB.profs = list;
             console.log("👥 Médicos carregados: ", list.length);
-
-            // Atualiza KPIs da home
-            renderHomeKPIs();
-
-            // Se a tela de criar plantão estiver aberta, força a atualização do dropdown
-            const sSpec = document.getElementById("sSpec");
-            if (sSpec) {
-              // Simula uma mudança na especialidade para recarregar a lista de médicos
-              sSpec.dispatchEvent(new Event("change"));
-            }
+            renderHomeKPIs(); // <--- Atualiza o contador na Home
+            renderProfSelect(); // Atualiza o select de login
           });
-        }
 
-        if (typeof db !== "undefined") {
+          // 2. UNIDADES (Units) - Correção aqui!
           db.collection("units").onSnapshot((snap) => {
             const list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
-
-            DB.units = list; // Atualiza a memória global
+            DB.units = list;
             console.log("🏥 Unidades carregadas:", list.length);
 
-            // Se o dropdown de unidade estiver na tela (filtro ou criar plantão), atualiza ele
-            const sUnit = document.getElementById("sUnit");
-            const fUnit = document.getElementById("fUnit");
+            renderHomeKPIs(); // <--- FALTAVA ISSO: Atualiza o contador na Home
 
-            // Recarrega a tela de escalas se estiver aberta para preencher os selects
-            if (sUnit || fUnit) {
-              const activeTab = document.querySelector(".tab.active");
-              if (activeTab && activeTab.dataset.key === "schedule") {
-                renderInternalBody("schedule");
-              }
-            }
+            // Atualiza dropdowns se estiverem na tela
+            if (document.getElementById("sUnit"))
+              renderInternalBody("schedule");
           });
+
+          // 3. PLANTÕES (Shifts) - Novo no boot para alimentar a Dashboard
+          db.collection("shifts").onSnapshot((snap) => {
+            const list = [];
+            snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+            DB.shifts = list;
+            // Mantemos DB.schedule sincronizado para compatibilidade
+            DB.schedule = list;
+
+            console.log("📅 Plantões carregados:", list.length);
+            renderHomeKPIs(); // <--- Atualiza o contador na Home
+          });
+
+          // 4. CADASTROS (Pendentes) - Novo no boot para alimentar a Dashboard
+          db.collection("cadastros")
+            .orderBy("submittedAt", "desc")
+            .onSnapshot((snap) => {
+              const list = [];
+              snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+              DB.cadastros = list;
+
+              console.log("📝 Cadastros carregados:", list.length);
+              renderHomeKPIs(); // <--- Atualiza o contador na Home
+            });
         }
 
         // Carrega Configurações Globais (Regras e Templates)
