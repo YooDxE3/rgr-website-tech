@@ -4397,22 +4397,29 @@
           const btnSaveRules = $("btnSaveRules");
           if (btnSaveRules)
             btnSaveRules.onclick = async () => {
+              const btn = btnSaveRules;
+              btn.textContent = "Salvando...";
+
               const newRules = {
-                baseHour: parseFloat($("payRate").value),
-                taxRate: parseFloat($("payTaxRate").value),
-                nightMult: parseFloat($("payMultN").value),
-                weekendMult: parseFloat($("payMultW").value),
-                holidayMult: parseFloat($("payMultF").value),
+                baseHour: parseFloat($("payRate").value) || 0,
+                taxRate: parseFloat($("payTaxRate").value) || 0,
+                nightMult: parseFloat($("payMultN").value) || 1,
+                weekendMult: parseFloat($("payMultW").value) || 1,
+                holidayMult: parseFloat($("payMultF").value) || 1,
                 useCheckIO: $("paySource").value === "real",
               };
 
-              // Atualiza no arquivo de config global (v1)
-              await db
-                .collection("sistema")
-                .doc("v1")
-                .update({ payRules: newRules });
-              $("rulesModal").style.display = "none";
-              toast("Regras atualizadas!");
+              try {
+                // Grava na coleção 'config', documento 'payroll'
+                await db.collection("config").doc("payroll").set(newRules);
+                $("rulesModal").style.display = "none";
+                toast("✅ Regras globais atualizadas!");
+              } catch (e) {
+                console.error(e);
+                toast("Erro ao salvar regras.");
+              } finally {
+                btn.textContent = "Salvar Regras";
+              }
             };
 
           // Botão FECHAR FOLHA (Cria documento na coleção payroll)
@@ -6348,6 +6355,25 @@
       let _unsubscribeShifts = null; // Variável para guardar a conexão aberta
 
       function bindSchedule() {
+        window.editTemplates = () => {
+          const json = prompt(
+            "Edite os templates (JSON):",
+            JSON.stringify(DB.timeTemplates),
+          );
+          if (!json) return;
+          try {
+            const list = JSON.parse(json);
+            if (!Array.isArray(list)) throw new Error("Deve ser uma lista");
+
+            db.collection("config")
+              .doc("templates")
+              .set({ list })
+              .then(() => toast("Templates salvos!"))
+              .catch(() => toast("Erro ao salvar"));
+          } catch (e) {
+            alert("JSON Inválido");
+          }
+        };
         // --- 1. FUNÇÃO PARA OUVIR O BANCO ---
         function loadLiveShifts() {
           // SEGREDO 1: Sempre mata o ouvinte anterior para criar um novo fresco
@@ -7718,47 +7744,52 @@
           });
         }
 
-        // 1. OUVIR A NUVEM (A parte que faltava!)
-        // Assim que algo mudar no banco, essa função roda e atualiza a tela
+        // Carrega Configurações Globais (Regras e Templates)
         if (typeof db !== "undefined") {
-          db.collection("sistema")
-            .doc("v1")
+          // Escuta o documento 'payroll' dentro da coleção 'config'
+          db.collection("config")
+            .doc("payroll")
             .onSnapshot((doc) => {
               if (doc.exists) {
-                const data = doc.data();
-
-                // Atualiza a memória local com o que veio do Google
-                DB.shifts = data.schedule || data.shifts || [];
-                DB.schedule = DB.shifts;
-                DB.users = data.users || [];
-                DB.cadastros = data.cadastros || [];
-                DB.accounts = data.accounts || [];
-                DB.offers = data.offers || [];
-                DB.availability = data.availability || [];
-                DB.payRules = data.payRules || {};
-                DB.market = data.market || {};
-                DB.audit = data.audit || [];
-
-                console.log("☁️ Sincronizado com a nuvem!");
-
-                // Atualiza a tela se estiver aberta em alguma aba
-                if (
-                  session &&
-                  document.getElementById("viewInternal").style.display !==
-                    "none"
-                ) {
-                  const activeTab = document.querySelector(
-                    "#inTabs .tab.active",
-                  );
-                  if (activeTab) {
-                    // Re-renderiza a aba atual para mostrar o dado novo
-                    renderInternalBody(activeTab.dataset.key);
-                  }
-                }
-                // Atualiza os contadores da Home
-                renderHomeKPIs();
+                DB.payRules = doc.data();
+                console.log("💰 Regras de pagamento atualizadas.");
+              } else {
+                // Padrões se não existir na nuvem
+                DB.payRules = {
+                  baseHour: 120,
+                  nightMult: 1.2,
+                  weekendMult: 1.15,
+                };
               }
             });
+
+          // Escuta o documento 'templates' dentro da coleção 'config'
+          db.collection("config")
+            .doc("templates")
+            .onSnapshot((doc) => {
+              if (doc.exists && doc.data().list) {
+                DB.timeTemplates = doc.data().list;
+                console.log("⏰ Templates de turno atualizados.");
+              } else {
+                // Padrão se não existir
+                DB.timeTemplates = [
+                  { k: "07-19", s: "07:00", e: "19:00", n: "Diurno (12h)" },
+                  { k: "19-07", s: "19:00", e: "07:00", n: "Noturno (12h)" },
+                ];
+              }
+              // Atualiza o select de templates se estiver na tela
+              const sTpl = document.getElementById("sTpl");
+              if (sTpl) {
+                sTpl.innerHTML = DB.timeTemplates
+                  .map((t) => `<option value="${t.k}">${t.n}</option>`)
+                  .join("");
+              }
+            });
+        }
+
+        // Atualiza a Home se tiver sessão (para não ficar zerado)
+        if (session) {
+          renderHomeKPIs();
         }
 
         // 2. CONFIGURAÇÕES VISUAIS (Mantendo o original)
