@@ -8652,29 +8652,36 @@
       function openBioModal() {
         const prof = getProf(session.profId);
         const modal = document.createElement("div");
+
+        // Aumentei um pouco a escuridão do fundo (overlay) para destacar mais
         modal.style.cssText =
-          "position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:9999;";
+          "position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:9999;";
+
         const on = !!(prof && prof.bioCredId);
         const secure = !!window.isSecureContext;
+
+        // CORREÇÃO AQUI: Adicionei background:#0f1624 e box-shadow no style do card
         modal.innerHTML = `
-    <div class="card" style="width:min(560px,92vw)"><div class="cardin">
+    <div class="card" style="width:min(560px,92vw); background:#0f1624; border:1px solid var(--line); box-shadow: 0 25px 50px rgba(0,0,0,0.7);"><div class="cardin">
       <div class="row" style="justify-content:space-between; align-items:flex-start">
         <div>
-          <strong>${t("bioTitle")}</strong>
-          <div class="muted" style="font-size:12px">${t("bioHint")}</div>
-          <div class="muted" style="font-size:12px; margin-top:6px">Status: <b>${on ? t("bioBtnOn") : t("bioBtnOff")}</b></div>
+          <strong style="font-size:16px">${t("bioTitle")}</strong>
+          <div class="muted" style="font-size:13px; margin-top:4px">${t("bioHint")}</div>
+          <div class="muted" style="font-size:13px; margin-top:8px">Status: <b style="color:${on ? "var(--good)" : "var(--text)"}">${on ? t("bioBtnOn") : t("bioBtnOff")}</b></div>
           ${secure ? "" : `<div class="badge bWarn" style="margin-top:10px">HTTPS necessário (WebAuthn)</div>`}
         </div>
-        <button class="small" id="bioClose">${t("swapCancel")}</button>
+        <button class="small" id="bioClose" style="height:32px">✕</button>
       </div>
-      <div class="hr"></div>
+      <div class="divider"></div>
       <div class="row" style="justify-content:flex-end; gap:10px; flex-wrap:wrap">
         <button class="small primary" id="bioEnroll">${on ? t("bioReenroll") : t("bioEnroll")}</button>
         <button class="small" id="bioTest" ${on ? "" : "disabled"}>${t("bioTest")}</button>
         <button class="small danger" id="bioRemove" ${on ? "" : "disabled"}>${t("bioRemove")}</button>
       </div>
       <div class="sp"></div>
-      <div class="muted" style="font-size:12px">${t("bioNote")}</div>
+      <div class="muted" style="font-size:12px; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px">
+        ℹ️ <b>Nota Técnica:</b> ${t("bioNote")}
+      </div>
     </div></div>
   `;
         document.body.appendChild(modal);
@@ -8693,6 +8700,7 @@
             await biometricEnroll(prof);
             toast(t("bioOk"));
             close();
+            // Atualiza a tela de fundo para refletir o status novo no botão
             renderInternalBody("schedule");
           } catch (e) {
             console.error(e);
@@ -8713,10 +8721,11 @@
           }
         };
         modal.querySelector("#bioRemove").onclick = () => {
+          if (!confirm("Remover proteção biométrica?")) return;
           delete prof.bioCredId;
           delete prof.bioEnabledAt;
           saveDB();
-          toast("OK");
+          toast("Removido.");
           close();
           renderInternalBody("schedule");
         };
