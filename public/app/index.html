@@ -9,6 +9,7 @@
     <title>viaRGR — Demo Integrada (Calendário + Idiomas)</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#0B1220" />
@@ -1543,6 +1544,7 @@
     <script>
       let db; // <--- ISSO AQUI É O SEGREDO
       let auth;
+      let storage;
 
       /* ===================== CONEXÃO FIREBASE ===================== */
       const firebaseConfig = {
@@ -1559,6 +1561,7 @@
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore(); // Sem 'var' ou 'let' aqui, usa a global
         auth = firebase.auth();
+        storage = firebase.storage();
         alert("Firebase Iniciado!"); // Seu alerta atual
       } else {
         alert("Erro: Firebase não carregou.");
@@ -7354,18 +7357,27 @@
 
           const docs = c.docs || {};
           const docList = [
-            { l: "Doc. Pessoal", n: docs.doc1Name, t: docs.doc1Type },
-            { l: "Diploma/Frente", n: docs.doc2FrontName },
-            { l: "Diploma/Verso", n: docs.doc2BackName },
-            { l: "Conselho/CRI", n: docs.doc3Name },
-            { l: "RQE/Outros", n: docs.doc4Name },
+            {
+              l: "Doc. Pessoal",
+              n: docs.doc1Name,
+              t: docs.doc1Type,
+              u: docs.doc1?.url,
+            },
+            {
+              l: "Diploma/Frente",
+              n: docs.doc2FrontName,
+              u: docs.doc2Front?.url,
+            },
+            { l: "Diploma/Verso", n: docs.doc2BackName, u: docs.doc2Back?.url },
+            { l: "Conselho/CRI", n: docs.doc3Name, u: docs.doc3?.url },
+            { l: "RQE/Outros", n: docs.doc4Name, u: docs.doc4?.url },
           ]
             .filter(
               (d) =>
                 d.n &&
                 d.n !== "Nenhum arquivo selecionado" &&
-                d.n !== "No file selected",
-            ) // Filtra vazios
+                d.n !== "Pendente",
+            )
             .map(
               (d) => `
                 <div class="docItem" style="margin-bottom:6px; padding:8px; display:flex; justify-content:space-between; align-items:center">
@@ -7374,7 +7386,12 @@
                         <div style="font-size:13px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">📄 ${d.n}</div>
                         ${d.t ? `<span class="badge" style="font-size:10px">${d.t}</span>` : ""}
                     </div>
-                    <button class="small" style="flex-shrink:0" onclick="downloadStub('${d.n}')">Baixar ⬇</button>
+                    
+                    ${
+                      d.u
+                        ? `<a href="${d.u}" target="_blank" style="text-decoration:none; display:flex; align-items:center; padding:7px 10px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,0.06); color:var(--text); font-weight:800; font-size:12px;">Baixar ⬇</a>`
+                        : `<button class="small" disabled style="opacity:0.5; cursor:not-allowed">Sem arq.</button>`
+                    }
                 </div>
              `,
             )
@@ -7987,7 +8004,25 @@
         updateExternalKind();
       }
 
-      // --- ENVIAR CADASTRO (CONECTADO AO FIREBASE) ---
+      // Função auxiliar para enviar arquivo para a nuvem
+      async function uploadToCloud(file, path) {
+        if (!file) return null; // Se não tiver arquivo, retorna null
+
+        // Cria uma referência (ex: cadastros/doc1_data_nome.pdf)
+        // Usamos timestamp para evitar nomes duplicados
+        const safeName =
+          Date.now() + "_" + file.name.replace(/[^a-z0-9.]/gi, "_");
+        const ref = storage.ref().child(path + "/" + safeName);
+
+        // Envia
+        await ref.put(file);
+
+        // Pega o link público
+        const url = await ref.getDownloadURL();
+        return { name: file.name, url: url, type: file.type };
+      }
+
+      // --- ENVIAR CADASTRO (COM UPLOAD REAL PARA O STORAGE) ---
       window.externalSubmit = async () => {
         // 1. Validação (Mantém a mesma lógica visual)
         const v = validateExternal();
@@ -8004,49 +8039,67 @@
         const btn = $("btnSend");
         const originalText = btn.innerText;
         btn.disabled = true;
-        btn.innerText = "Enviando...";
-
-        // 2. Coleta de Dados
-        const kind = $("extKind").value || "health";
-        // Lógica para pegar especialidade ("Outro" vs Selecionada)
-        let spec = "";
-        if (kind === "health") {
-          spec = $("extSpec").value;
-          if (spec === "Outro") spec = $("extSpecOther").value.trim();
-        }
-
-        // Objeto do Cadastro (Payload)
-        const app = {
-          kind,
-          profession: kind === "health" ? $("extProfession").value || "" : "",
-          name: $("extName").value.trim(),
-          wpp: $("extWpp").value.trim(),
-          reg: $("extCrm").value.trim(), // CRM ou CNPJ
-          email: $("extEmail").value.trim(),
-          spec,
-          uf: $("extUF").value,
-          city: $("extCity").value,
-          addr: $("extAddr").value.trim(),
-          // Simulando o upload (apenas nomes dos arquivos por enquanto)
-          docs: {
-            doc1Type: $("doc1Type").value,
-            doc1Name: $("doc1Name").innerText,
-            doc2FrontName: $("doc2FrontName").innerText,
-            doc2BackName: $("doc2BackName").innerText,
-            doc3Name: $("doc3Name").innerText,
-            doc4Name: $("doc4Name").innerText,
-          },
-          submittedAt: new Date().toISOString(),
-          status: "received", // Estado inicial
-          rejectionReason: "",
-        };
+        btn.innerText = "Enviando arquivos (aguarde)..."; // Feedback visual importante
 
         try {
-          // 3. SALVA NA COLEÇÃO 'CADASTROS' (NOVA)
+          // 2. FAZ O UPLOAD DOS ARQUIVOS PRIMEIRO (Para o Firebase Storage)
+          // Isso pode levar alguns segundos dependendo da internet
+          const doc1 = await uploadToCloud($("doc1File").files[0], "docs");
+          const doc2F = await uploadToCloud($("doc2Front").files[0], "docs");
+          const doc2B = await uploadToCloud($("doc2Back").files[0], "docs");
+          const doc3 = await uploadToCloud($("doc3File").files[0], "docs");
+          const doc4 = await uploadToCloud($("doc4File").files[0], "docs");
+
+          // 3. Coleta os Dados do Formulário
+          const kind = $("extKind").value || "health";
+          let spec = "";
+          if (kind === "health") {
+            spec = $("extSpec").value;
+            if (spec === "Outro") spec = $("extSpecOther").value.trim();
+          }
+
+          // 4. Monta o Objeto Final com os Links Reais
+          const app = {
+            kind,
+            profession: kind === "health" ? $("extProfession").value || "" : "",
+            name: $("extName").value.trim(),
+            wpp: $("extWpp").value.trim(),
+            reg: $("extCrm").value.trim(), // CRM ou CNPJ
+            email: $("extEmail").value.trim(),
+            spec,
+            uf: $("extUF").value,
+            city: $("extCity").value,
+            addr: $("extAddr").value.trim(),
+
+            // AQUI ESTÁ A MÁGICA: Salvamos o objeto completo com a URL
+            docs: {
+              doc1Type: $("doc1Type").value,
+
+              // Se o upload funcionou, 'doc1' tem {name, url}. Se não, é null.
+              doc1: doc1,
+              doc2Front: doc2F,
+              doc2Back: doc2B,
+              doc3: doc3,
+              doc4: doc4,
+
+              // Mantemos campos de compatibilidade visual (nomes)
+              doc1Name: doc1 ? doc1.name : "Pendente",
+              doc2FrontName: doc2F ? doc2F.name : "Pendente",
+              doc2BackName: doc2B ? doc2B.name : "Pendente",
+              doc3Name: doc3 ? doc3.name : "Pendente",
+              doc4Name: doc4 ? doc4.name : "Opcional",
+            },
+
+            submittedAt: new Date().toISOString(),
+            status: "received",
+            rejectionReason: "",
+          };
+
+          // 5. Salva no Banco de Dados (Firestore)
           await db.collection("cadastros").add(app);
 
-          toast("✅ Cadastro enviado! Aguarde aprovação.");
-          clearExternal(); // Limpa formulário
+          toast("✅ Cadastro enviado com sucesso!");
+          clearExternal();
 
           // Volta para a home após 2 segundos
           setTimeout(() => {
@@ -8056,7 +8109,7 @@
           }, 2000);
         } catch (e) {
           console.error(e);
-          toast("Erro ao enviar cadastro.");
+          toast("Erro no envio: " + e.message);
           btn.disabled = false;
           btn.innerText = originalText;
         }
