@@ -5585,7 +5585,7 @@
         const tplOpt = DB.timeTemplates
           .map(
             (tpl) =>
-              `<option value="${tpl.k}">${tpl.k} • ${tpl.name} • ${tpl.s}→${tpl.e}</option>`,
+              `<option value="${tpl.k}">${tpl.k} • ${tpl.name || tpl.n} • ${tpl.s}→${tpl.e}</option>`,
           )
           .join("");
 
@@ -6617,6 +6617,24 @@
               if (!u || !s) return toast("Selecione Unidade e Especialidade");
               publishMonth(m, u, s);
             };
+          const sTpl = $("sTpl");
+          if (sTpl) {
+            sTpl.onchange = () => {
+              const val = sTpl.value;
+              if (val === "CUSTOM") {
+                // Se for custom, limpa para digitar manual
+                $("sStart").value = "";
+                $("sEnd").value = "";
+              } else {
+                // Busca o template na memória
+                const t = DB.timeTemplates.find((x) => x.k === val);
+                if (t) {
+                  $("sStart").value = t.s; // Preenche Início
+                  $("sEnd").value = t.e; // Preenche Fim
+                }
+              }
+            };
+          }
 
           // Preencher selects do modal
           const sSpec = $("sSpec");
