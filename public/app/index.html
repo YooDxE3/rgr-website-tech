@@ -3355,7 +3355,7 @@
           list = [
             { k: "schedule", t: "tabSchedule" },
             { k: "offers", t: "tabOffers" },
-            { k: "passport", t: "tabPassport" },
+            // { k: "passport", t: "tabPassport" },
           ];
         } else {
           // Lista Base (Comum a Admin e Gestor)
@@ -6969,31 +6969,25 @@
         if (anchor) anchor.innerHTML = modalHtml;
       };
 
-      // 2. Salvar Novo Admin (NOVO: Grava na coleção 'users')
+      // 2. Salvar Novo Admin (CORRIGIDO)
       window.saveNewSystemUser = async () => {
         const name = $("newUName").value.trim();
         const userRaw = $("newUUser").value.trim();
-        const user = userRaw.toLowerCase(); // Força minúsculo
+        const user = userRaw.toLowerCase();
         const pass = $("newUPass").value.trim();
         const role = $("newURole").value;
 
-        if (!name || !user || !pass) {
-          return toast("Preencha todos os campos!");
-        }
+        if (!name || !user || !pass) return toast("Preencha todos os campos!");
 
-        toast("Verificando disponibilidade...");
+        toast("Salvando...");
 
         try {
-          // Verifica se já existe na coleção 'users'
           const check = await db
             .collection("users")
             .where("user", "==", user)
             .get();
-          if (!check.empty) {
-            return toast("❌ Este login já está em uso.");
-          }
+          if (!check.empty) return toast("❌ Login já existe.");
 
-          // Cria na nuvem
           await db.collection("users").add({
             name,
             user,
@@ -7002,12 +6996,14 @@
             createdAt: new Date().toISOString(),
           });
 
-          toast("✅ Usuário criado na nuvem!");
+          toast("✅ Usuário criado!");
           document.getElementById("userOverlay").remove();
-          // A tabela atualiza sozinha graças ao bindTeam lá embaixo
+
+          // Força atualização visual imediata
+          renderInternalBody("team");
         } catch (e) {
           console.error(e);
-          toast("Erro ao salvar usuário.");
+          toast("Erro ao salvar.");
         }
       };
 
@@ -7068,14 +7064,17 @@
         $("teamModalAnchor").innerHTML = "";
       };
 
-      // 5. Salvar Edição Médico (NOVO: Atualiza na coleção 'profs')
+      // 5. Salvar Edição Médico (CORRIGIDO: Atualiza tela ao fechar)
       window.saveProfEdit = async (id) => {
         const p = DB.profs.find((x) => x.id === id);
         if (!p) return;
 
         const newWpp = document.getElementById("edWpp").value.trim();
+        const btn = event.target; // Pega o botão clicado
+        const originalText = btn.textContent;
 
-        toast("Salvando...");
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
 
         try {
           await db
@@ -7090,7 +7089,6 @@
               profession: document.getElementById("edProf").value.trim(),
             });
 
-          // Se mudou o WhatsApp, tenta atualizar o login na coleção 'accounts'
           if (p.wpp !== newWpp) {
             const accSnap = await db
               .collection("accounts")
@@ -7101,11 +7099,19 @@
             }
           }
 
-          toast("✅ Atualizado na nuvem!");
+          toast("✅ Atualizado!");
           closeTeamModal();
+
+          // O PULO DO GATO: Força a atualização visual agora que o modal fechou
+          renderInternalBody("team");
         } catch (e) {
           console.error(e);
           toast("Erro ao salvar.");
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
         }
       };
 
@@ -7130,21 +7136,18 @@
         }
       };
 
-      // 7. BindTeam (NOVO: Ouve as coleções em tempo real)
+      // 7. BindTeam (CORRIGIDO: Com proteção de duplicidade)
       function bindTeam() {
+        // Se já estiver escutando, não cria novos ouvintes
+        if (window._teamListenerActive) return;
+        window._teamListenerActive = true;
+
         // Escuta ADMINS
         db.collection("users").onSnapshot((snap) => {
           const list = [];
           snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
           DB.users = list;
-
-          // Se a aba estiver aberta, redesenha
-          const tab = document.querySelector(".tab.active");
-          if (tab && tab.dataset.key === "team") {
-            const modalOpen = document.getElementById("teamOverlay");
-            if (!modalOpen)
-              document.getElementById("inBody").innerHTML = renderTeam();
-          }
+          tryRenderTeam(); // Tenta atualizar a tela
         });
 
         // Escuta MÉDICOS
@@ -7152,14 +7155,21 @@
           const list = [];
           snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
           DB.profs = list;
+          tryRenderTeam(); // Tenta atualizar a tela
+        });
 
+        // Função auxiliar para atualizar a tela apenas se seguro
+        function tryRenderTeam() {
           const tab = document.querySelector(".tab.active");
+          // Só desenha se estiver na aba Equipe E não tiver modal de EDIÇÃO (teamOverlay) aberto
           if (tab && tab.dataset.key === "team") {
             const modalOpen = document.getElementById("teamOverlay");
-            if (!modalOpen)
-              document.getElementById("inBody").innerHTML = renderTeam();
+            if (!modalOpen) {
+              const body = document.getElementById("inBody");
+              if (body) body.innerHTML = renderTeam();
+            }
           }
-        });
+        }
       }
       function renderCad() {
         const listAll = DB.cadastros.slice();
@@ -7301,7 +7311,7 @@
         openReject(id);
       };
 
-      // --- ABA DE CADASTROS (ATUALIZADA COM MODAL DE ANÁLISE) ---
+      // --- ABA DE CADASTROS (CORRIGIDA: SCROLL E DOWNLOAD) ---
       function bindCad() {
         // Escuta a coleção 'cadastros' em tempo real
         const unsubscribe = db
@@ -7314,7 +7324,6 @@
 
             const tab = document.querySelector(".tab.active");
             if (tab && tab.dataset.key === "cad") {
-              // Só redesenha o fundo se não tiver modal aberto, para não fechar na cara do usuário
               if (
                 document.getElementById("cadDetailsModal").style.display ===
                 "none"
@@ -7325,7 +7334,20 @@
             renderHomeKPIs();
           });
 
-        // --- NOVA FUNÇÃO: Abrir Detalhes ---
+        // --- FUNÇÃO DE DOWNLOAD SIMULADO ---
+        window.downloadStub = (fileName) => {
+          // Cria um PDF "fake" (vazio) apenas para testar o download
+          const link = document.createElement("a");
+          link.href =
+            "data:application/pdf;base64,JVBERi0xLjcKCjEgMCBvYmogICUgZW50cnkgcG9pbnQKPDwKICAvVHlwZSAvQ2F0YWxvZwogIC9QYWdlcyAyIDAgUgo+PgplbmRvYmoKCjIgMCBvYmoKPDwKICAvVHlwZSAvUGFnZXwKICAvTWVkaWFCb3ggWyAwIDAgMjAwIDIwMCBdCiAgL0NvdW50IDEKICAvS2lkcyBbIDMgMCBSIF0KPj4KZW5kb2JqCgozIDAgb2JqCjw8CiAgL1R5cGUgL1BhZ2UKICAvUGFyZW50IDIgMCBSC4+PgplbmRvYmoKCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxMCAwMDAwMCBuIAowMDAwMDAwMDYwIDAwMDAwIG4gCjAwMDAwMDAxNTcgMDAwMDAgbiAKdHJhaWxlcgo8PAogIC9TaXplIDQKICAvUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMTczCiUlRU9GCg==";
+          link.download = fileName || "documento.pdf";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          toast("⬇ Baixando " + fileName);
+        };
+
+        // --- ABRIR DETALHES (COM SCROLL CORRIGIDO) ---
         window.openCadDetails = (id) => {
           const c = DB.cadastros.find((x) => x.id === id);
           if (!c) return;
@@ -7338,16 +7360,21 @@
             { l: "Conselho/CRI", n: docs.doc3Name },
             { l: "RQE/Outros", n: docs.doc4Name },
           ]
-            .filter((d) => d.n && d.n !== "Nenhum arquivo selecionado")
+            .filter(
+              (d) =>
+                d.n &&
+                d.n !== "Nenhum arquivo selecionado" &&
+                d.n !== "No file selected",
+            ) // Filtra vazios
             .map(
               (d) => `
                 <div class="docItem" style="margin-bottom:6px; padding:8px; display:flex; justify-content:space-between; align-items:center">
-                    <div>
+                    <div style="overflow:hidden; padding-right:10px">
                         <div class="muted" style="font-size:10px; text-transform:uppercase">${d.l}</div>
-                        <div style="font-size:13px; font-weight:bold">📄 ${d.n}</div>
+                        <div style="font-size:13px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">📄 ${d.n}</div>
                         ${d.t ? `<span class="badge" style="font-size:10px">${d.t}</span>` : ""}
                     </div>
-                    <button class="small" onclick="toast('Demo: Download simulado de ${d.n}')">Baixar ⬇</button>
+                    <button class="small" style="flex-shrink:0" onclick="downloadStub('${d.n}')">Baixar ⬇</button>
                 </div>
              `,
             )
@@ -7356,62 +7383,67 @@
           const isPending = c.status !== "approved" && c.status !== "rejected";
 
           const modalHtml = `
-            <div class="modal" style="max-width:500px">
-                <div class="card"><div class="cardin">
-                    <div class="row" style="justify-content:space-between; align-items:flex-start">
-                        <div>
-                            <h3 style="margin:0">Análise de Candidato</h3>
-                            <div class="muted">ID: ${c.id.slice(0, 8)}...</div>
-                        </div>
-                        <button class="small" onclick="document.getElementById('cadDetailsModal').style.display='none'">✕</button>
-                    </div>
+            <div class="modal" style="max-width:500px; width:95%">
+                <div class="card" style="max-height:85vh; display:flex; flex-direction:column">
                     
-                    <div class="divider"></div>
-                    
-                    <div class="row" style="align-items:center; gap:15px; margin-bottom:15px">
-                        <div style="background:rgba(255,255,255,0.1); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px">👤</div>
-                        <div>
-                            <div style="font-size:18px; font-weight:bold">${c.name}</div>
-                            <div class="badge">${cadKindLabel(c.kind)}</div>
+                    <div class="cardin" style="overflow-y:auto; padding-bottom:0">
+                        <div class="row" style="justify-content:space-between; align-items:flex-start">
+                            <div>
+                                <h3 style="margin:0">Análise de Candidato</h3>
+                                <div class="muted">ID: ${c.id.slice(0, 8)}...</div>
+                            </div>
+                            <button class="small" onclick="document.getElementById('cadDetailsModal').style.display='none'">✕</button>
                         </div>
-                    </div>
-
-                    <div class="two">
-                        <div><div class="muted">Profissão</div><b>${c.profession || "—"}</b></div>
-                        <div><div class="muted">Especialidade</div><b>${c.spec || "—"}</b></div>
-                    </div>
-                    <div class="sp"></div>
-                    <div class="two">
-                        <div><div class="muted">Registro (CRM/CNPJ)</div><b>${c.reg || c.crm || "—"}</b></div>
-                        <div><div class="muted">WhatsApp</div><b>${c.wpp}</b></div>
-                    </div>
-                    <div class="sp"></div>
-                    <div><div class="muted">Localidade</div><div>${c.addr || ""}</div><div>${c.city}/${c.uf}</div></div>
-
-                    <div class="divider"></div>
-                    <div class="section-title">Documentos Anexados</div>
-                    ${docList || "<div class='muted'>Nenhum documento anexado.</div>"}
-
-                    <div class="sp"></div>
-                    <div class="divider"></div>
-
-                    ${
-                      isPending
-                        ? `
-                    <div class="row" style="justify-content:space-between; align-items:center">
-                        <button class="small danger" onclick="reject('${c.id}'); document.getElementById('cadDetailsModal').style.display='none'">Reprovar</button>
-                        <div class="row">
-                            <button class="small warn" onclick="markReview('${c.id}')">Em Análise</button>
-                            <button class="primary" onclick="approve('${c.id}'); document.getElementById('cadDetailsModal').style.display='none'">✅ APROVAR</button>
+                        
+                        <div class="divider"></div>
+                        
+                        <div class="row" style="align-items:center; gap:15px; margin-bottom:15px">
+                            <div style="background:rgba(255,255,255,0.1); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0">👤</div>
+                            <div>
+                                <div style="font-size:18px; font-weight:bold">${c.name}</div>
+                                <div class="badge">${cadKindLabel(c.kind)}</div>
+                            </div>
                         </div>
-                    </div>`
-                        : `
-                    <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px">
-                        Status atual: <b>${c.status.toUpperCase()}</b>
-                    </div>`
-                    }
 
-                </div></div>
+                        <div class="two">
+                            <div><div class="muted">Profissão</div><b>${c.profession || "—"}</b></div>
+                            <div><div class="muted">Especialidade</div><b>${c.spec || "—"}</b></div>
+                        </div>
+                        <div class="sp"></div>
+                        <div class="two">
+                            <div><div class="muted">Registro (CRM/CNPJ)</div><b>${c.reg || c.crm || "—"}</b></div>
+                            <div><div class="muted">WhatsApp</div><b>${c.wpp}</b></div>
+                        </div>
+                        <div class="sp"></div>
+                        <div><div class="muted">Localidade</div><div>${c.addr || ""}</div><div>${c.city}/${c.uf}</div></div>
+
+                        <div class="divider"></div>
+                        <div class="section-title">Documentos Anexados</div>
+                        ${docList || "<div class='muted'>Nenhum documento anexado.</div>"}
+
+                        <div class="sp"></div>
+                        <div class="sp"></div>
+                    </div>
+
+                    <div class="cardin" style="border-top:1px solid var(--line); background:rgba(0,0,0,0.2)">
+                        ${
+                          isPending
+                            ? `
+                        <div class="row" style="justify-content:space-between; align-items:center">
+                            <button class="small danger" onclick="reject('${c.id}'); document.getElementById('cadDetailsModal').style.display='none'">Reprovar</button>
+                            <div class="row">
+                                <button class="small warn" onclick="markReview('${c.id}')">Em Análise</button>
+                                <button class="primary" onclick="approve('${c.id}'); document.getElementById('cadDetailsModal').style.display='none'">✅ APROVAR</button>
+                            </div>
+                        </div>`
+                            : `
+                        <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px">
+                            Status atual: <b>${c.status.toUpperCase()}</b>
+                        </div>`
+                        }
+                    </div>
+
+                </div>
             </div>`;
 
           const el = document.getElementById("cadDetailsModal");
