@@ -4561,6 +4561,7 @@
         }
 
         // --- 2. LÓGICA DE CÁLCULO (Mantida original, mas desacoplada) ---
+        // --- 2. LÓGICA DE CÁLCULO (CORRIGIDA: Real = 0 se não tiver ponto) ---
         function calculateCurrentData() {
           // Pega regras do banco ou padrão
           const r = DB.payRules || {};
@@ -4568,12 +4569,15 @@
           const taxRate = r.taxRate || 0;
           const multN = r.nightMult || 1.2;
           const multW = r.weekendMult || 1.15;
+
+          // Verifica se a regra é "Usar Check-in/out Real"
+          // Se for true, só paga o que foi trabalhado. Se false, paga o agendado.
           const useReal = r.useCheckIO;
 
           const month = window.payFilterMonth || isoMonth(nowISO());
           const unit = window.payFilterUnit;
 
-          // Filtra plantões na memória (que já vem do Firestore)
+          // Filtra plantões na memória
           const rawShifts = DB.shifts.filter(
             (s) =>
               s.month === month && (!unit || s.unitId === unit) && s.profId,
@@ -4603,25 +4607,39 @@
             if (!map[s.profId])
               map[s.profId] = { profId: s.profId, hours: 0, value: 0 };
 
-            // Define horas: Planejado vs Real
-            let h = timeDiff(s.start, s.end);
-            if (useReal && s.checkInAt && s.checkOutAt) {
-              h = timeDiff(
-                s.checkInAt.slice(11, 16),
-                s.checkOutAt.slice(11, 16),
-              );
+            // --- LÓGICA CORRIGIDA AQUI ---
+            let h = 0;
+            let startCalc = s.start;
+            let endCalc = s.end;
+
+            if (useReal) {
+              // Modo Real: Só calcula se tiver AMBOS (Entrada e Saída)
+              if (s.checkInAt && s.checkOutAt) {
+                startCalc = s.checkInAt.slice(11, 16);
+                endCalc = s.checkOutAt.slice(11, 16);
+                h = timeDiff(startCalc, endCalc);
+              } else {
+                // Se não tiver ponto completo, é ZERO horas a pagar
+                h = 0;
+              }
+            } else {
+              // Modo Planejado: Sempre usa o horário da escala
+              h = timeDiff(s.start, s.end);
             }
 
-            // Calcula Multiplicador
-            let m = 1.0;
-            const sH = parseHM(s.start),
-              eH = parseHM(s.end);
-            const isNight = sH >= 19 || eH <= 7 || eH < sH;
-            if (isWeekend(s.date)) m = Math.max(m, multW);
-            if (isNight) m = Math.max(m, multN);
+            // Se houver horas a pagar, aplica multiplicadores
+            if (h > 0) {
+              let m = 1.0;
+              const sH = parseHM(startCalc),
+                eH = parseHM(endCalc);
+              const isNight = sH >= 19 || eH <= 7 || eH < sH; // Simplificado
 
-            map[s.profId].hours += h;
-            map[s.profId].value += h * rate * m;
+              if (isWeekend(s.date)) m = Math.max(m, multW);
+              if (isNight) m = Math.max(m, multN);
+
+              map[s.profId].hours += h;
+              map[s.profId].value += h * rate * m;
+            }
           });
 
           return Object.values(map).map((item) => {
