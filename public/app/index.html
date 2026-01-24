@@ -3793,14 +3793,39 @@
           }
         }
 
-        // --- CONTROLE DO MODAL ---
+        // --- CONTROLE DO MODAL (COM PROTEÇÃO PARA GESTOR) ---
         window.openUnitModal = (isEdit) => {
           $("unitModal").style.display = "flex";
           $("unitFormTitle").textContent = isEdit
             ? "Editar Unidade"
             : "Nova Unidade";
 
+          // Verifica se é Gestor
+          const isGestor = session.role === "gestor";
+
+          // Lista de campos sensíveis que o Gestor NÃO pode mexer
+          const sensitiveFields = [
+            "uName",
+            "uType",
+            "uSys",
+            "uLat",
+            "uLon",
+            "uRadius",
+            "btnGeoSearch",
+          ];
+
+          sensitiveFields.forEach((id) => {
+            const el = $(id);
+            if (el) {
+              // Se for gestor E estiver editando, desabilita. Admin pode tudo.
+              el.disabled = isGestor && isEdit;
+              el.style.opacity = isGestor && isEdit ? "0.5" : "1";
+              el.style.cursor = isGestor && isEdit ? "not-allowed" : "auto";
+            }
+          });
+
           if (!isEdit) {
+            // Se for criar nova, limpa tudo (Gestor nem deveria ver botão de criar, já tratamos no render)
             editingId = null;
             const ufEl = $("uUF");
             if (ufEl) {
@@ -5740,17 +5765,58 @@
         return `
         <div class="grid g2">
             <div class="card"><div class="cardin">
+                
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
                     <h2 style="margin:0">${t("schedTitle")}</h2>
                     ${role === "admin" ? `<button class="small" style="padding:4px 8px; font-size:10px" onclick="editTemplates()">⚙️</button>` : ""} 
                 </div>
+
+                ${(() => {
+                  if (role === "prof") return ""; // Médico não vê isso, só Gestor/Admin
+
+                  // Lógica: Plantão de hoje, hora já passou, sem check-in
+                  const today = isoDateAdd(0);
+                  const nowH = new Date().getHours();
+                  const nowM = new Date().getMinutes();
+                  const nowTime = nowH + nowM / 60;
+
+                  let lateCount = 0;
+                  DB.shifts.forEach((s) => {
+                    // Verifica se é hoje e não tem check-in
+                    if (s.date === today && !s.checkInAt) {
+                      const [sh, sm] = s.start.split(":").map(Number);
+                      const startVal = sh + sm / 60;
+
+                      // Se já passou 15 min (0.25h) do início e não tem check-in
+                      if (nowTime > startVal + 0.25) {
+                        lateCount++;
+                      }
+                    }
+                  });
+
+                  // Se tiver atrasos, desenha o alerta vermelho
+                  if (lateCount > 0) {
+                    return `<div style="background:rgba(255,92,106,0.15); border:1px solid var(--bad); color:#ffcfd3; padding:10px; border-radius:8px; margin-bottom:15px; display:flex; align-items:center; gap:10px">
+                            <span style="font-size:18px">🚨</span>
+                            <div>
+                                <b>Atenção Operacional:</b>
+                                <div style="font-size:12px">Detectamos <b>${lateCount} plantão(ões)</b> com atraso no Check-in hoje. Verifique a tabela.</div>
+                            </div>
+                        </div>`;
+                  }
+                  return "";
+                })()}
+
                 ${headerControls}
+                
                 <div class="sp"></div>
                 ${content}
+                
                 <div class="calFooterHint" style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05)">
                     ✅ <b>Publicar</b> libera visão completa. ↔ <b>Trocar</b> destaca na escala.
                 </div>
             </div></div>
+            
             ${role !== "prof" ? `<div class="grid">${tplEditor}</div>` : ""}
         </div>`;
       }
