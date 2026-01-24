@@ -7169,50 +7169,55 @@
                 (c) => c.status === "received" || c.status === "in_review",
               )
             : listAll;
+
         list.sort((a, b) =>
           (b.submittedAt || "").localeCompare(a.submittedAt || ""),
         );
+
         const rows = list
           .map((c) => {
             const meta = cadStatusMeta(c.status);
             const kind = cadKindLabel(c.kind || "health");
-            const prof =
-              c.kind === "health" && c.profession ? ` • ${c.profession}` : "";
-            const reg = c.reg || c.crm || "";
-            const reason =
-              c.status === "rejected" && c.rejectionReason
-                ? `<div class="muted" style="max-width:360px">${c.rejectionReason}</div>`
-                : "";
-            const canAct = c.status !== "approved" && c.status !== "rejected";
+            // const reg = c.reg || c.crm || ""; // Removido daqui para limpar a view, vai para o modal
+
             return `<tr>
-      <td><b>${c.name}</b><div class="muted">${kind}${prof} • ${c.wpp}${reg ? " • " + reg : ""}</div>${reason}</td>
-      <td>${c.uf || "—"} / ${c.city || "—"}</td>
-      <td>${(c.submittedAt || "").slice(0, 10) || "—"}</td>
-      <td><span class="${meta.cls}">${meta.txt}</span></td>
-      <td class="row" style="gap:8px; flex-wrap:wrap">
-        ${canAct ? `<button class="small warn" onclick="markReview(\'${c.id}\')">${t("cadReview")}</button>` : ``}
-        ${canAct ? `<button class="small primary" onclick="approve(\'${c.id}\')">${t("cadApprove")}</button>` : ``}
-        ${canAct ? `<button class="small danger" onclick="reject(\'${c.id}\')">${t("cadReject")}</button>` : ``}
-      </td>
-    </tr>`;
+              <td>
+                <div style="font-weight:bold">${c.name}</div>
+                <div class="muted" style="font-size:11px">${kind} • ${c.wpp}</div>
+              </td>
+              <td>${c.uf || "—"}/${c.city || "—"}</td>
+              <td>${(c.submittedAt || "").slice(0, 10) || "—"}</td>
+              <td><span class="${meta.cls}">${meta.txt}</span></td>
+              <td style="text-align:right">
+                <button class="small" onclick="openCadDetails('${c.id}')" title="Ver Detalhes">👁️ Analisar</button>
+              </td>
+            </tr>`;
           })
           .join("");
+
         return `
-  <div class="card"><div class="cardin">
-    <div class="row" style="justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap">
-      <div>
-        <h2>${t("cadTitle")}</h2>
-        <div class="muted">Recebido → Em análise → Aprovado/Rejeitado</div>
-      </div>
-      <div class="row" style="gap:8px">
-        <button class="small ${cadFilter === "pending" ? "primary" : "warn"}" onclick="setCadFilter(\'pending\')">${t("cadViewPending")}</button>
-        <button class="small ${cadFilter === "all" ? "primary" : "warn"}" onclick="setCadFilter(\'all\')">${t("cadViewAll")}</button>
-      </div>
-    </div>
-    <div class="sp"></div>
-    <table class="table"><thead><tr><th>${t("lblName")}</th><th>${t("lblCity")}</th><th>${t("shiftDate")}</th><th>${t("cadStatus")}</th><th>Ação</th></tr></thead>
-    <tbody>${rows || `<tr><td colspan="5" class="muted">—</td></tr>`}</tbody></table>
-  </div></div>`;
+          <div class="card"><div class="cardin">
+            <div class="row" style="justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap">
+              <div>
+                <h2>${t("cadTitle")}</h2>
+                <div class="muted">Validação de documentos e liberação de acesso.</div>
+              </div>
+              <div class="row" style="gap:8px">
+                <button class="small ${cadFilter === "pending" ? "primary" : ""}" onclick="setCadFilter('pending')">${t("cadViewPending")}</button>
+                <button class="small ${cadFilter === "all" ? "primary" : ""}" onclick="setCadFilter('all')">${t("cadViewAll")}</button>
+              </div>
+            </div>
+            <div class="sp"></div>
+            <div class="tableWrap">
+                <table class="table">
+                    <thead><tr><th>Candidato</th><th>Local</th><th>Data</th><th>Status</th><th style="text-align:right">Ação</th></tr></thead>
+                    <tbody>${rows || `<tr><td colspan="5" class="muted" style="text-align:center; padding:20px">Nenhuma solicitação encontrada.</td></tr>`}</tbody>
+                </table>
+            </div>
+          </div></div>
+          
+          <div id="cadDetailsModal" class="modalOverlay" style="display:none; z-index:900"></div>
+          `;
       }
       function setCadFilter(v) {
         cadFilter = v;
@@ -7296,36 +7301,123 @@
         openReject(id);
       };
 
-      // --- ABA DE CADASTROS (ADMIN) ---
+      // --- ABA DE CADASTROS (ATUALIZADA COM MODAL DE ANÁLISE) ---
       function bindCad() {
         // Escuta a coleção 'cadastros' em tempo real
         const unsubscribe = db
           .collection("cadastros")
-          .orderBy("submittedAt", "desc") // Mais recentes primeiro
+          .orderBy("submittedAt", "desc")
           .onSnapshot((snap) => {
             const list = [];
-            snap.forEach((doc) => {
-              list.push({ id: doc.id, ...doc.data() });
-            });
+            snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+            DB.cadastros = list;
 
-            DB.cadastros = list; // Atualiza memória local
-
-            // Se estiver na aba de cadastros, redesenha a tabela
             const tab = document.querySelector(".tab.active");
             if (tab && tab.dataset.key === "cad") {
-              // Atualiza apenas o corpo da tabela para não perder filtros
-              // Mas como o renderCad desenha tudo, vamos chamar renderInternalBody
-              // O ideal seria isolar a tabela, mas isso funciona:
-              const isModalOpen =
-                document.getElementById("rejOverlay").style.display === "flex";
-              if (!isModalOpen) {
+              // Só redesenha o fundo se não tiver modal aberto, para não fechar na cara do usuário
+              if (
+                document.getElementById("cadDetailsModal").style.display ===
+                "none"
+              ) {
                 document.getElementById("inBody").innerHTML = renderCad();
               }
             }
-
-            // Atualiza o contador de pendentes na Home
             renderHomeKPIs();
           });
+
+        // --- NOVA FUNÇÃO: Abrir Detalhes ---
+        window.openCadDetails = (id) => {
+          const c = DB.cadastros.find((x) => x.id === id);
+          if (!c) return;
+
+          const docs = c.docs || {};
+          const docList = [
+            { l: "Doc. Pessoal", n: docs.doc1Name, t: docs.doc1Type },
+            { l: "Diploma/Frente", n: docs.doc2FrontName },
+            { l: "Diploma/Verso", n: docs.doc2BackName },
+            { l: "Conselho/CRI", n: docs.doc3Name },
+            { l: "RQE/Outros", n: docs.doc4Name },
+          ]
+            .filter((d) => d.n && d.n !== "Nenhum arquivo selecionado")
+            .map(
+              (d) => `
+                <div class="docItem" style="margin-bottom:6px; padding:8px; display:flex; justify-content:space-between; align-items:center">
+                    <div>
+                        <div class="muted" style="font-size:10px; text-transform:uppercase">${d.l}</div>
+                        <div style="font-size:13px; font-weight:bold">📄 ${d.n}</div>
+                        ${d.t ? `<span class="badge" style="font-size:10px">${d.t}</span>` : ""}
+                    </div>
+                    <button class="small" onclick="toast('Demo: Download simulado de ${d.n}')">Baixar ⬇</button>
+                </div>
+             `,
+            )
+            .join("");
+
+          const isPending = c.status !== "approved" && c.status !== "rejected";
+
+          const modalHtml = `
+            <div class="modal" style="max-width:500px">
+                <div class="card"><div class="cardin">
+                    <div class="row" style="justify-content:space-between; align-items:flex-start">
+                        <div>
+                            <h3 style="margin:0">Análise de Candidato</h3>
+                            <div class="muted">ID: ${c.id.slice(0, 8)}...</div>
+                        </div>
+                        <button class="small" onclick="document.getElementById('cadDetailsModal').style.display='none'">✕</button>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="row" style="align-items:center; gap:15px; margin-bottom:15px">
+                        <div style="background:rgba(255,255,255,0.1); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px">👤</div>
+                        <div>
+                            <div style="font-size:18px; font-weight:bold">${c.name}</div>
+                            <div class="badge">${cadKindLabel(c.kind)}</div>
+                        </div>
+                    </div>
+
+                    <div class="two">
+                        <div><div class="muted">Profissão</div><b>${c.profession || "—"}</b></div>
+                        <div><div class="muted">Especialidade</div><b>${c.spec || "—"}</b></div>
+                    </div>
+                    <div class="sp"></div>
+                    <div class="two">
+                        <div><div class="muted">Registro (CRM/CNPJ)</div><b>${c.reg || c.crm || "—"}</b></div>
+                        <div><div class="muted">WhatsApp</div><b>${c.wpp}</b></div>
+                    </div>
+                    <div class="sp"></div>
+                    <div><div class="muted">Localidade</div><div>${c.addr || ""}</div><div>${c.city}/${c.uf}</div></div>
+
+                    <div class="divider"></div>
+                    <div class="section-title">Documentos Anexados</div>
+                    ${docList || "<div class='muted'>Nenhum documento anexado.</div>"}
+
+                    <div class="sp"></div>
+                    <div class="divider"></div>
+
+                    ${
+                      isPending
+                        ? `
+                    <div class="row" style="justify-content:space-between; align-items:center">
+                        <button class="small danger" onclick="reject('${c.id}'); document.getElementById('cadDetailsModal').style.display='none'">Reprovar</button>
+                        <div class="row">
+                            <button class="small warn" onclick="markReview('${c.id}')">Em Análise</button>
+                            <button class="primary" onclick="approve('${c.id}'); document.getElementById('cadDetailsModal').style.display='none'">✅ APROVAR</button>
+                        </div>
+                    </div>`
+                        : `
+                    <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.05); border-radius:8px">
+                        Status atual: <b>${c.status.toUpperCase()}</b>
+                    </div>`
+                    }
+
+                </div></div>
+            </div>`;
+
+          const el = document.getElementById("cadDetailsModal");
+          el.innerHTML = modalHtml;
+          el.style.display = "flex";
+        };
       }
 
       /* ========= Reports (CSV+JSON+PDF) ========= */

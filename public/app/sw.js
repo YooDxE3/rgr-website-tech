@@ -1,4 +1,4 @@
-const CACHE_NAME="viargr-v20.16.10"; // Versão atualizada para forçar atualização no celular
+const CACHE_NAME="viargr-v20.16.11"; // Versão atualizada para forçar atualização no celular
 const ASSETS=[
   "./",
   "./index.html",
