@@ -7027,6 +7027,7 @@
 
       // 2. Salvar com as Permissões (Array de IDs)
       // 2. Salvar com Unidade Selecionada (Dropdown)
+      // 2. Salvar com Unidade Selecionada (Dropdown) - VERSÃO CORRIGIDA
       window.saveNewSystemUser = async () => {
         const name = $("newUName").value.trim();
         const userRaw = $("newUUser").value.trim();
@@ -7036,44 +7037,56 @@
 
         if (!name || !user || !pass) return toast("Preencha os dados básicos.");
 
-        // Captura a unidade selecionada no Dropdown
+        // Captura a unidade selecionada
         let selectedUnits = [];
-
         if (role === "gestor") {
           const uId = $("newUAllowedUnit").value;
           if (uId) {
-            // O sistema espera um array (lista), então colocamos o ID dentro de colchetes
             selectedUnits.push(uId);
           } else {
             return toast("Selecione a unidade para o Gestor.");
           }
         }
 
-        toast("Salvando...");
+        const btn = event.target; // Pega o botão para dar feedback visual
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
 
         try {
           const check = await db
             .collection("users")
             .where("user", "==", user)
             .get();
-          if (!check.empty) return toast("❌ Login já existe.");
+          if (!check.empty) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+            return toast("❌ Login já existe.");
+          }
 
           await db.collection("users").add({
             name,
             user,
             pass,
             role,
-            // Se Admin, array vazio (acesso total). Se Gestor, array com o ID da unidade.
             allowedUnits: role === "admin" ? [] : selectedUnits,
             createdAt: new Date().toISOString(),
           });
 
           toast("✅ Usuário criado!");
-          document.getElementById("userOverlay").remove();
-          renderInternalBody("team");
+
+          // --- A CORREÇÃO ESTÁ AQUI ---
+          // Verifica se o modal ainda existe antes de tentar remover
+          const overlay = document.getElementById("userOverlay");
+          if (overlay) overlay.remove();
+          // ----------------------------
+
+          renderInternalBody("team"); // Garante a atualização visual
         } catch (e) {
           console.error(e);
-          toast("Erro ao salvar.");
+          toast("Erro ao salvar."); // Agora isso só aparece se der erro no banco mesmo
+          btn.disabled = false;
+          btn.textContent = originalText;
         }
       };
 
