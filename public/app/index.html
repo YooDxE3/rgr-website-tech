@@ -5649,42 +5649,43 @@
 
       function renderSchedule() {
         const role = session.role;
-        // Proteção: só busca médico se tiver ID na sessão
         const me =
           role === "prof" && session.profId ? getProf(session.profId) : null;
 
-        // Variáveis do botão Face ID
         const bioIcon = me && me.bioCredId ? "👤✅" : "👤";
         const bioClass = me && me.bioCredId ? "bGood" : "";
         const bioLabel = me && me.bioCredId ? t("bioBtnOn") : t("bioBtnOff");
 
         const currentUnit = window.tempUnitFilter || "";
 
-        // --- 1. LÓGICA DE FILTRO & TRAVAMENTO (A Mágica acontece aqui) ---
+        // --- 1. LÓGICA DE FILTRO E TRAVAMENTO (AQUI ESTÁ A CORREÇÃO) ---
         let visibleUnits = DB.units;
-        if (session.role === "gestor" && session.allowedUnits) {
-          visibleUnits = DB.units.filter((u) =>
-            session.allowedUnits.includes(u.id),
-          );
+
+        if (role === "gestor") {
+          // Se for gestor, usa a lista permitida. Se a lista não existir, assume vazio (segurança).
+          const allowed = session.allowedUnits || [];
+          visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
         }
 
-        // Verifica se deve travar o campo (Gestor com apenas 1 unidade)
-        const isSingleUnit =
-          session.role === "gestor" && visibleUnits.length === 1;
+        // Verifica se é caso de Unidade Única (para travar o campo)
+        const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
 
-        // Estilo CSS para quando estiver travado (fundo mais escuro, sem cursor)
+        // Cria o atributo de travamento HTML
+        // opacity:0.7 deixa meio apagado, pointer-events:none impede cliques
         const lockAttr = isSingleUnit
-          ? 'disabled style="opacity:0.8; cursor:not-allowed; background:rgba(255,255,255,0.05); color:var(--muted); border-color:transparent"'
+          ? 'disabled style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.05); color:var(--text); border-color:transparent; pointer-events:none;"'
           : "";
 
-        // Gera as opções (já pré-selecionando a única se estiver travado)
+        // Gera as opções do Select
         const unitOpt = visibleUnits
-          .map(
-            (u) =>
-              `<option value="${u.id}" ${isSingleUnit || u.id === currentUnit ? "selected" : ""}>${u.name} (${u.uf})</option>`,
-          )
+          .map((u) => {
+            // Se estiver travado, força a seleção da única opção existente
+            const isSelected =
+              isSingleUnit || u.id === currentUnit ? "selected" : "";
+            return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})</option>`;
+          })
           .join("");
-        // ----------------------------------------------------------------
+        // ---------------------------------------------------------------
 
         const currentSpec = window.tempSpecFilter || "";
         const safeSpecs = typeof SPECIALTIES !== "undefined" ? SPECIALTIES : [];
@@ -5742,7 +5743,7 @@
             </div>`;
         } else {
           // ADMIN / GESTOR
-          // Aqui aplicamos o "lockAttr" também no Filtro do topo (fUnit)
+          // Aplicamos o lockAttr também no filtro superior
           headerControls = `
             <div style="display:flex; flex-direction:column; gap:10px">
                 <div class="row" style="gap:8px">
@@ -5773,8 +5774,7 @@
             ? renderCalendar()
             : renderScheduleTable();
 
-        // 3. EDITOR MANUAL (Onde você cria o plantão)
-        // Aplicamos o "lockAttr" no select "sUnit" também
+        // 2. APLICAÇÃO NO EDITOR MANUAL (Adicionar Plantão)
         const tplEditor =
           role === "prof"
             ? ""
