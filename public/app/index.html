@@ -6962,18 +6962,11 @@
       // Abrir Modal de Novo Admin
       /* --- LÓGICA DE USUÁRIOS DO SISTEMA (MIGRADO PARA FIREBASE) --- */
 
-      // 1. Abrir Modal com Seleção de Unidades
+      // 1. Abrir Modal com Dropdown de Unidade
       window.openAddUserModal = () => {
-        // Gera lista de checkboxes com todas as unidades do sistema
-        const unitsCheckboxes = DB.units
-          .map(
-            (u) => `
-            <label class="row" style="gap:8px; margin-bottom:5px; background:rgba(255,255,255,0.02); padding:5px; border-radius:6px">
-                <input type="checkbox" class="unit-check" value="${u.id}">
-                <span style="font-size:12px">${u.name}</span>
-            </label>
-        `,
-          )
+        // Gera as opções do Dropdown
+        const unitOptions = DB.units
+          .map((u) => `<option value="${u.id}">${u.name}</option>`)
           .join("");
 
         const modalHtml = `
@@ -6992,15 +6985,21 @@
                 <div class="two">
                     <input id="newUPass" type="text" placeholder="Senha">
                     <select id="newURole" onchange="toggleUnitSelect(this.value)">
-                        <option value="gestor">Gestor (Acesso Restrito)</option>
                         <option value="admin">Administrador (Acesso Total)</option>
+                        <option value="gestor" selected>Gestor (Acesso Restrito)</option>
                     </select>
                 </div>
 
                 <div id="unitSelectBox" style="margin-top:15px; border-top:1px solid var(--line); padding-top:10px">
-                    <div class="muted" style="margin-bottom:8px">Unidades Permitidas:</div>
-                    <div style="max-height:150px; overflow-y:auto; border:1px solid var(--line); border-radius:8px; padding:8px">
-                        ${unitsCheckboxes || '<div class="muted">Nenhuma unidade cadastrada.</div>'}
+                    <div class="muted" style="margin-bottom:8px">Vincular à Unidade:</div>
+                    
+                    <div class="selectWrap">
+                        <select id="newUAllowedUnit" style="width:100%">
+                            ${unitOptions || '<option value="">Nenhuma unidade cadastrada</option>'}
+                        </select>
+                    </div>
+                    <div class="muted" style="font-size:11px; margin-top:5px">
+                        O Gestor terá acesso total apenas à unidade selecionada acima.
                     </div>
                 </div>
 
@@ -7013,9 +7012,13 @@
             </div>
           </div>
           <script>
+            // Pequena função para esconder o select se for Admin
             function toggleUnitSelect(role) {
-                document.getElementById('unitSelectBox').style.display = role === 'admin' ? 'none' : 'block';
+                const box = document.getElementById('unitSelectBox');
+                if(box) box.style.display = role === 'admin' ? 'none' : 'block';
             }
+            // Roda ao abrir para garantir estado correto
+            setTimeout(() => toggleUnitSelect(document.getElementById('newURole').value), 50);
           <\/script>
           `;
         const anchor = document.getElementById("teamModalAnchor");
@@ -7023,6 +7026,7 @@
       };
 
       // 2. Salvar com as Permissões (Array de IDs)
+      // 2. Salvar com Unidade Selecionada (Dropdown)
       window.saveNewSystemUser = async () => {
         const name = $("newUName").value.trim();
         const userRaw = $("newUUser").value.trim();
@@ -7032,15 +7036,17 @@
 
         if (!name || !user || !pass) return toast("Preencha os dados básicos.");
 
-        // Captura as unidades marcadas
-        const selectedUnits = [];
-        document.querySelectorAll(".unit-check:checked").forEach((cb) => {
-          selectedUnits.push(cb.value);
-        });
+        // Captura a unidade selecionada no Dropdown
+        let selectedUnits = [];
 
-        // Se for gestor, OBRIGA a selecionar pelo menos uma
-        if (role === "gestor" && selectedUnits.length === 0) {
-          return toast("Selecione ao menos uma unidade para o Gestor.");
+        if (role === "gestor") {
+          const uId = $("newUAllowedUnit").value;
+          if (uId) {
+            // O sistema espera um array (lista), então colocamos o ID dentro de colchetes
+            selectedUnits.push(uId);
+          } else {
+            return toast("Selecione a unidade para o Gestor.");
+          }
         }
 
         toast("Salvando...");
@@ -7057,8 +7063,7 @@
             user,
             pass,
             role,
-            // Se for admin, o array pode ser vazio (tem acesso a tudo por padrão)
-            // Se for gestor, salva a lista de IDs
+            // Se Admin, array vazio (acesso total). Se Gestor, array com o ID da unidade.
             allowedUnits: role === "admin" ? [] : selectedUnits,
             createdAt: new Date().toISOString(),
           });
