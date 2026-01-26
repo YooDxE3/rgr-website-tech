@@ -5687,13 +5687,19 @@
         let unitOpt = "";
 
         if (role === "gestor" && visibleUnits.length === 0) {
-          // Diagnóstico: Por que está vazio?
+          // Diagnóstico Avançado
           if (DB.units.length === 0) {
-            // Caso A: O sistema ainda não baixou as unidades da nuvem
             unitOpt = `<option value="">⏳ Carregando unidades...</option>`;
           } else {
-            // Caso B: As unidades existem, mas o ID não bate com a permissão do Gestor
-            unitOpt = `<option value="">🚫 Unidade não encontrada (Verifique o cadastro)</option>`;
+            // Mostra o ID que o gestor TEM vs os IDs que EXISTEM
+            const myUnitId = session.allowedUnits
+              ? session.allowedUnits[0]
+              : "Nenhum";
+            console.warn(
+              `Gestor tem ID: ${myUnitId}. IDs disponíveis:`,
+              DB.units.map((u) => u.id),
+            );
+            unitOpt = `<option value="">🚫 Erro de Vínculo (ID: ${myUnitId} sumiu)</option>`;
           }
         } else {
           // Caso Normal
@@ -6917,7 +6923,7 @@
       function renderTeam() {
         const isAdmin = session.role === "admin";
 
-        // 1. Tabela de Usuários do Sistema (SÓ ADMIN VÊ)
+        // 1. Tabela de Usuários do Sistema (Admins e Gestores)
         let systemUsersSection = "";
 
         if (isAdmin) {
@@ -6928,7 +6934,10 @@
                 <td><b>${u.name || u.user}</b><div class="muted">Login: ${u.user}</div></td>
                 <td><span class="badge ${u.role === "admin" ? "bGood" : "bWarn"}">${u.role.toUpperCase()}</span></td>
                 <td style="text-align:right">
-                  <button class="small danger" onclick="deleteSystemUser('${u.id}')">🗑️</button>
+                  <div class="row" style="justify-content:flex-end; gap:5px">
+                      <button class="small" onclick="openAddUserModal('${u.id}')" title="Editar Permissões">✏️</button>
+                      <button class="small danger" onclick="deleteSystemUser('${u.id}')" title="Excluir">🗑️</button>
+                  </div>
                 </td>
               </tr>`,
             )
@@ -6954,7 +6963,7 @@
             <div class="sp"></div>`;
         }
 
-        // 2. Tabela de Profissionais (TODOS VEEM)
+        // 2. Tabela de Profissionais (Mantida igual)
         const profRows = (DB.profs || [])
           .map(
             (p) => `
@@ -6968,7 +6977,6 @@
           </tr>`,
           )
           .join("");
-        // Note acima: Só admin vê o botão de EXCLUIR médico. Gestor só edita.
 
         return `
         ${systemUsersSection}
@@ -6992,31 +7000,47 @@
       // Abrir Modal de Novo Admin
       /* --- LÓGICA DE USUÁRIOS DO SISTEMA (MIGRADO PARA FIREBASE) --- */
 
-      // 1. Abrir Modal com Dropdown de Unidade
-      window.openAddUserModal = () => {
+      // 1. Abrir Modal de Usuário (Criação ou Edição)
+      window.openAddUserModal = (editId = null) => {
+        // Se for edição, busca os dados
+        const userToEdit = editId
+          ? DB.users.find((u) => u.id === editId)
+          : null;
+
+        // Pega a unidade vinculada atual (se houver)
+        const currentAllowed =
+          userToEdit &&
+          userToEdit.allowedUnits &&
+          userToEdit.allowedUnits.length > 0
+            ? userToEdit.allowedUnits[0]
+            : "";
+
         // Gera as opções do Dropdown
         const unitOptions = DB.units
-          .map((u) => `<option value="${u.id}">${u.name}</option>`)
+          .map(
+            (u) =>
+              `<option value="${u.id}" ${u.id === currentAllowed ? "selected" : ""}>${u.name}</option>`,
+          )
           .join("");
 
         const modalHtml = `
           <div class="modalOverlay" id="userOverlay" style="display:flex">
             <div class="modal" style="max-width:450px">
               <div class="card"><div class="cardin">
-                <h2>Novo Usuário do Sistema</h2>
+                <h2>${userToEdit ? "Editar Usuário" : "Novo Usuário"}</h2>
                 <div class="sp"></div>
                 
                 <div class="muted">Dados de Acesso</div>
                 <div class="two">
-                    <input id="newUName" placeholder="Nome (Ex: Gestor Ana)">
-                    <input id="newUUser" placeholder="Login (Ex: ana.gestora)">
+                    <input id="newUName" placeholder="Nome" value="${userToEdit ? userToEdit.name : ""}">
+                    <input id="newUUser" placeholder="Login" value="${userToEdit ? userToEdit.user : ""}" ${userToEdit ? "disabled style='opacity:0.6'" : ""}>
                 </div>
                 <div class="sp"></div>
                 <div class="two">
-                    <input id="newUPass" type="text" placeholder="Senha">
+                    <input id="newUPass" type="text" placeholder="${userToEdit ? "Nova Senha (opcional)" : "Senha"}">
                     <select id="newURole" onchange="toggleUnitSelect(this.value)">
-                        <option value="admin">Administrador (Acesso Total)</option>
-                        <option value="gestor" selected>Gestor (Acesso Restrito)</option>
+                        <option value="admin" ${userToEdit && userToEdit.role === "admin" ? "selected" : ""}>Administrador</option>
+                        <option value="gestor" ${!userToEdit || userToEdit.role === "gestor" ? "selected" : ""}>Gestor</option>
                     </select>
                 </div>
 
@@ -7025,6 +7049,7 @@
                     
                     <div class="selectWrap">
                         <select id="newUAllowedUnit" style="width:100%">
+                            <option value="">Selecione...</option>
                             ${unitOptions || '<option value="">Nenhuma unidade cadastrada</option>'}
                         </select>
                     </div>
@@ -7036,13 +7061,12 @@
                 <div class="sp"></div>
                 <div class="row" style="justify-content:flex-end">
                   <button class="small" onclick="document.getElementById('userOverlay').remove()">Cancelar</button>
-                  <button class="primary" onclick="saveNewSystemUser()">Salvar Usuário</button>
+                  <button class="primary" onclick="saveNewSystemUser('${editId || ""}')">Salvar</button>
                 </div>
               </div></div>
             </div>
           </div>
           <script>
-            // Pequena função para esconder o select se for Admin
             function toggleUnitSelect(role) {
                 const box = document.getElementById('unitSelectBox');
                 if(box) box.style.display = role === 'admin' ? 'none' : 'block';
@@ -7055,17 +7079,17 @@
         if (anchor) anchor.innerHTML = modalHtml;
       };
 
-      // 2. Salvar com as Permissões (Array de IDs)
-      // 2. Salvar com Unidade Selecionada (Dropdown)
-      // 2. Salvar com Unidade Selecionada (Dropdown) - VERSÃO CORRIGIDA
-      window.saveNewSystemUser = async () => {
+      // 2. Salvar Usuário (Criação ou Atualização)
+      window.saveNewSystemUser = async (editId) => {
         const name = $("newUName").value.trim();
         const userRaw = $("newUUser").value.trim();
         const user = userRaw.toLowerCase();
         const pass = $("newUPass").value.trim();
         const role = $("newURole").value;
 
-        if (!name || !user || !pass) return toast("Preencha os dados básicos.");
+        // Validação
+        if (!name || (!editId && !user) || (!editId && !pass))
+          return toast("Preencha os dados básicos.");
 
         // Captura a unidade selecionada
         let selectedUnits = [];
@@ -7078,43 +7102,53 @@
           }
         }
 
-        const btn = event.target; // Pega o botão para dar feedback visual
+        const btn = event.target;
         const originalText = btn.textContent;
         btn.disabled = true;
         btn.textContent = "Salvando...";
 
         try {
-          const check = await db
-            .collection("users")
-            .where("user", "==", user)
-            .get();
-          if (!check.empty) {
-            btn.disabled = false;
-            btn.textContent = originalText;
-            return toast("❌ Login já existe.");
+          // Se for novo usuário, verifica duplicidade de login
+          if (!editId) {
+            const check = await db
+              .collection("users")
+              .where("user", "==", user)
+              .get();
+            if (!check.empty) {
+              btn.disabled = false;
+              btn.textContent = originalText;
+              return toast("❌ Login já existe.");
+            }
           }
 
-          await db.collection("users").add({
+          // Monta objeto
+          const payload = {
             name,
-            user,
-            pass,
             role,
             allowedUnits: role === "admin" ? [] : selectedUnits,
-            createdAt: new Date().toISOString(),
-          });
+          };
+          // Só atualiza login/senha se fornecidos (ou se for novo)
+          if (!editId) payload.user = user;
+          if (pass) payload.pass = pass;
+          if (!editId) payload.createdAt = new Date().toISOString();
 
-          toast("✅ Usuário criado!");
+          if (editId) {
+            // ATUALIZAÇÃO
+            await db.collection("users").doc(editId).update(payload);
+            toast("✅ Usuário atualizado!");
+          } else {
+            // CRIAÇÃO
+            await db.collection("users").add(payload);
+            toast("✅ Usuário criado!");
+          }
 
-          // --- A CORREÇÃO ESTÁ AQUI ---
-          // Verifica se o modal ainda existe antes de tentar remover
           const overlay = document.getElementById("userOverlay");
           if (overlay) overlay.remove();
-          // ----------------------------
 
-          renderInternalBody("team"); // Garante a atualização visual
+          renderInternalBody("team");
         } catch (e) {
           console.error(e);
-          toast("Erro ao salvar."); // Agora isso só aparece se der erro no banco mesmo
+          toast("Erro ao salvar.");
           btn.disabled = false;
           btn.textContent = originalText;
         }
