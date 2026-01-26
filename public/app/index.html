@@ -5649,8 +5649,7 @@
 
       function renderSchedule() {
         const role = session.role;
-        const me =
-          role === "prof" && session.profId ? getProf(session.profId) : null;
+        const me = role === "prof" && session.profId ? getProf(session.profId) : null;
 
         const bioIcon = me && me.bioCredId ? "👤✅" : "👤";
         const bioClass = me && me.bioCredId ? "bGood" : "";
@@ -5658,33 +5657,42 @@
 
         const currentUnit = window.tempUnitFilter || "";
 
-        // --- 1. LÓGICA DE FILTRO E TRAVAMENTO (AQUI ESTÁ A CORREÇÃO) ---
+        // --- 1. LÓGICA DE FILTRO E TRAVAMENTO ---
         let visibleUnits = DB.units;
-
+        
         if (role === "gestor") {
-          // Se for gestor, usa a lista permitida. Se a lista não existir, assume vazio (segurança).
-          const allowed = session.allowedUnits || [];
-          visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
+            const allowed = session.allowedUnits || [];
+            // Se a lista existir, filtra. Se for vazia (erro de sessão), mostra aviso.
+            if (allowed.length > 0) {
+                visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
+            } else {
+                // Fallback para não quebrar a tela se a sessão estiver antiga
+                visibleUnits = []; 
+            }
         }
 
-        // Verifica se é caso de Unidade Única (para travar o campo)
-        const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
+        // Verifica se é caso de Unidade Única
+        const isSingleUnit = (role === 'gestor' && visibleUnits.length === 1);
+        
+        // Se for única, forçamos o ID dela como valor atual (caso o filtro esteja vazio)
+        const forcedUnitId = isSingleUnit ? visibleUnits[0].id : currentUnit;
 
-        // Cria o atributo de travamento HTML
-        // opacity:0.7 deixa meio apagado, pointer-events:none impede cliques
-        const lockAttr = isSingleUnit
-          ? 'disabled style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.05); color:var(--text); border-color:transparent; pointer-events:none;"'
-          : "";
+        // Estilo travado
+        const lockAttr = isSingleUnit 
+            ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"' 
+            : '';
 
-        // Gera as opções do Select
-        const unitOpt = visibleUnits
-          .map((u) => {
-            // Se estiver travado, força a seleção da única opção existente
-            const isSelected =
-              isSingleUnit || u.id === currentUnit ? "selected" : "";
-            return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})</option>`;
-          })
-          .join("");
+        // Gera as opções
+        let unitOpt = "";
+        if (visibleUnits.length === 0 && role === "gestor") {
+            unitOpt = `<option value="">⚠️ Erro: Relogue no sistema</option>`;
+        } else {
+            unitOpt = visibleUnits.map((u) => {
+                // Se for unidade única OU for a unidade selecionada no filtro
+                const isSelected = (u.id === forcedUnitId) ? "selected" : "";
+                return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})</option>`;
+            }).join("");
+        }
         // ---------------------------------------------------------------
 
         const currentSpec = window.tempSpecFilter || "";
@@ -5743,7 +5751,6 @@
             </div>`;
         } else {
           // ADMIN / GESTOR
-          // Aplicamos o lockAttr também no filtro superior
           headerControls = `
             <div style="display:flex; flex-direction:column; gap:10px">
                 <div class="row" style="gap:8px">
@@ -5751,7 +5758,7 @@
                     
                     <div class="selectWrap" style="flex:1.5">
                         <select id="fUnit" ${lockAttr}>
-                            ${!isSingleUnit ? '<option value="">Unidade...</option>' : ""}
+                            ${!isSingleUnit ? '<option value="">Unidade...</option>' : ''}
                             ${unitOpt}
                         </select>
                     </div>
@@ -5774,7 +5781,7 @@
             ? renderCalendar()
             : renderScheduleTable();
 
-        // 2. APLICAÇÃO NO EDITOR MANUAL (Adicionar Plantão)
+        // EDITOR DE PLANTÃO (MODAL/CARD INFERIOR)
         const tplEditor =
           role === "prof"
             ? ""
