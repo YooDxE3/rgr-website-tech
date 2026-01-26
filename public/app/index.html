@@ -6811,31 +6811,49 @@
           }
 
           const btnCreate = $("btnShiftCreate");
+
           if (btnCreate)
             btnCreate.onclick = async () => {
-              // ... (Lógica de criar plantão mantida igual) ...
+              // 1. Coleta os dados do formulário
               const date = $("sDate").value;
               const unit = $("sUnit").value;
               const spec = $("sSpec").value;
               const profId = $("sProf").value;
               const start = $("sStart").value;
+
+              // --- CORREÇÃO DE SEGURANÇA (NOVO) ---
+              // Impede que o Gestor crie plantão manual em unidade proibida
+              if (session.role === "gestor" && session.allowedUnits) {
+                if (!session.allowedUnits.includes(unit)) {
+                  return alert(
+                    "⛔ ACESSO NEGADO: Você não pode criar plantões nesta unidade.",
+                  );
+                }
+              }
+              // ------------------------------------
+
+              // 2. Validação básica
               if (!date || !unit || !spec || !profId)
                 return toast("Preencha tudo.");
 
+              // 3. Feedback visual no botão
               const btn = $("btnShiftCreate");
               const txt = btn.innerText;
               btn.disabled = true;
               btn.innerText = "Verificando...";
 
               try {
+                // 4. Verifica conflito de horário
                 const isBusy = await checkConflict(profId, date, start);
                 if (isBusy) {
                   alert("🚫 Conflito de horário.");
+                  // Restaura botão se houver conflito
                   btn.disabled = false;
                   btn.innerText = txt;
                   return;
                 }
 
+                // 5. Salva no banco de dados (Rascunho)
                 await db.collection("shifts").add({
                   unitId: unit,
                   spec,
@@ -6847,7 +6865,7 @@
                   profId,
                   originalProfId: profId,
                   swapped: false,
-                  published: false,
+                  published: false, // Cria como rascunho
                   createdAt: new Date().toISOString(),
                 });
                 toast("✅ Criado!");
@@ -6855,6 +6873,7 @@
                 console.error(e);
                 toast("Erro.");
               } finally {
+                // 6. Restaura botão ao final (sucesso ou erro)
                 btn.disabled = false;
                 btn.innerText = txt;
               }
