@@ -3510,8 +3510,17 @@
 
       /* ========= Units (UI Renovada com Modal) ========= */
       function renderUnits() {
-        const rows = DB.units
+        // 1. Define a lista base e aplica o filtro de segurança
+        let list = DB.units;
+
+        if (session.role === "gestor" && session.allowedUnits) {
+          list = list.filter((u) => session.allowedUnits.includes(u.id));
+        }
+
+        // 2. Agora mapeia a lista filtrada (usamos 'list' em vez de 'DB.units')
+        const rows = list
           .map((u) => {
+            // DAQUI PARA BAIXO O CÓDIGO CONTINUA IGUAL AO QUE VOCÊ JÁ TINHA
             const intStatus = u.integrationStatus || "pendente";
             const badgeClass =
               intStatus === "conectado"
@@ -3520,6 +3529,7 @@
                   ? "bWarn"
                   : "bBad";
 
+            // ... (resto do seu código original: managers, return html, etc) ...
             const gpsIcon =
               u.lat && u.lon
                 ? `<span style="color:var(--good)" title="GPS Configurado">📍</span>`
@@ -5652,7 +5662,16 @@
         // ------------------------
 
         const currentUnit = window.tempUnitFilter || "";
-        const unitOpt = DB.units
+
+        // Lógica de Filtro para Gestor
+        let visibleUnits = DB.units;
+        if (session.role === "gestor" && session.allowedUnits) {
+          visibleUnits = DB.units.filter((u) =>
+            session.allowedUnits.includes(u.id),
+          );
+        }
+
+        const unitOpt = visibleUnits
           .map(
             (u) =>
               `<option value="${u.id}" ${u.id === currentUnit ? "selected" : ""}>${u.name} (${u.uf})</option>`,
@@ -6235,15 +6254,20 @@
 
       /* ========= GERAÇÃO DE ESCALA (VERSÃO FINAL: SEGURA + INTELIGENTE + RÁPIDA) ========= */
       async function genMonthlySchedule(month, unitId, spec, tplKey) {
-        // 1. SEGURANÇA: Verifica se o Gestor tem permissão nesta unidade
-        if (window.currentUser && window.currentUser.role === "gestor") {
-          const allowed = window.currentUser.allowedUnits || [];
-          if (!allowed.includes(unitId)) {
-            return alert(
-              "⛔ Você não tem permissão para gerar escalas nesta unidade.",
-            );
+        // --- BLOQUEIO DE SEGURANÇA (Corrigido) ---
+        // Verifica se é Gestor e se tem a lista de unidades permitidas na sessão
+        if (session.role === "gestor" && session.allowedUnits) {
+          if (!session.allowedUnits.includes(unitId)) {
+            return alert("⛔ ACESSO NEGADO: Você não gerencia esta unidade.");
           }
         }
+        // -----------------------------------------
+
+        // Validação original dos campos
+        if (!month || !unitId || !spec || !tplKey)
+          return toast("Preencha todos os campos.");
+
+        // ... o resto do código continua aqui (const ref = db.collection...)
 
         const tpl = getTpl(tplKey);
         if (!tpl) return false;
@@ -6938,41 +6962,67 @@
       // Abrir Modal de Novo Admin
       /* --- LÓGICA DE USUÁRIOS DO SISTEMA (MIGRADO PARA FIREBASE) --- */
 
-      // 1. Abrir Modal de Novo Admin (Visual igual, lógica preparada)
+      // 1. Abrir Modal com Seleção de Unidades
       window.openAddUserModal = () => {
+        // Gera lista de checkboxes com todas as unidades do sistema
+        const unitsCheckboxes = DB.units
+          .map(
+            (u) => `
+            <label class="row" style="gap:8px; margin-bottom:5px; background:rgba(255,255,255,0.02); padding:5px; border-radius:6px">
+                <input type="checkbox" class="unit-check" value="${u.id}">
+                <span style="font-size:12px">${u.name}</span>
+            </label>
+        `,
+          )
+          .join("");
+
         const modalHtml = `
           <div class="modalOverlay" id="userOverlay" style="display:flex">
-            <div class="modal" style="max-width:400px">
+            <div class="modal" style="max-width:450px">
               <div class="card"><div class="cardin">
                 <h2>Novo Usuário do Sistema</h2>
                 <div class="sp"></div>
-                <div class="muted">Nome de Exibição</div>
-                <input id="newUName" placeholder="Ex: Fulano Silva">
+                
+                <div class="muted">Dados de Acesso</div>
+                <div class="two">
+                    <input id="newUName" placeholder="Nome (Ex: Gestor Ana)">
+                    <input id="newUUser" placeholder="Login (Ex: ana.gestora)">
+                </div>
                 <div class="sp"></div>
-                <div class="muted">Login (Usuário)</div>
-                <input id="newUUser" placeholder="Ex: Fulano">
-                <div class="sp"></div>
-                <div class="muted">Senha</div>
-                <input id="newUPass" type="text" placeholder="Senha de acesso">
-                <div class="sp"></div>
-                <div class="muted">Perfil</div>
-                <select id="newURole">
-                  <option value="gestor">Gestor</option>
-                  <option value="admin">Administrador</option>
-                </select>
+                <div class="two">
+                    <input id="newUPass" type="text" placeholder="Senha">
+                    <select id="newURole" onchange="toggleUnitSelect(this.value)">
+                        <option value="gestor">Gestor (Acesso Restrito)</option>
+                        <option value="admin">Administrador (Acesso Total)</option>
+                    </select>
+                </div>
+
+                <div id="unitSelectBox" style="margin-top:15px; border-top:1px solid var(--line); padding-top:10px">
+                    <div class="muted" style="margin-bottom:8px">Unidades Permitidas:</div>
+                    <div style="max-height:150px; overflow-y:auto; border:1px solid var(--line); border-radius:8px; padding:8px">
+                        ${unitsCheckboxes || '<div class="muted">Nenhuma unidade cadastrada.</div>'}
+                    </div>
+                </div>
+
                 <div class="sp"></div>
                 <div class="row" style="justify-content:flex-end">
                   <button class="small" onclick="document.getElementById('userOverlay').remove()">Cancelar</button>
-                  <button class="primary" onclick="saveNewSystemUser()">Salvar</button>
+                  <button class="primary" onclick="saveNewSystemUser()">Salvar Usuário</button>
                 </div>
               </div></div>
             </div>
-          </div>`;
+          </div>
+          <script>
+            function toggleUnitSelect(role) {
+                document.getElementById('unitSelectBox').style.display = role === 'admin' ? 'none' : 'block';
+            }
+          <\/script>
+          `;
         const anchor = document.getElementById("teamModalAnchor");
         if (anchor) anchor.innerHTML = modalHtml;
       };
 
-      // 2. Salvar Novo Admin (CORRIGIDO)
+      // 2. Salvar com as Permissões (Array de IDs)
       window.saveNewSystemUser = async () => {
         const name = $("newUName").value.trim();
         const userRaw = $("newUUser").value.trim();
@@ -6980,7 +7030,18 @@
         const pass = $("newUPass").value.trim();
         const role = $("newURole").value;
 
-        if (!name || !user || !pass) return toast("Preencha todos os campos!");
+        if (!name || !user || !pass) return toast("Preencha os dados básicos.");
+
+        // Captura as unidades marcadas
+        const selectedUnits = [];
+        document.querySelectorAll(".unit-check:checked").forEach((cb) => {
+          selectedUnits.push(cb.value);
+        });
+
+        // Se for gestor, OBRIGA a selecionar pelo menos uma
+        if (role === "gestor" && selectedUnits.length === 0) {
+          return toast("Selecione ao menos uma unidade para o Gestor.");
+        }
 
         toast("Salvando...");
 
@@ -6996,13 +7057,14 @@
             user,
             pass,
             role,
+            // Se for admin, o array pode ser vazio (tem acesso a tudo por padrão)
+            // Se for gestor, salva a lista de IDs
+            allowedUnits: role === "admin" ? [] : selectedUnits,
             createdAt: new Date().toISOString(),
           });
 
           toast("✅ Usuário criado!");
           document.getElementById("userOverlay").remove();
-
-          // Força atualização visual imediata
           renderInternalBody("team");
         } catch (e) {
           console.error(e);
@@ -8275,8 +8337,29 @@
 
                 if (userData.pass === pInput) {
                   toast(`👋 Bem-vindo(a), ${userData.name}!`);
+
+                  // PREPARA A SESSÃO COM AS PERMISSÕES
+                  window.currentUser = userData; // Salva na memória global
+
+                  const sessionData = {
+                    role: userData.role,
+                    profId: null,
+                    // Se for Admin, allowedUnits é null. Se for Gestor, pega o array do banco.
+                    allowedUnits:
+                      userData.role === "admin"
+                        ? null
+                        : userData.allowedUnits || [],
+                  };
+
+                  // Salva no localStorage com o nome da versão correta
+                  localStorage.setItem(
+                    "viargr_session_v19",
+                    JSON.stringify(sessionData),
+                  );
+                  session = sessionData;
+
                   goInternal(userData.role);
-                  return; // Sucesso!
+                  return;
                 } else {
                   toast("❌ Senha incorreta.");
                   // Restaura botão imediatamente
