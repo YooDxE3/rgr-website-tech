@@ -5649,7 +5649,8 @@
 
       function renderSchedule() {
         const role = session.role;
-        const me = role === "prof" && session.profId ? getProf(session.profId) : null;
+        const me =
+          role === "prof" && session.profId ? getProf(session.profId) : null;
 
         const bioIcon = me && me.bioCredId ? "👤✅" : "👤";
         const bioClass = me && me.bioCredId ? "bGood" : "";
@@ -5657,41 +5658,51 @@
 
         const currentUnit = window.tempUnitFilter || "";
 
-        // --- 1. LÓGICA DE FILTRO E TRAVAMENTO ---
+        // --- 1. LÓGICA DE FILTRO E TRAVAMENTO (CORRIGIDA) ---
         let visibleUnits = DB.units;
-        
+        let isGestorRestricted = false;
+
         if (role === "gestor") {
-            const allowed = session.allowedUnits || [];
-            // Se a lista existir, filtra. Se for vazia (erro de sessão), mostra aviso.
-            if (allowed.length > 0) {
-                visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
-            } else {
-                // Fallback para não quebrar a tela se a sessão estiver antiga
-                visibleUnits = []; 
-            }
+          const allowed = session.allowedUnits || [];
+          // Se a lista de permissões existir, aplicamos o filtro
+          if (allowed.length > 0) {
+            isGestorRestricted = true;
+            visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
+          } else {
+            // Se for gestor mas lista estiver vazia, pode ser erro de cadastro
+            visibleUnits = [];
+          }
         }
 
         // Verifica se é caso de Unidade Única
-        const isSingleUnit = (role === 'gestor' && visibleUnits.length === 1);
-        
-        // Se for única, forçamos o ID dela como valor atual (caso o filtro esteja vazio)
+        const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
         const forcedUnitId = isSingleUnit ? visibleUnits[0].id : currentUnit;
 
         // Estilo travado
-        const lockAttr = isSingleUnit 
-            ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"' 
-            : '';
+        const lockAttr = isSingleUnit
+          ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"'
+          : "";
 
-        // Gera as opções
+        // --- GERAÇÃO DAS OPÇÕES COM DIAGNÓSTICO ---
         let unitOpt = "";
-        if (visibleUnits.length === 0 && role === "gestor") {
-            unitOpt = `<option value="">⚠️ Erro: Relogue no sistema</option>`;
+
+        if (role === "gestor" && visibleUnits.length === 0) {
+          // Diagnóstico: Por que está vazio?
+          if (DB.units.length === 0) {
+            // Caso A: O sistema ainda não baixou as unidades da nuvem
+            unitOpt = `<option value="">⏳ Carregando unidades...</option>`;
+          } else {
+            // Caso B: As unidades existem, mas o ID não bate com a permissão do Gestor
+            unitOpt = `<option value="">🚫 Unidade não encontrada (Verifique o cadastro)</option>`;
+          }
         } else {
-            unitOpt = visibleUnits.map((u) => {
-                // Se for unidade única OU for a unidade selecionada no filtro
-                const isSelected = (u.id === forcedUnitId) ? "selected" : "";
-                return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})</option>`;
-            }).join("");
+          // Caso Normal
+          unitOpt = visibleUnits
+            .map((u) => {
+              const isSelected = u.id === forcedUnitId ? "selected" : "";
+              return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})</option>`;
+            })
+            .join("");
         }
         // ---------------------------------------------------------------
 
@@ -5755,14 +5766,12 @@
             <div style="display:flex; flex-direction:column; gap:10px">
                 <div class="row" style="gap:8px">
                     <div class="selectWrap" style="flex:1"><select id="fMonth">${monthOpt}</select></div>
-                    
                     <div class="selectWrap" style="flex:1.5">
                         <select id="fUnit" ${lockAttr}>
-                            ${!isSingleUnit ? '<option value="">Unidade...</option>' : ''}
+                            ${!isSingleUnit ? '<option value="">Unidade...</option>' : ""}
                             ${unitOpt}
                         </select>
                     </div>
-
                 </div>
                 <div class="row" style="gap:8px">
                     <div class="selectWrap" style="flex:2"><select id="fSpec"><option value="">Especialidade...</option>${specOpt}</select></div>
@@ -5781,7 +5790,6 @@
             ? renderCalendar()
             : renderScheduleTable();
 
-        // EDITOR DE PLANTÃO (MODAL/CARD INFERIOR)
         const tplEditor =
           role === "prof"
             ? ""
@@ -5791,13 +5799,11 @@
                 <div class="sp"></div>
                 <div class="two">
                     <input id="sDate" type="date" value="${isoDateAdd(0)}"/>
-                    
                     <div class="selectWrap">
                         <select id="sUnit" ${lockAttr}>
                             ${unitOpt}
                         </select>
                     </div>
-
                 </div>
                 <div class="sp"></div>
                 <div class="two">
@@ -5813,12 +5819,10 @@
         return `
         <div class="grid g2">
             <div class="card"><div class="cardin">
-                
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
                     <h2 style="margin:0">${t("schedTitle")}</h2>
                     ${role === "admin" ? `<button class="small" style="padding:4px 8px; font-size:10px" onclick="editTemplates()">⚙️</button>` : ""} 
                 </div>
-
                 ${(() => {
                   if (role === "prof") return "";
                   const today = isoDateAdd(0);
@@ -5830,33 +5834,22 @@
                     if (s.date === today && !s.checkInAt) {
                       const [sh, sm] = s.start.split(":").map(Number);
                       const startVal = sh + sm / 60;
-                      if (nowTime > startVal + 0.25) {
-                        lateCount++;
-                      }
+                      if (nowTime > startVal + 0.25) lateCount++;
                     }
                   });
                   if (lateCount > 0) {
                     return `<div style="background:rgba(255,92,106,0.15); border:1px solid var(--bad); color:#ffcfd3; padding:10px; border-radius:8px; margin-bottom:15px; display:flex; align-items:center; gap:10px">
                             <span style="font-size:18px">🚨</span>
-                            <div>
-                                <b>Atenção Operacional:</b>
-                                <div style="font-size:12px">Detectamos <b>${lateCount} plantão(ões)</b> com atraso no Check-in hoje. Verifique a tabela.</div>
-                            </div>
+                            <div><b>Atenção Operacional:</b><div style="font-size:12px">Detectamos <b>${lateCount} plantão(ões)</b> com atraso no Check-in hoje.</div></div>
                         </div>`;
                   }
                   return "";
                 })()}
-
                 ${headerControls}
-                
                 <div class="sp"></div>
                 ${content}
-                
-                <div class="calFooterHint" style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05)">
-                    ✅ <b>Publicar</b> libera visão completa. ↔ <b>Trocar</b> destaca na escala.
-                </div>
+                <div class="calFooterHint" style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05)">✅ <b>Publicar</b> libera visão completa. ↔ <b>Trocar</b> destaca na escala.</div>
             </div></div>
-            
             ${role !== "prof" ? `<div class="grid">${tplEditor}</div>` : ""}
         </div>`;
       }
@@ -8248,15 +8241,40 @@
           });
 
           // 2. UNIDADES (Units) - Correção aqui!
+          // 2. UNIDADES (Units) - COM VERIFICAÇÃO DE SEGURANÇA
           db.collection("units").onSnapshot((snap) => {
             const list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
             DB.units = list;
             console.log("🏥 Unidades carregadas:", list.length);
 
-            renderHomeKPIs(); // <--- FALTAVA ISSO: Atualiza o contador na Home
+            renderHomeKPIs();
 
-            // Atualiza dropdowns se estiverem na tela
+            // --- AQUI ENTRA O CÓDIGO NOVO (SEGURANÇA DO GESTOR) ---
+            if (session && session.role === "gestor") {
+              // Se o gestor tem unidades permitidas na sessão
+              const currentUnits = session.allowedUnits || [];
+
+              if (currentUnits.length > 0) {
+                const unitId = currentUnits[0];
+                // Verifica se essa unidade REALMENTE existe na lista que acabou de chegar
+                const unitExists = DB.units.find((u) => u.id === unitId);
+
+                // Se a lista não está vazia, mas a unidade do gestor não tá nela:
+                if (!unitExists && DB.units.length > 0) {
+                  console.warn(
+                    "⚠️ A unidade permitida ao gestor foi deletada ou não existe.",
+                  );
+                  toast("⚠️ Sua unidade não existe mais. Relogue.");
+                  // Opcional: Forçar logout automático para evitar tela bugada
+                  // setSession(null);
+                  // location.reload();
+                }
+              }
+            }
+            // -------------------------------------------------------
+
+            // Atualiza dropdowns se estiverem na tela (Escalas)
             if (document.getElementById("sUnit"))
               renderInternalBody("schedule");
           });
