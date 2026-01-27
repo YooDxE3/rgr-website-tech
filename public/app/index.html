@@ -5652,48 +5652,53 @@
         const me =
           role === "prof" && session.profId ? getProf(session.profId) : null;
 
-        const bioIcon = me && me.bioCredId ? "👤✅" : "👤";
+        // Ícones e Status do Médico (Bio)
         const bioClass = me && me.bioCredId ? "bGood" : "";
         const bioLabel = me && me.bioCredId ? t("bioBtnOn") : t("bioBtnOff");
 
         const currentUnit = window.tempUnitFilter || "";
 
-        // --- 1. LÓGICA DE FILTRO COM FAIL-SAFE (A CORREÇÃO) ---
+        // --- LÓGICA DE BUSCA PELO ID DO GESTOR (O QUE VOCÊ PEDIU) ---
         let visibleUnits = DB.units;
+        let lockAttr = ""; // Variável para travar o campo
 
         if (role === "gestor") {
-          const allowed = session.allowedUnits || [];
+          // 1. Pega o ID que está gravado no cadastro do gestor (Sessão)
+          const myUnitIds = session.allowedUnits || [];
 
-          // Tenta filtrar pelas unidades permitidas
-          const filteredUnits = DB.units.filter((u) => allowed.includes(u.id));
+          if (myUnitIds.length > 0) {
+            // 2. BUSCA: Filtra a lista de unidades deixando APENAS as que batem com o ID
+            visibleUnits = DB.units.filter((u) => myUnitIds.includes(u.id));
 
-          if (filteredUnits.length > 0) {
-            // Cenário Ideal: Encontrou a unidade permitida
-            visibleUnits = filteredUnits;
+            // 3. Se encontrou a unidade, TRAVA a tela nela
+            if (visibleUnits.length === 1) {
+              lockAttr =
+                'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"';
+            }
           } else {
-            // CENÁRIO DE ERRO (FAIL-SAFE):
-            // Se não encontrou nada (vínculo quebrado), MOSTRA TUDO para não travar o trabalho.
-            console.warn(
-              "⚠️ Vínculo não encontrado. Ativando modo de fallback (mostrar tudo).",
-            );
-            visibleUnits = DB.units;
+            // Se o gestor não tem ID nenhum gravado
+            visibleUnits = [];
           }
         }
 
-        // Verifica se é caso de Unidade Única (para travar o campo)
-        const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
+        // Verifica se sobrou alguma unidade para mostrar
+        const isSingleUnit = visibleUnits.length === 1;
+        // Se só tem uma unidade visível, seleciona ela automaticamente
         const forcedUnitId = isSingleUnit ? visibleUnits[0].id : currentUnit;
 
-        // Estilo travado (só trava se realmente tiver filtrado para 1 unidade)
-        const lockAttr = isSingleUnit
-          ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"'
-          : "";
-
-        // Gera as opções
+        // --- GERAÇÃO DAS OPÇÕES DO DROPDOWN ---
         let unitOpt = "";
-        if (visibleUnits.length === 0) {
-          unitOpt = `<option value="">⏳ Aguardando unidades...</option>`;
+
+        if (visibleUnits.length === 0 && role === "gestor") {
+          // Se a busca pelo ID não retornou nada, explica o motivo
+          if (DB.units.length === 0) {
+            unitOpt = `<option value="">⏳ Carregando...</option>`;
+          } else {
+            // O ID do gestor não bate com nenhuma unidade existente
+            unitOpt = `<option value="">🚫 Unidade do seu cadastro não encontrada</option>`;
+          }
         } else {
+          // Gera a lista normal (ou a única opção travada)
           unitOpt = visibleUnits
             .map((u) => {
               const isSelected = u.id === forcedUnitId ? "selected" : "";
@@ -5701,7 +5706,8 @@
             })
             .join("");
         }
-        // ---------------------------------------------------------------
+
+        // ... (O resto da função continua igual: Filtros de Mês, Especialidade, Templates, etc.) ...
 
         const currentSpec = window.tempSpecFilter || "";
         const safeSpecs = typeof SPECIALTIES !== "undefined" ? SPECIALTIES : [];
@@ -5763,12 +5769,14 @@
             <div style="display:flex; flex-direction:column; gap:10px">
                 <div class="row" style="gap:8px">
                     <div class="selectWrap" style="flex:1"><select id="fMonth">${monthOpt}</select></div>
+                    
                     <div class="selectWrap" style="flex:1.5">
                         <select id="fUnit" ${lockAttr}>
                             ${!isSingleUnit ? '<option value="">Unidade...</option>' : ""}
                             ${unitOpt}
                         </select>
                     </div>
+
                 </div>
                 <div class="row" style="gap:8px">
                     <div class="selectWrap" style="flex:2"><select id="fSpec"><option value="">Especialidade...</option>${specOpt}</select></div>
