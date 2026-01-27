@@ -7072,66 +7072,81 @@
       };
 
       // 2. Salvar Usuário (Criação ou Atualização)
+      // 2. Salvar Usuário (BLINDADO)
       window.saveNewSystemUser = async (editId) => {
-        const name = $("newUName").value.trim();
-        const userRaw = $("newUUser").value.trim();
-        const user = userRaw.toLowerCase();
-        const pass = $("newUPass").value.trim();
-        const role = $("newURole").value;
-
-        // Validação
-        if (!name || (!editId && !user) || (!editId && !pass))
-          return toast("Preencha os dados básicos.");
-
-        // Captura a unidade selecionada
-        let selectedUnits = [];
-        if (role === "gestor") {
-          const uId = $("newUAllowedUnit").value;
-          if (uId) {
-            selectedUnits.push(uId);
-          } else {
-            return toast("Selecione a unidade para o Gestor.");
-          }
-        }
-
-        const btn = event.target;
-        const originalText = btn.textContent;
-        btn.disabled = true;
-        btn.textContent = "Salvando...";
-
         try {
-          // Se for novo usuário, verifica duplicidade de login
+          const name = $("newUName").value.trim();
+          const userRaw = $("newUUser").value.trim();
+          const user = userRaw.toLowerCase();
+          const pass = $("newUPass").value.trim();
+          const role = $("newURole").value;
+          const selectUnit = document.getElementById("newUAllowedUnit");
+
+          // Validação
+          if (!name || (!editId && !user) || (!editId && !pass))
+            return toast("Preencha os dados básicos.");
+
+          // Captura a unidade selecionada com LOG DE DEPURAÇÃO
+          let selectedUnits = [];
+          if (role === "gestor") {
+            const uId = selectUnit.value;
+            console.log(
+              "Tentando salvar Gestor. ID da Unidade selecionada:",
+              uId,
+            );
+
+            if (uId && uId !== "") {
+              selectedUnits.push(uId);
+            } else {
+              return toast(
+                "⚠️ ERRO: Você precisa selecionar uma unidade na lista!",
+              );
+            }
+          }
+
+          const btn =
+            event.target ||
+            document.querySelector("button[onclick^='saveNewSystemUser']");
+          const originalText = btn ? btn.textContent : "Salvar";
+          if (btn) {
+            btn.disabled = true;
+            btn.textContent = "Salvando...";
+          }
+
+          // Se for novo usuário, verifica duplicidade
           if (!editId) {
             const check = await db
               .collection("users")
               .where("user", "==", user)
               .get();
             if (!check.empty) {
-              btn.disabled = false;
-              btn.textContent = originalText;
+              if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText;
+              }
               return toast("❌ Login já existe.");
             }
           }
 
-          // Monta objeto
+          // Monta payload
           const payload = {
             name,
             role,
             allowedUnits: role === "admin" ? [] : selectedUnits,
           };
-          // Só atualiza login/senha se fornecidos (ou se for novo)
+
           if (!editId) payload.user = user;
           if (pass) payload.pass = pass;
           if (!editId) payload.createdAt = new Date().toISOString();
 
+          console.log("Enviando para o Firebase:", payload);
+
           if (editId) {
-            // ATUALIZAÇÃO
             await db.collection("users").doc(editId).update(payload);
-            toast("✅ Usuário atualizado!");
+            toast("✅ Usuário atualizado com sucesso!");
           } else {
-            // CRIAÇÃO
             await db.collection("users").add(payload);
-            toast("✅ Usuário criado!");
+            toast("✅ Usuário criado com sucesso!");
           }
 
           const overlay = document.getElementById("userOverlay");
@@ -7139,10 +7154,15 @@
 
           renderInternalBody("team");
         } catch (e) {
-          console.error(e);
-          toast("Erro ao salvar.");
-          btn.disabled = false;
-          btn.textContent = originalText;
+          console.error("Erro fatal ao salvar:", e);
+          toast("Erro ao salvar: " + e.message);
+          const btn =
+            event.target ||
+            document.querySelector("button[onclick^='saveNewSystemUser']");
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Salvar";
+          }
         }
       };
 
@@ -8395,6 +8415,7 @@
         });
 
         // --- LÓGICA DE LOGIN (VISUAL MELHORADO & CASE INSENSITIVE) ---
+        // --- LÓGICA DE LOGIN (SUBSTITUA TODO O BLOCO DO btnLoginUnified) ---
         if ($("btnLoginUnified")) {
           $("btnLoginUnified").onclick = async (e) => {
             if (e) e.preventDefault(); // Evita recarregar
@@ -8412,12 +8433,11 @@
               return;
             }
 
-            // --- VISUAL DE CARREGAMENTO (Mais bonito) ---
-            // Em vez de mudar o texto, vamos adicionar transparência e mudar o cursor
+            // --- VISUAL DE CARREGAMENTO ---
             btn.disabled = true;
             btn.style.opacity = "0.7";
             btn.style.cursor = "wait";
-            btn.innerHTML = `⏳ Verificando...`; // Texto temporário mais elegante
+            btn.innerHTML = `⏳ Verificando...`;
 
             console.log(
               `Tentando logar com usuário: "${uInput}" (banco espera minúsculo)`,
@@ -8427,7 +8447,7 @@
               // 1. BUSCA NO BANCO DE DADOS (Coleção 'users' - Admins)
               const userQuery = await db
                 .collection("users")
-                .where("user", "==", uInput) // Busca exata pelo user minúsculo
+                .where("user", "==", uInput)
                 .get();
 
               if (!userQuery.empty) {
@@ -8437,31 +8457,51 @@
                 if (userData.pass === pInput) {
                   toast(`👋 Bem-vindo(a), ${userData.name}!`);
 
-                  // PREPARA A SESSÃO COM AS PERMISSÕES
-                  window.currentUser = userData; // Salva na memória global
+                  // =========================================================
+                  // AQUI ENTRA O CÓDIGO NOVO (RECUPERAÇÃO INTELIGENTE)
+                  // =========================================================
 
+                  // 1. Tenta recuperar as permissões de qualquer jeito possível
+                  let permissions = [];
+                  if (userData.role === "gestor") {
+                    // Prioridade 1: Array correto (allowedUnits)
+                    if (
+                      userData.allowedUnits &&
+                      Array.isArray(userData.allowedUnits)
+                    ) {
+                      permissions = userData.allowedUnits;
+                    }
+                    // Prioridade 2: String única legada (unitId)
+                    else if (userData.unitId) {
+                      permissions = [userData.unitId];
+                    }
+                  }
+
+                  // 2. Monta a sessão blindada
                   const sessionData = {
                     role: userData.role,
                     profId: null,
-                    // Se for Admin, allowedUnits é null. Se for Gestor, pega o array do banco.
                     allowedUnits:
-                      userData.role === "admin"
-                        ? null
-                        : userData.allowedUnits || [],
+                      userData.role === "admin" ? null : permissions,
                   };
 
-                  // Salva no localStorage com o nome da versão correta
+                  // LOG PARA VOCÊ VER NO CONSOLE (F12)
+                  console.log("🔐 SESSÃO CRIADA:", sessionData);
+
+                  // 3. Salva
+                  window.currentUser = userData;
                   localStorage.setItem(
                     "viargr_session_v19",
                     JSON.stringify(sessionData),
                   );
                   session = sessionData;
 
+                  // =========================================================
+
                   goInternal(userData.role);
                   return;
                 } else {
                   toast("❌ Senha incorreta.");
-                  // Restaura botão imediatamente
                   btn.disabled = false;
                   btn.style.opacity = "1";
                   btn.style.cursor = "pointer";
@@ -8470,8 +8510,7 @@
                 }
               }
 
-              // 2. SE NÃO ACHOU ADMIN, TENTA MÉDICO (Coleção 'accounts')
-              // (Para o futuro, quando médicos forem logar)
+              // 2. SE NÃO ACHOU ADMIN, TENTA MÉDICO
               const accQuery = await db
                 .collection("accounts")
                 .where("user", "==", uInput)
@@ -8493,8 +8532,6 @@
               console.error("Erro técnico no login:", error);
               toast("⚠️ Erro de conexão com o servidor.");
             } finally {
-              // Restaura o botão ao estado original (se não tiver entrado)
-              // Se entrou (goInternal), a tela vai mudar, então não importa tanto.
               if (btn.disabled) {
                 btn.disabled = false;
                 btn.style.opacity = "1";
