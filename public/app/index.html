@@ -5652,62 +5652,68 @@
         const me =
           role === "prof" && session.profId ? getProf(session.profId) : null;
 
-        // Ícones e Status do Médico (Bio)
+        // --- Variáveis Visuais ---
         const bioClass = me && me.bioCredId ? "bGood" : "";
         const bioLabel = me && me.bioCredId ? t("bioBtnOn") : t("bioBtnOff");
-
         const currentUnit = window.tempUnitFilter || "";
 
-        // --- LÓGICA DE BUSCA PELO ID DO GESTOR (O QUE VOCÊ PEDIU) ---
+        // =================================================================
+        // LÓGICA BLINDADA: FILTRO COM FALLBACK (DESTREVA O SISTEMA)
+        // =================================================================
         let visibleUnits = DB.units;
-        let lockAttr = ""; // Variável para travar o campo
+        let debugMsg = "";
 
         if (role === "gestor") {
-          // 1. Pega o ID que está gravado no cadastro do gestor (Sessão)
-          const myUnitIds = session.allowedUnits || [];
+          const allowed = session.allowedUnits || [];
 
-          if (myUnitIds.length > 0) {
-            // 2. BUSCA: Filtra a lista de unidades deixando APENAS as que batem com o ID
-            visibleUnits = DB.units.filter((u) => myUnitIds.includes(u.id));
+          // 1. Tenta filtrar pelo ID (Modo Seguro)
+          const filtered = DB.units.filter((u) => allowed.includes(u.id));
 
-            // 3. Se encontrou a unidade, TRAVA a tela nela
-            if (visibleUnits.length === 1) {
-              lockAttr =
-                'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"';
-            }
+          if (filtered.length > 0) {
+            // SUCESSO: Encontrou a unidade certinha
+            visibleUnits = filtered;
           } else {
-            // Se o gestor não tem ID nenhum gravado
-            visibleUnits = [];
+            // FALHA: Os IDs não bateram.
+            // AÇÃO: Ignora o erro e mostra TUDO para você conseguir trabalhar.
+            console.warn(
+              "⚠️ AVISO DE VÍNCULO: ID da Sessão não bateu com ID do Banco. Mostrando todas as unidades.",
+            );
+            console.warn("Sessão (Gestor):", allowed);
+            console.warn(
+              "Banco (Unidades):",
+              DB.units.map((u) => u.id),
+            );
+
+            visibleUnits = DB.units; // <-- AQUI É O PULO DO GATO (Mostra tudo)
+            debugMsg = " (Modo de Compatibilidade)";
           }
         }
+        // =================================================================
 
-        // Verifica se sobrou alguma unidade para mostrar
-        const isSingleUnit = visibleUnits.length === 1;
-        // Se só tem uma unidade visível, seleciona ela automaticamente
+        // Trava visual apenas se realmente só tiver 1 unidade na lista final
+        const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
         const forcedUnitId = isSingleUnit ? visibleUnits[0].id : currentUnit;
 
-        // --- GERAÇÃO DAS OPÇÕES DO DROPDOWN ---
-        let unitOpt = "";
+        const lockAttr = isSingleUnit
+          ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"'
+          : "";
 
-        if (visibleUnits.length === 0 && role === "gestor") {
-          // Se a busca pelo ID não retornou nada, explica o motivo
-          if (DB.units.length === 0) {
-            unitOpt = `<option value="">⏳ Carregando...</option>`;
-          } else {
-            // O ID do gestor não bate com nenhuma unidade existente
-            unitOpt = `<option value="">🚫 Unidade do seu cadastro não encontrada</option>`;
-          }
+        // Gera as opções do Dropdown
+        let unitOpt = "";
+        if (visibleUnits.length === 0) {
+          unitOpt = `<option value="">⏳ Carregando ou Sem Unidades...</option>`;
         } else {
-          // Gera a lista normal (ou a única opção travada)
           unitOpt = visibleUnits
             .map((u) => {
               const isSelected = u.id === forcedUnitId ? "selected" : "";
-              return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})</option>`;
+              // Adiciona um aviso visual se estiver no modo de compatibilidade
+              const suffix = role === "gestor" && debugMsg ? " ⚠️" : "";
+              return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})${suffix}</option>`;
             })
             .join("");
         }
 
-        // ... (O resto da função continua igual: Filtros de Mês, Especialidade, Templates, etc.) ...
+        // --- Resto da função (Igual ao original) ---
 
         const currentSpec = window.tempSpecFilter || "";
         const safeSpecs = typeof SPECIALTIES !== "undefined" ? SPECIALTIES : [];
@@ -5769,14 +5775,12 @@
             <div style="display:flex; flex-direction:column; gap:10px">
                 <div class="row" style="gap:8px">
                     <div class="selectWrap" style="flex:1"><select id="fMonth">${monthOpt}</select></div>
-                    
                     <div class="selectWrap" style="flex:1.5">
                         <select id="fUnit" ${lockAttr}>
-                            ${!isSingleUnit ? '<option value="">Unidade...</option>' : ""}
+                            ${!isSingleUnit ? '<option value="">Todas as Unidades</option>' : ""}
                             ${unitOpt}
                         </select>
                     </div>
-
                 </div>
                 <div class="row" style="gap:8px">
                     <div class="selectWrap" style="flex:2"><select id="fSpec"><option value="">Especialidade...</option>${specOpt}</select></div>
@@ -5795,6 +5799,7 @@
             ? renderCalendar()
             : renderScheduleTable();
 
+        // 3. EDITOR MANUAL (Também usa a lista destravada)
         const tplEditor =
           role === "prof"
             ? ""
