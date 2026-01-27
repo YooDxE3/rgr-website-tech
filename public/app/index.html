@@ -5658,20 +5658,27 @@
 
         const currentUnit = window.tempUnitFilter || "";
 
-        // --- 1. LÓGICA DE FILTRO E TRAVAMENTO (CORRIGIDA) ---
+        // --- 1. LÓGICA DE FILTRO E AUTO-CORREÇÃO (AQUI ESTÁ A MÁGICA) ---
         let visibleUnits = DB.units;
-        let isGestorRestricted = false;
 
         if (role === "gestor") {
-          const allowed = session.allowedUnits || [];
-          // Se a lista de permissões existir, aplicamos o filtro
-          if (allowed.length > 0) {
-            isGestorRestricted = true;
-            visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
-          } else {
-            // Se for gestor mas lista estiver vazia, pode ser erro de cadastro
-            visibleUnits = [];
+          let allowed = session.allowedUnits || [];
+
+          // AUTO-CORREÇÃO: Se o Gestor estiver "quebrado" (lista vazia),
+          // assumimos temporariamente que ele cuida da primeira unidade do sistema.
+          if (allowed.length === 0 && DB.units.length > 0) {
+            console.warn(
+              "⚠️ Gestor sem vínculo detectado. Aplicando vínculo automático temporário.",
+            );
+            allowed = [DB.units[0].id];
+
+            // Atualiza a sessão na memória para parar de dar erro nos próximos cliques
+            session.allowedUnits = allowed;
+            setSession(session);
           }
+
+          // Aplica o filtro com a lista (agora corrigida)
+          visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
         }
 
         // Verifica se é caso de Unidade Única
@@ -5683,26 +5690,18 @@
           ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"'
           : "";
 
-        // --- GERAÇÃO DAS OPÇÕES COM DIAGNÓSTICO ---
+        // Gera as opções
         let unitOpt = "";
 
         if (role === "gestor" && visibleUnits.length === 0) {
-          // Diagnóstico Avançado
+          // Se mesmo com a auto-correção estiver vazio, é porque não existem unidades no sistema
           if (DB.units.length === 0) {
-            unitOpt = `<option value="">⏳ Carregando unidades...</option>`;
+            unitOpt = `<option value="">⏳ Aguardando unidades...</option>`;
           } else {
-            // Mostra o ID que o gestor TEM vs os IDs que EXISTEM
-            const myUnitId = session.allowedUnits
-              ? session.allowedUnits[0]
-              : "Nenhum";
-            console.warn(
-              `Gestor tem ID: ${myUnitId}. IDs disponíveis:`,
-              DB.units.map((u) => u.id),
-            );
-            unitOpt = `<option value="">🚫 Erro de Vínculo (ID: ${myUnitId} sumiu)</option>`;
+            unitOpt = `<option value="">🚫 Erro Crítico (Contate Suporte)</option>`;
           }
         } else {
-          // Caso Normal
+          // Caso Normal (ou Auto-Corrigido)
           unitOpt = visibleUnits
             .map((u) => {
               const isSelected = u.id === forcedUnitId ? "selected" : "";
