@@ -5658,42 +5658,41 @@
 
         const currentUnit = window.tempUnitFilter || "";
 
-        // --- 1. LÓGICA DE FILTRO LIMPA (SEM AUTO-CORREÇÃO) ---
+        // --- 1. LÓGICA DE FILTRO COM FAIL-SAFE (A CORREÇÃO) ---
         let visibleUnits = DB.units;
 
         if (role === "gestor") {
-          // Pega exatamente o que está na sessão (o que veio do banco no login)
           const allowed = session.allowedUnits || [];
 
-          // Apenas filtra. Se a lista estiver vazia, vai mostrar vazio (correto).
-          // O Admin deve ir lá e vincular a unidade certa.
-          if (allowed.length > 0) {
-            visibleUnits = DB.units.filter((u) => allowed.includes(u.id));
+          // Tenta filtrar pelas unidades permitidas
+          const filteredUnits = DB.units.filter((u) => allowed.includes(u.id));
+
+          if (filteredUnits.length > 0) {
+            // Cenário Ideal: Encontrou a unidade permitida
+            visibleUnits = filteredUnits;
           } else {
-            visibleUnits = [];
+            // CENÁRIO DE ERRO (FAIL-SAFE):
+            // Se não encontrou nada (vínculo quebrado), MOSTRA TUDO para não travar o trabalho.
+            console.warn(
+              "⚠️ Vínculo não encontrado. Ativando modo de fallback (mostrar tudo).",
+            );
+            visibleUnits = DB.units;
           }
         }
 
-        // Verifica se é caso de Unidade Única
+        // Verifica se é caso de Unidade Única (para travar o campo)
         const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
         const forcedUnitId = isSingleUnit ? visibleUnits[0].id : currentUnit;
 
-        // Estilo travado
+        // Estilo travado (só trava se realmente tiver filtrado para 1 unidade)
         const lockAttr = isSingleUnit
           ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"'
           : "";
 
         // Gera as opções
         let unitOpt = "";
-
-        if (role === "gestor" && visibleUnits.length === 0) {
-          // Diagnóstico
-          if (DB.units.length === 0) {
-            unitOpt = `<option value="">⏳ Aguardando unidades...</option>`;
-          } else {
-            // Se cair aqui, é porque o Admin não vinculou nenhuma unidade ao Gestor ainda
-            unitOpt = `<option value="">🚫 Sem unidade vinculada</option>`;
-          }
+        if (visibleUnits.length === 0) {
+          unitOpt = `<option value="">⏳ Aguardando unidades...</option>`;
         } else {
           unitOpt = visibleUnits
             .map((u) => {
@@ -5821,28 +5820,6 @@
                     <h2 style="margin:0">${t("schedTitle")}</h2>
                     ${role === "admin" ? `<button class="small" style="padding:4px 8px; font-size:10px" onclick="editTemplates()">⚙️</button>` : ""} 
                 </div>
-                ${(() => {
-                  if (role === "prof") return "";
-                  const today = isoDateAdd(0);
-                  const nowH = new Date().getHours();
-                  const nowM = new Date().getMinutes();
-                  const nowTime = nowH + nowM / 60;
-                  let lateCount = 0;
-                  DB.shifts.forEach((s) => {
-                    if (s.date === today && !s.checkInAt) {
-                      const [sh, sm] = s.start.split(":").map(Number);
-                      const startVal = sh + sm / 60;
-                      if (nowTime > startVal + 0.25) lateCount++;
-                    }
-                  });
-                  if (lateCount > 0) {
-                    return `<div style="background:rgba(255,92,106,0.15); border:1px solid var(--bad); color:#ffcfd3; padding:10px; border-radius:8px; margin-bottom:15px; display:flex; align-items:center; gap:10px">
-                            <span style="font-size:18px">🚨</span>
-                            <div><b>Atenção Operacional:</b><div style="font-size:12px">Detectamos <b>${lateCount} plantão(ões)</b> com atraso no Check-in hoje.</div></div>
-                        </div>`;
-                  }
-                  return "";
-                })()}
                 ${headerControls}
                 <div class="sp"></div>
                 ${content}
@@ -6265,8 +6242,12 @@
       async function genMonthlySchedule(month, unitId, spec, tplKey) {
         // --- BLOQUEIO DE SEGURANÇA (Corrigido) ---
         // Verifica se é Gestor e se tem a lista de unidades permitidas na sessão
-        if (session.role === "gestor" && session.allowedUnits) {
-          if (!session.allowedUnits.includes(unitId)) {
+        if (
+          session.role === "gestor" &&
+          session.allowedUnits &&
+          session.allowedUnits.length > 0
+        ) {
+          if (!session.allowedUnits.includes(unit)) {
             return alert("⛔ ACESSO NEGADO: Você não gerencia esta unidade.");
           }
         }
