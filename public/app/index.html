@@ -7066,6 +7066,7 @@
 
       // 2. Salvar Usuário (Criação ou Atualização)
       // 2. Salvar Usuário (BLINDADO)
+      // 2. Salvar Usuário (VERSÃO HIGIENIZADA E BLINDADA)
       window.saveNewSystemUser = async (editId) => {
         try {
           const name = $("newUName").value.trim();
@@ -7075,27 +7076,35 @@
           const role = $("newURole").value;
           const selectUnit = document.getElementById("newUAllowedUnit");
 
-          // Validação
-          if (!name || (!editId && !user) || (!editId && !pass))
-            return toast("Preencha os dados básicos.");
+          // Validação Básica
+          if (!name || (!editId && !user) || (!editId && !pass)) {
+            return toast("⚠️ Preencha nome, login e senha.");
+          }
 
-          // Captura a unidade selecionada com LOG DE DEPURAÇÃO
+          // --- LÓGICA DE UNIDADE BLINDADA ---
+          let cleanUnitID = null;
           let selectedUnits = [];
+
           if (role === "gestor") {
-            const uId = selectUnit.value;
-            console.log(
-              "Tentando salvar Gestor. ID da Unidade selecionada:",
-              uId,
+            const rawID = selectUnit.value;
+
+            // 1. Busca a unidade na memória para garantir que o ID é legítimo
+            // Isso corrige o problema do '0' vs 'O' pois pegamos o ID direto do objeto original
+            const realUnitObj = DB.units.find(
+              (u) => String(u.id).trim() === String(rawID).trim(),
             );
 
-            if (uId && uId !== "") {
-              selectedUnits.push(uId);
-            } else {
-              return toast(
-                "⚠️ ERRO: Você precisa selecionar uma unidade na lista!",
+            if (realUnitObj) {
+              cleanUnitID = realUnitObj.id; // ID Garantido e Limpo
+              selectedUnits.push(cleanUnitID);
+              console.log(
+                `✅ Unidade Validada: ${realUnitObj.name} (ID: ${cleanUnitID})`,
               );
+            } else {
+              return toast("⚠️ ERRO: Selecione uma unidade válida na lista.");
             }
           }
+          // ----------------------------------
 
           const btn =
             event.target ||
@@ -7106,7 +7115,7 @@
             btn.textContent = "Salvando...";
           }
 
-          // Se for novo usuário, verifica duplicidade
+          // Verifica duplicidade de login (apenas para novos)
           if (!editId) {
             const check = await db
               .collection("users")
@@ -7117,38 +7126,43 @@
                 btn.disabled = false;
                 btn.textContent = originalText;
               }
-              return toast("❌ Login já existe.");
+              return toast("❌ Este login já existe.");
             }
           }
 
-          // Monta payload
+          // Monta o pacote de dados limpo
           const payload = {
-            name,
-            role,
+            name: name,
+            role: role,
+            // Salva das DUAS formas para garantir compatibilidade total
             allowedUnits: role === "admin" ? [] : selectedUnits,
+            unitId: role === "admin" ? null : cleanUnitID,
+            // Atualiza o timestamp para forçar atualização de cache
+            updatedAt: new Date().toISOString(),
           };
 
           if (!editId) payload.user = user;
           if (pass) payload.pass = pass;
           if (!editId) payload.createdAt = new Date().toISOString();
 
-          console.log("Enviando para o Firebase:", payload);
+          console.log("💾 Salvando dados limpos:", payload);
 
           if (editId) {
             await db.collection("users").doc(editId).update(payload);
-            toast("✅ Usuário atualizado com sucesso!");
+            toast("✅ Usuário corrigido e salvo!");
           } else {
             await db.collection("users").add(payload);
             toast("✅ Usuário criado com sucesso!");
           }
 
+          // Fecha modal e atualiza lista
           const overlay = document.getElementById("userOverlay");
           if (overlay) overlay.remove();
 
           renderInternalBody("team");
         } catch (e) {
-          console.error("Erro fatal ao salvar:", e);
-          toast("Erro ao salvar: " + e.message);
+          console.error("Erro ao salvar:", e);
+          toast("Erro: " + e.message);
           const btn =
             event.target ||
             document.querySelector("button[onclick^='saveNewSystemUser']");
