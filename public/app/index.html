@@ -5652,68 +5652,68 @@
         const me =
           role === "prof" && session.profId ? getProf(session.profId) : null;
 
-        // --- Variáveis Visuais ---
         const bioClass = me && me.bioCredId ? "bGood" : "";
         const bioLabel = me && me.bioCredId ? t("bioBtnOn") : t("bioBtnOff");
         const currentUnit = window.tempUnitFilter || "";
 
         // =================================================================
-        // LÓGICA BLINDADA: FILTRO COM FALLBACK (DESTREVA O SISTEMA)
+        // LÓGICA DE FILTRO "SUPER TOLERÂNCIA"
         // =================================================================
         let visibleUnits = DB.units;
-        let debugMsg = "";
+        let isFallbackMode = false;
 
         if (role === "gestor") {
           const allowed = session.allowedUnits || [];
 
-          // 1. Tenta filtrar pelo ID (Modo Seguro)
-          const filtered = DB.units.filter((u) => allowed.includes(u.id));
+          // FILTRO INTELIGENTE:
+          // Compara convertendo tudo para Texto e removendo espaços (trim)
+          // Isso resolve problemas de "u123 " vs "u123" ou 123 vs "123"
+          const filtered = DB.units.filter((u) => {
+            return allowed.some(
+              (sessId) => String(sessId).trim() === String(u.id).trim(),
+            );
+          });
 
           if (filtered.length > 0) {
-            // SUCESSO: Encontrou a unidade certinha
+            // SUCESSO: Encontrou a unidade exata!
             visibleUnits = filtered;
           } else {
-            // FALHA: Os IDs não bateram.
-            // AÇÃO: Ignora o erro e mostra TUDO para você conseguir trabalhar.
+            // FALHA: Ainda não bateu. Libera tudo mas sem pânico visual.
             console.warn(
-              "⚠️ AVISO DE VÍNCULO: ID da Sessão não bateu com ID do Banco. Mostrando todas as unidades.",
-            );
-            console.warn("Sessão (Gestor):", allowed);
-            console.warn(
-              "Banco (Unidades):",
+              "⚠️ Filtro estrito falhou. IDs da sessão:",
+              allowed,
+              "IDs do banco:",
               DB.units.map((u) => u.id),
             );
-
-            visibleUnits = DB.units; // <-- AQUI É O PULO DO GATO (Mostra tudo)
-            debugMsg = " (Modo de Compatibilidade)";
+            visibleUnits = DB.units;
+            isFallbackMode = true; // Marca que estamos no modo de segurança
           }
         }
         // =================================================================
 
-        // Trava visual apenas se realmente só tiver 1 unidade na lista final
         const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
         const forcedUnitId = isSingleUnit ? visibleUnits[0].id : currentUnit;
 
+        // Se encontrou a unidade certa, trava o campo. Se entrou no modo fallback, deixa solto.
         const lockAttr = isSingleUnit
           ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"'
           : "";
 
-        // Gera as opções do Dropdown
+        // Gera as opções (SEM O ÍCONE DE ALERTA PARA NÃO POLUIR)
         let unitOpt = "";
         if (visibleUnits.length === 0) {
-          unitOpt = `<option value="">⏳ Carregando ou Sem Unidades...</option>`;
+          unitOpt = `<option value="">⏳ Carregando...</option>`;
         } else {
           unitOpt = visibleUnits
             .map((u) => {
               const isSelected = u.id === forcedUnitId ? "selected" : "";
-              // Adiciona um aviso visual se estiver no modo de compatibilidade
-              const suffix = role === "gestor" && debugMsg ? " ⚠️" : "";
-              return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})${suffix}</option>`;
+              return `<option value="${u.id}" ${isSelected}>${u.name} (${u.uf})</option>`;
             })
             .join("");
         }
+        // ---------------------------------------------------------------
 
-        // --- Resto da função (Igual ao original) ---
+        // ... (O resto da função permanece idêntico) ...
 
         const currentSpec = window.tempSpecFilter || "";
         const safeSpecs = typeof SPECIALTIES !== "undefined" ? SPECIALTIES : [];
@@ -5777,7 +5777,7 @@
                     <div class="selectWrap" style="flex:1"><select id="fMonth">${monthOpt}</select></div>
                     <div class="selectWrap" style="flex:1.5">
                         <select id="fUnit" ${lockAttr}>
-                            ${!isSingleUnit ? '<option value="">Todas as Unidades</option>' : ""}
+                            ${!isSingleUnit ? '<option value="">Selecione a Unidade...</option>' : ""}
                             ${unitOpt}
                         </select>
                     </div>
@@ -5799,7 +5799,6 @@
             ? renderCalendar()
             : renderScheduleTable();
 
-        // 3. EDITOR MANUAL (Também usa a lista destravada)
         const tplEditor =
           role === "prof"
             ? ""
