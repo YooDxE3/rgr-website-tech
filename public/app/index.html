@@ -1542,7 +1542,7 @@
     </div>
 
     <script>
-      let db; // <--- ISSO AQUI É O SEGREDO
+      let db;
       let auth;
       let storage;
 
@@ -1559,14 +1559,14 @@
       // Inicializa o Firebase e exporta as variáveis db e auth
       if (typeof firebase !== "undefined") {
         firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore(); // Sem 'var' ou 'let' aqui, usa a global
+        db = firebase.firestore();
         auth = firebase.auth();
         storage = firebase.storage();
-        alert("Firebase Iniciado!"); // Seu alerta atual
+        alert("Firebase Iniciado!");
       } else {
         alert("Erro: Firebase não carregou.");
       }
-      /* ============================================================ */
+
       /* ===================== Storage ===================== */
       const KEY = "viargr_demo_v19";
       const defaultDB = () => {
@@ -1727,7 +1727,6 @@
       };
 
       function loadDB() {
-        // Tenta pegar configurações locais (como idioma), mas ignora dados pesados
         const raw = localStorage.getItem(KEY);
         let localObj = {};
 
@@ -1736,22 +1735,19 @@
         } catch (e) {
           console.warn("Erro ao ler cache local, resetando.");
         }
-
-        // Retorna a estrutura padrão, priorizando arrays vazios.
-        // O listener do Firebase (no boot ou nas telas) vai preencher isso em segundos.
         return {
           meta: { createdAt: new Date().toISOString() },
-          lang: localObj.lang || "pt", // Preserva idioma escolhido
+          lang: localObj.lang || "pt", 
 
-          // Arrays iniciam vazios (serão populados pelo Firestore)
+          
           units: [],
           profs: [],
           shifts: [],
           cadastros: [],
-          users: [], // Admins
-          accounts: [], // Contas de médicos
+          users: [], 
+          accounts: [], 
 
-          // Dados de apoio podem vir de um padrão se não tiver no banco
+          
           timeTemplates: localObj.timeTemplates || [
             { k: "07-19", name: "Diurno 12h", s: "07:00", e: "19:00" },
             { k: "19-07", name: "Noturno 12h", s: "19:00", e: "07:00" },
@@ -1770,19 +1766,17 @@
           payBatches: [],
           market: { network: [], vendors: [] },
 
-          // Mantém sessão se existir
+          
           lastExternalId: null,
         };
       }
-      /* ===================== SALVAR (APENAS LOCAL/CACHE) ===================== */
+     
       async function saveDB() {
-        // O sistema agora é 100% em tempo real na nuvem.
-        // O saveDB agora serve apenas para persistir preferências locais (como idioma)
-        // no navegador do usuário, sem tocar no banco de dados.
+       
 
         try {
           localStorage.setItem(KEY, JSON.stringify(DB));
-          // Não chamamos mais o setCloudStatus("syncing") pois não há sync de arquivo
+        
         } catch (e) {
           console.warn("Falha ao salvar cache local", e);
         }
@@ -3099,13 +3093,12 @@
           else el.textContent = v;
         });
 
-        // --- PROTEÇÃO ---
-        // Verifica se o 'roleBadge' existe antes de tentar escrever nele.
+        
         const badge = $("roleBadge");
         if (badge) {
           badge.textContent = currentRole.toUpperCase();
         }
-        // ----------------
+   
 
         renderHomeKPIs();
         renderProfSelect();
@@ -3138,14 +3131,13 @@
         RJ: ["—", "Rio de Janeiro", "Niterói", "Duque de Caxias"],
       };
 
-      /* ===================== App state ===================== */
-      let currentRole = "admin"; // admin|gestor|prof|externo
+      let currentRole = "admin"; 
       let session = null;
-      let profScheduleMode = "mine"; // mine | publishedFull
-      let scheduleView = "calendar"; // table | calendar
+      let profScheduleMode = "mine";
+      let scheduleView = "calendar"; 
       let calSelectedMyShiftId = null;
 
-      /* ===================== Session ===================== */
+     
       function setSession(s) {
         session = s;
         if (s) localStorage.setItem("viargr_session_v19", JSON.stringify(s));
@@ -3186,10 +3178,8 @@
       function renderProfSelect() {
         const sel = $("profSel");
 
-        // --- TRAVA DE SEGURANÇA ---
-        // Se o elemento não existe na tela (porque mudamos o login), para aqui.
         if (!sel) return;
-        // --------------------------
+      
 
         const cat =
           $("profCatSel") && $("profCatSel").value
@@ -3311,9 +3301,9 @@
         const s = restoreSession();
         const box = $("sessRestore");
 
-        // --- TRAVA DE SEGURANÇA (O QUE FALTAVA) ---
+     
         if (!box) return;
-        // ------------------------------------------
+        
 
         if (!s) {
           box.style.display = "none";
@@ -3341,7 +3331,7 @@
         }
       }
 
-      /* ===================== Internal views ===================== */
+      
       function renderInternalTabs() {
         const tabs = $("inTabs");
         const mobLinks = $("mobLinks");
@@ -3350,7 +3340,7 @@
         if (mobLinks) mobLinks.innerHTML = "";
 
         const role = session.role;
-        // DENTRO DE renderInternalTabs...
+       
 
         let list = [];
 
@@ -3361,10 +3351,10 @@
             // { k: "passport", t: "tabPassport" },
           ];
         } else {
-          // Lista Base (Comum a Admin e Gestor)
+        
           list = [
             { k: "schedule", t: "tabSchedule" },
-            { k: "cad", t: "tabCad" }, // Aprovar médicos
+            { k: "cad", t: "tabCad" }, 
             { k: "team", t: "Equipe (Gerenciar)" },
             { k: "units", t: "tabUnits" },
             { k: "market", t: "tabMarket" },
@@ -3372,11 +3362,11 @@
             { k: "rep", t: "tabRep" },
           ];
 
-          // Itens EXCLUSIVOS de Admin (Configurações críticas e técnicas)
+          
           if (role === "admin") {
             list.push(
               { k: "autopilot", t: "tabAutopilot" },
-              { k: "connect", t: "tabConnect" }, // Gestor não mexe em integração
+              { k: "connect", t: "tabConnect" }, 
               { k: "bi", t: "tabBI" },
               { k: "twin", t: "Simulador" },
               { k: "diag", t: "tabDiag" },
@@ -3385,13 +3375,13 @@
         }
 
         list.forEach((item, idx) => {
-          // 1. Cria a aba normal (Desktop)
+         
           const el = document.createElement("div");
           el.className = "tab" + (idx === 0 ? " active" : "");
           el.dataset.key = item.k;
           el.textContent = t(item.t);
           el.onclick = () => {
-            // Ativa aba Desktop
+           
             [...tabs.querySelectorAll(".tab")].forEach((x) =>
               x.classList.remove("active"),
             );
@@ -3401,17 +3391,17 @@
           };
           tabs.appendChild(el);
 
-          // 2. Cria o botão no Menu Mobile (Sincronizado)
+         
           if (mobLinks) {
             const btn = document.createElement("button");
-            btn.className = "small"; // Estilo de botão
+            btn.className = "small"; 
             btn.style.width = "100%";
             btn.style.marginBottom = "8px";
             btn.style.textAlign = "left";
             btn.style.justifyContent = "flex-start";
             btn.textContent = t(item.t);
             btn.onclick = () => {
-              // Ao clicar no menu, fecha o menu e carrega a tela
+             
               $("mobNav").classList.remove("open");
               renderInternalBody(item.k);
               applyI18n();
@@ -3420,12 +3410,12 @@
           }
         });
 
-        // Carrega a primeira aba por padrão
+      
         renderInternalBody(list[0].k);
       }
 
       function renderInternalBody(key) {
-        // Guard: Profissionais (médicos e outros) só acessam Escalas/Trocas
+        
         if (
           session &&
           session.role === "prof" &&
@@ -3480,11 +3470,7 @@
           bindTwin();
           return;
         }
-        /* if (key === "passport") {
-          body.innerHTML = renderPassport();
-          bindPassport();
-          return;
-        } */
+        
         if (key === "cad") {
           body.innerHTML = renderCad();
           bindCad();
@@ -3508,19 +3494,19 @@
         body.innerHTML = "<div class='card'><div class='cardin'>—</div></div>";
       }
 
-      /* ========= Units (UI Renovada com Modal) ========= */
+
       function renderUnits() {
-        // 1. Define a lista base e aplica o filtro de segurança
+       
         let list = DB.units;
 
         if (session.role === "gestor" && session.allowedUnits) {
           list = list.filter((u) => session.allowedUnits.includes(u.id));
         }
 
-        // 2. Agora mapeia a lista filtrada (usamos 'list' em vez de 'DB.units')
+       
         const rows = list
           .map((u) => {
-            // DAQUI PARA BAIXO O CÓDIGO CONTINUA IGUAL AO QUE VOCÊ JÁ TINHA
+           
             const intStatus = u.integrationStatus || "pendente";
             const badgeClass =
               intStatus === "conectado"
@@ -3529,7 +3515,6 @@
                   ? "bWarn"
                   : "bBad";
 
-            // ... (resto do seu código original: managers, return html, etc) ...
             const gpsIcon =
               u.lat && u.lon
                 ? `<span style="color:var(--good)" title="GPS Configurado">📍</span>`
@@ -3572,7 +3557,6 @@
           })
           .join("");
 
-        // Opções para os Selects do Modal
         const ufOpt = Object.keys(UF_CITIES)
           .filter((x) => x)
           .map((uf) => `<option value="${uf}">${uf}</option>`)
@@ -3693,7 +3677,7 @@
       function bindUnits() {
         let editingId = null;
 
-        // --- 1. FUNÇÃO DE CIDADES ---
+    
         function fillCities() {
           const ufEl = $("uUF");
           const cityEl = $("uCity");
@@ -3707,7 +3691,7 @@
             .join("");
         }
 
-        // --- 2. OUVINTE EM TEMPO REAL (FIREBASE) ---
+        
         if (typeof db !== "undefined") {
           db.collection("units").onSnapshot(
             (snapshot) => {
@@ -3723,7 +3707,7 @@
                 const modalOpen = $("unitModal").style.display === "flex";
                 if (!modalOpen) {
                   $("inBody").innerHTML = renderUnits();
-                  bindUnitsEventsOnly(); // <--- Reconecta os botões
+                  bindUnitsEventsOnly(); 
                 }
               }
             },
@@ -3731,21 +3715,17 @@
           );
         }
 
-        // --- 3. RECONECTAR EVENTOS (Essa função roda a cada atualização de tela) ---
         function bindUnitsEventsOnly() {
-          // Botão Nova Unidade
+       
           const btnAdd = $("btnAddUnit");
           if (btnAdd) btnAdd.onclick = () => openUnitModal(false);
 
-          // Botão Geo Search
           const btnGeo = $("btnGeoSearch");
           if (btnGeo) btnGeo.onclick = handleGeoSearch;
 
-          // Select de UF (para carregar cidades)
           const ufEl = $("uUF");
           if (ufEl) ufEl.onchange = fillCities;
 
-          // Botões da Tabela
           document.querySelectorAll(".btnCfg").forEach((btn) => {
             btn.onclick = () => {
               setConnectUnit(btn.dataset.unit);
@@ -3754,7 +3734,6 @@
             };
           });
 
-          // --- CORREÇÃO AQUI: O BOTÃO SALVAR AGORA É RECONECTADO SEMPRE ---
           const btnSave = $("btnSaveUnit");
           if (btnSave) {
             btnSave.onclick = async () => {
@@ -3794,7 +3773,6 @@
                   toast("✅ Unidade criada!");
                 }
                 closeUnitModal();
-                // O onSnapshot vai atualizar a tela sozinho
               } catch (error) {
                 console.error(error);
                 toast("Erro: " + error.message);
@@ -3806,17 +3784,14 @@
           }
         }
 
-        // --- CONTROLE DO MODAL (COM PROTEÇÃO PARA GESTOR) ---
         window.openUnitModal = (isEdit) => {
           $("unitModal").style.display = "flex";
           $("unitFormTitle").textContent = isEdit
             ? "Editar Unidade"
             : "Nova Unidade";
 
-          // Verifica se é Gestor
           const isGestor = session.role === "gestor";
 
-          // Lista de campos sensíveis que o Gestor NÃO pode mexer
           const sensitiveFields = [
             "uName",
             "uType",
@@ -3830,7 +3805,7 @@
           sensitiveFields.forEach((id) => {
             const el = $(id);
             if (el) {
-              // Se for gestor E estiver editando, desabilita. Admin pode tudo.
+
               el.disabled = isGestor && isEdit;
               el.style.opacity = isGestor && isEdit ? "0.5" : "1";
               el.style.cursor = isGestor && isEdit ? "not-allowed" : "auto";
@@ -3838,7 +3813,6 @@
           });
 
           if (!isEdit) {
-            // Se for criar nova, limpa tudo (Gestor nem deveria ver botão de criar, já tratamos no render)
             editingId = null;
             const ufEl = $("uUF");
             if (ufEl) {
@@ -3861,7 +3835,6 @@
           $("unitModal").style.display = "none";
         };
 
-        // --- GEO SEARCH ---
         const handleGeoSearch = async () => {
           let term = $("uAddr").value.trim();
           if (!term) return toast("Digite um endereço.");
@@ -3885,7 +3858,6 @@
           }
         };
 
-        // --- DELETAR ---
         window.deleteUnit = async (id) => {
           if (!confirm("Apagar unidade da nuvem?")) return;
           try {
@@ -3896,7 +3868,6 @@
           }
         };
 
-        // --- EDITAR ---
         window.editUnit = (id) => {
           const u = DB.units.find((x) => x.id === id);
           if (!u) return;
@@ -3928,16 +3899,13 @@
           openUnitModal(true);
         };
 
-        // Inicializa a primeira vez
         bindUnitsEventsOnly();
       }
 
-      /* ========= Connect (Integrações - UI Minimalista) ========= */
       function renderConnect() {
         const u = getUnit(CTX.connectUnitId) || DB.units[0] || null;
         const currentUnitId = u ? u.id : "";
 
-        // Gera opções de unidade
         const unitOpt = DB.units
           .map(
             (unit) =>
@@ -3961,12 +3929,10 @@
           .map((x) => `<option value="${x}">${x}</option>`)
           .join("");
 
-        // Status
         const isConnected = u?.integrationStatus === "conectado";
         const statusDot = isConnected ? "🟢" : "🟠";
         const statusText = isConnected ? "Conectado" : "Pendente / Off";
 
-        // Botões Dinâmicos
         const actions = isConnected
           ? `<button class="small primary" id="btnCSync">🔄 Sincronizar</button>
                <button class="small danger" id="btnCDeactivate">Desativar</button>`
@@ -4021,7 +3987,6 @@
     </div></div>`;
       }
 
-      /* ========= Connect (CORRIGIDO PARA ATUALIZAR UNITS NA NUVEM) ========= */
       function bindConnect() {
         const unitSel = $("cUnit");
         if (!unitSel) return;
@@ -4031,7 +3996,6 @@
           if (!u) return;
           CTX.connectUnitId = id;
 
-          // Preenche campos
           const elSys = $("cSys");
           if (elSys) elSys.value = u.system || guessSystem(u);
           const elMode = $("cMode");
@@ -4040,21 +4004,16 @@
           if (elLast) elLast.textContent = fmtSync(u.lastSync);
         }
 
-        // --- Eventos ---
-
-        // 1. Troca de unidade
         unitSel.onchange = () => {
           CTX.connectUnitId = unitSel.value;
           renderInternalBody("connect");
         };
 
-        // 2. Salvar configurações automaticamente (MUDOU AQUI)
         const elSys = $("cSys");
         if (elSys)
           elSys.onchange = async () => {
             const uId = unitSel.value;
             if (!uId) return;
-            // Atualiza direto no documento da unidade
             await db
               .collection("units")
               .doc(uId)
@@ -4074,7 +4033,6 @@
             toast("Modo atualizado na nuvem.");
           };
 
-        // 3. Ações
         const btnTest = $("btnCTest");
         if (btnTest)
           btnTest.onclick = () => toast("📡 Ping... OK! (Latência: 45ms)");
@@ -4085,13 +4043,11 @@
             const uId = unitSel.value;
             if (!uId) return;
             toast("🔄 Sincronizando...");
-            // Simula delay e salva
             setTimeout(async () => {
               await db
                 .collection("units")
                 .doc(uId)
                 .update({ lastSync: new Date().toISOString() });
-              // O listener de units vai atualizar a tela sozinho
               toast("✅ Sincronizado!");
             }, 800);
           };
@@ -4121,11 +4077,9 @@
             toast("Integração PAUSADA.");
           };
 
-        // Inicializa
         loadUnit(unitSel.value);
       }
 
-      /* ========= BI ========= */
       function renderBI() {
         const unitOpt = DB.units
           .map((u) => `<option value="${u.id}">${u.name} (${u.uf})</option>`)
@@ -4194,15 +4148,13 @@
           toast("BI conectado (demo)");
         };
         $("btnBIDataset").onclick = () => {
-          // Pega os dados REAIS que estão na sua memória agora
           const exportData = {
             unidade: getUnit(unitSel.value).name,
             data_geracao: new Date().toISOString(),
-            plantoes: DB.shifts.filter((s) => s.unitId === unitSel.value), // Só dessa unidade
+            plantoes: DB.shifts.filter((s) => s.unitId === unitSel.value),
             pagamentos: DB.payBatches || [],
           };
 
-          // Cria um arquivo invisível para download
           const blob = new Blob([JSON.stringify(exportData, null, 2)], {
             type: "application/json",
           });
@@ -4218,12 +4170,10 @@
         };
       }
 
-      /* ========= Payments (Layout Limpo / Full Width) ========= */
       function renderPay() {
         const batchMonth = window.payFilterMonth || isoMonth(nowISO());
         const unitId = window.payFilterUnit || "";
 
-        // Helpers
         function parseHM(hm) {
           const [h, m] = String(hm || "0:0")
             .split(":")
@@ -4241,7 +4191,6 @@
           return g === 0 || g === 6;
         }
 
-        // Busca Lote Fechado
         const closedBatch = (DB.payBatches || []).find(
           (b) => b.month === batchMonth && b.unitId === unitId,
         );
@@ -4251,7 +4200,6 @@
         let totalVal = 0;
         let totalHours = 0;
 
-        // Opções de Unidade
         const unitOpt =
           `<option value="">Todas</option>` +
           DB.units
@@ -4261,7 +4209,6 @@
             )
             .join("");
 
-        // Lógica de Dados (Mantida a mesma, apenas preparada para exibição)
         if (isClosed) {
           displayItems = Array.isArray(closedBatch.items)
             ? closedBatch.items
@@ -4269,7 +4216,6 @@
           totalVal = closedBatch.totalValue || 0;
           totalHours = closedBatch.totalHours || 0;
         } else {
-          // Preview
           const rules = DB.payRules || {
             baseHour: 120,
             nightMult: 1.2,
@@ -4319,7 +4265,6 @@
           totalHours = displayItems.reduce((a, b) => a + b.hours, 0);
         }
 
-        // Renderiza Linhas da Tabela
         const rows = displayItems
           .map((item, idx) => {
             const prof = getProf(item.profId);
@@ -4328,19 +4273,15 @@
               ? "background:rgba(55, 214, 122, 0.08)"
               : "";
 
-            // Botões de Ação
             const nfBtn = item.hasInvoice
               ? `<button class="small" onclick="uploadInvoice('${idx}')" title="Ver Nota Fiscal" style="color:var(--good); border-color:var(--good)">📎</button>`
               : `<button class="small" onclick="uploadInvoice('${idx}')" title="Anexar NF" style="opacity:0.4">📎</button>`;
 
             const recBtn = `<button class="small" onclick="viewReceipt('${idx}')" title="Extrato Detalhado">📄</button>`;
 
-            // Badge Status
             const stBadge = isPaid
               ? `<span class="badge bGood">PAGO</span>`
               : `<span class="badge bWarn">PENDENTE</span>`;
-
-            // Botão Principal (Pagar/Desfazer)
             const mainAction = isPaid
               ? `<button class="small" onclick="togglePayStatus('${idx}')" style="min-width:80px">Desfazer</button>`
               : `<button class="small primary" onclick="approvePay('${idx}')" style="min-width:80px">Pagar</button>`;
@@ -4484,10 +4425,9 @@
     <div id="receiptModalOverlay" class="modalOverlay" style="display:none; z-index:999"></div>
     `;
       }
-      /* ========= PAYMENTS (MIGRADO PARA FIREBASE) ========= */
-      /* ========= PAYMENTS (CORRIGIDO: Cálculo Real + Extrato) ========= */
+
       function bindPay() {
-        // --- 1. OUVINTE DE DADOS (Payroll) ---
+
         if (!window._payListener) {
           window._payListener = true;
           db.collection("payroll")
@@ -4534,10 +4474,10 @@
                 holidayMult: parseFloat($("payMultF").value) || 1,
                 useCheckIO: $("paySource").value === "real",
               };
-              await db.collection("config").doc("payroll").set(newRules); // Usa coleção config nova
+              await db.collection("config").doc("payroll").set(newRules);
               $("rulesModal").style.display = "none";
               toast("Regras atualizadas!");
-              renderInternalBody("pay"); // Força atualização visual imediata
+              renderInternalBody("pay");
             };
 
           const btnGen = $("btnGenBatch");
@@ -4575,14 +4515,13 @@
             };
         }
 
-        // --- 2. LÓGICA DE CÁLCULO (CORRIGIDA: Zera valor se não tiver ponto no modo Real) ---
         function calculateCurrentData() {
           const r = DB.payRules || {};
           const rate = r.baseHour || 120;
           const taxRate = r.taxRate || 0;
           const multN = r.nightMult || 1.2;
           const multW = r.weekendMult || 1.15;
-          const useReal = r.useCheckIO; // <--- SE ISSO FOR TRUE...
+          const useReal = r.useCheckIO;
 
           const month = window.payFilterMonth || isoMonth(nowISO());
           const unit = window.payFilterUnit;
@@ -4619,18 +4558,15 @@
             let startCalc = s.start;
             let endCalc = s.end;
 
-            // --- LÓGICA CRÍTICA CORRIGIDA ---
             if (useReal) {
-              // Modo Real: Só paga se tiver Entrada E Saída
               if (s.checkInAt && s.checkOutAt) {
                 startCalc = s.checkInAt.slice(11, 16);
                 endCalc = s.checkOutAt.slice(11, 16);
                 h = timeDiff(startCalc, endCalc);
               } else {
-                h = 0; // SEM PONTO = ZERO HORAS
+                h = 0;
               }
             } else {
-              // Modo Planejado: Paga o agendado
               h = timeDiff(s.start, s.end);
             }
 
@@ -4658,10 +4594,8 @@
           });
         }
 
-        // --- 3. IMPLEMENTAÇÃO DO VIEW RECEIPT (EXTRATO) ---
         window.viewReceipt = (idx) => {
           const batch = getBatch();
-          // Se batch existe (fechado), pega itens dele. Se não (aberto), calcula agora.
           const items = batch ? batch.items : calculateCurrentData();
           const item = items[idx];
 
@@ -4670,7 +4604,7 @@
           const prof = getProf(item.profId);
           const month = window.payFilterMonth || isoMonth(nowISO());
 
-          // Busca os plantões desse médico neste mês para detalhar
+
           const shifts = DB.shifts
             .filter((s) => s.profId === item.profId && s.month === month)
             .sort((a, b) => a.date.localeCompare(b.date));
@@ -4684,15 +4618,12 @@
               let timeStr = `${s.start}-${s.end}`;
               let status = "Planejado";
 
-              // Recalcula visualmente para o extrato bater com o valor
               if (isReal) {
                 if (s.checkInAt && s.checkOutAt) {
                   const i = s.checkInAt.slice(11, 16);
                   const o = s.checkOutAt.slice(11, 16);
                   timeStr = `${i} - ${o}`;
                   status = "Confirmado";
-                  // ...calculo simples de horas visual...
-                  // (Para precisão exata usaria a func helper, mas aqui é só display)
                 } else {
                   status = "Falta Ponto (0h)";
                   timeStr = "—";
@@ -4737,7 +4668,6 @@
           modal.style.display = "flex";
         };
 
-        // --- Helpers Restantes ---
         window.approvePay = async (idx) => {
           const batch = getBatch();
           if (!batch) return;
@@ -4828,9 +4758,7 @@
         rebindPayEvents();
       }
 
-      /* ========= Market (Rede & Fornecedores - Layout Definitivo v4) ========= */
       function renderMarket() {
-        // --- 1. Inicialização de Dados ---
         if (!DB.market) DB.market = {};
         if (!DB.market.network) DB.market.network = [];
         if (!DB.market.vendors) DB.market.vendors = [];
@@ -4838,8 +4766,6 @@
         const term = window.marketSearch || "";
         const stars = (n) =>
           "⭐".repeat(Math.min(5, Math.max(0, Math.round(n || 0))));
-
-        // --- 2. Filtros ---
         const nList = DB.market.network.filter((x) =>
           x.name.toLowerCase().includes(term.toLowerCase()),
         );
@@ -4847,7 +4773,6 @@
           x.name.toLowerCase().includes(term.toLowerCase()),
         );
 
-        // --- 3. Templates dos Cards ---
         const nCards = nList.length
           ? nList
               .map(
@@ -4899,7 +4824,6 @@
               .join("")
           : `<div class="m-empty">Nenhum fornecedor.</div>`;
 
-        // --- 4. CSS Isolado (Mobile First Flexbox) ---
         const styles = `
         <style>
             /* Container Principal */
@@ -5075,10 +4999,7 @@
   </div></div>`;
       }
 
-      /* ========= MARKET (MIGRADO PARA FIREBASE) ========= */
-      /* ========= MARKET (CORRIGIDO) ========= */
       function bindMarket() {
-        // --- 1. OUVINTE EM TEMPO REAL ---
         if (!window._marketListener) {
           window._marketListener = true;
 
@@ -5090,7 +5011,6 @@
             DB.market.network = list.filter((x) => x.section === "network");
             DB.market.vendors = list.filter((x) => x.section === "vendor");
 
-            // Se a aba estiver aberta, redesenha
             if (document.querySelector(".tab.active[data-key='market']")) {
               const container = document.getElementById("inBody");
               const currentSearch = document.getElementById("mSearch")?.value;
@@ -5100,9 +5020,7 @@
           });
         }
 
-        // --- 2. RECONECTAR EVENTOS (Executa a cada atualização de tela) ---
         function rebindMarketEvents(restoredSearchVal) {
-          // A. Reconecta Busca
           const searchInput = $("mSearch");
           if (searchInput) {
             if (restoredSearchVal) {
@@ -5122,18 +5040,15 @@
             };
           }
 
-          // B. Reconecta Botões de Abrir Modal
           const btnN = $("btnNAdd");
           const btnV = $("btnVAdd");
           if (btnN) btnN.onclick = () => openCreateModal("network");
           if (btnV) btnV.onclick = () => openCreateModal("vendor");
 
-          // C. Reconecta Botões de SALVAR EDIÇÃO (Correção do problema de salvar)
-          // Agora eles são reconectados toda vez que a tela é desenhada
           const btnSaveN = $("btnSaveEditN");
           if (btnSaveN) {
             btnSaveN.onclick = async () => {
-              const id = window._editMarketId; // Recupera ID salvo
+              const id = window._editMarketId;
               if (!id) return;
 
               const btn = $("btnSaveEditN");
@@ -5190,9 +5105,7 @@
           }
         }
 
-        // --- 3. LÓGICA DE CRIAÇÃO (Correção do Erro de $(...) null) ---
         window.openCreateModal = (type) => {
-          // CORREÇÃO: Busca o modal na hora do clique, garantindo que pega o elemento vivo
           const createModal = $("marketCreateModal");
           if (!createModal) return;
 
@@ -5220,7 +5133,6 @@
                 </div>
             </div></div></div>`;
 
-          // Agora o botão existe no DOM e pode ser capturado
           setTimeout(() => {
             const btnCreate = $("btnCreateM");
             if (btnCreate)
@@ -5258,14 +5170,13 @@
                   btnCreate.disabled = false;
                 }
               };
-          }, 50); // Pequeno delay para garantir renderização
+          }, 50);
         };
 
-        // --- 4. LÓGICA DE ABERTURA DE EDIÇÃO ---
         window.openEditNetwork = (id) => {
           const item = DB.market.network.find((x) => x.id === id);
           if (!item) return;
-          window._editMarketId = id; // Salva ID globalmente para o botão salvar usar
+          window._editMarketId = id;
 
           $("edNName").value = item.name;
           $("edNType").value = item.type;
@@ -5278,7 +5189,7 @@
         window.openEditVendor = (id) => {
           const item = DB.market.vendors.find((x) => x.id === id);
           if (!item) return;
-          window._editMarketId = id; // Salva ID globalmente
+          window._editMarketId = id;
 
           $("edVName").value = item.name;
           $("edVCat").value = item.cat || "";
@@ -5307,11 +5218,9 @@
           }
         };
 
-        // Inicialização
         rebindMarketEvents(window.marketSearch);
       }
 
-      /* ========= Autopilot ========= */
       function renderAutopilot() {
         return `
   <div class="card"><div class="cardin">
@@ -5376,7 +5285,6 @@
         };
       }
 
-      /* ========= Twin ========= */
       function renderTwin() {
         if (!DB.twin) DB.twin = { demand: 100, buffer: 130 };
         return `
@@ -5400,7 +5308,6 @@
           const demand = Number($("twDemand").value);
           const buffer = Number($("twBuffer").value);
           DB.twin = { demand, buffer };
-          // saveDB();
           const risk = buffer < 120 ? "ALTO" : buffer < 135 ? "MÉDIO" : "BAIXO";
           $("twBadge").className =
             "badge " +
@@ -5472,7 +5379,6 @@
         function renderFor(id) {
           const p = getProf(id);
           if (!p) return;
-          // re-render only card area
           $("passCard").innerHTML = `
       <div class="card" style="background:rgba(255,255,255,.03)"><div class="cardin">
         <div class="row" style="justify-content:space-between">
@@ -5499,7 +5405,7 @@
           if (b1)
             b1.onclick = () => {
               const box = $("pQrBox");
-              if (!box) return; // 🔒 proteção contra null
+              if (!box) return;
               box.style.display = box.style.display === "none" ? "" : "none";
             };
         }
@@ -5512,7 +5418,6 @@
         }
       }
 
-      /* ========= Schedule + Calendar ========= */
       function shiftStatus(s) {
         if (s.checkInAt && s.checkOutAt)
           return {
@@ -5556,7 +5461,6 @@
         const month = $("fMonth") ? $("fMonth").value : isoMonth(isoDateAdd(0));
         const unitFilter = $("fUnit") ? $("fUnit").value : "";
 
-        // Pega valores do filtro
         const specSelect = $("fSpec") ? $("fSpec").value : "";
         const specTyped = $("fSpecOther")
           ? $("fSpecOther").value.trim().toLowerCase()
@@ -5571,7 +5475,6 @@
           );
 
         if (role === "prof") {
-          // ... (lógica do profissional mantém igual) ...
           const prof = getProf(session.profId);
           if (profScheduleMode === "mine") {
             list = list.filter((s) => s.profId === prof.id && s.published);
@@ -5579,19 +5482,16 @@
             list = list.filter((s) => s.published && s.spec === prof.spec);
           }
         } else {
-          // LÓGICA DE FILTRO DO ADMIN/GESTOR
           if (unitFilter) list = list.filter((s) => s.unitId === unitFilter);
 
           if (specSelect) {
             if (specSelect === "Outro") {
-              // Se selecionou "Outro", busca pelo texto digitado dentro da especialidade do plantão
               if (specTyped) {
                 list = list.filter((s) =>
                   (s.spec || "").toLowerCase().includes(specTyped),
                 );
               }
             } else {
-              // Se selecionou uma padrão, filtro exato
               list = list.filter((s) => s.spec === specSelect);
             }
           }
@@ -5599,16 +5499,12 @@
         return list;
       }
 
-      // --- APAGAR PLANTÃO INDIVIDUAL (Conectado ao Firebase) ---
-      /* ========= Lógica de Exclusão de Plantão (COM TRAVA DE GESTOR) ========= */
       window.deleteShift = (id) => {
         const s = DB.shifts.find((x) => x.id === id);
         if (!s) return;
 
-        // 1. TRAVA DE SEGURANÇA (HIERARQUIA)
         if (window.currentUser && window.currentUser.role === "gestor") {
           const allowed = window.currentUser.allowedUnits || [];
-          // Se o ID da unidade desse plantão NÃO estiver na lista permitida do gestor...
           if (!allowed.includes(s.unitId)) {
             alert(
               "⛔ ACESSO NEGADO: Você não tem permissão para alterar esta unidade.",
@@ -5617,7 +5513,6 @@
           }
         }
 
-        // 2. TRAVA DE AUDITORIA (Check-in)
         if (s.checkInAt || s.checkOutAt) {
           alert(
             "⛔ BLOQUEADO: Plantão com ponto registrado não pode ser excluído.",
@@ -5625,11 +5520,8 @@
           return;
         }
 
-        // 3. CONFIRMAÇÃO
         if (!confirm("Tem certeza que deseja EXCLUIR este plantão?")) return;
 
-        // 4. EXECUÇÃO
-        // Remove visualmente para dar feedback rápido
         DB.shifts = DB.shifts.filter((x) => x.id !== id);
         renderInternalBody("schedule");
         toast("Excluindo...");
@@ -5642,7 +5534,6 @@
             .catch((err) => {
               console.error(err);
               toast("Erro ao excluir.");
-              // Se der erro, o Listener vai trazer o plantão de volta sozinho
             });
         }
       };
@@ -5656,18 +5547,11 @@
         const bioLabel = me && me.bioCredId ? t("bioBtnOn") : t("bioBtnOff");
         const currentUnit = window.tempUnitFilter || "";
 
-        // =================================================================
-        // LÓGICA DE FILTRO "SUPER TOLERÂNCIA"
-        // =================================================================
         let visibleUnits = DB.units;
         let isFallbackMode = false;
 
         if (role === "gestor") {
           const allowed = session.allowedUnits || [];
-
-          // FILTRO INTELIGENTE:
-          // Compara convertendo tudo para Texto e removendo espaços (trim)
-          // Isso resolve problemas de "u123 " vs "u123" ou 123 vs "123"
           const filtered = DB.units.filter((u) => {
             return allowed.some(
               (sessId) => String(sessId).trim() === String(u.id).trim(),
@@ -5675,10 +5559,8 @@
           });
 
           if (filtered.length > 0) {
-            // SUCESSO: Encontrou a unidade exata!
             visibleUnits = filtered;
           } else {
-            // FALHA: Ainda não bateu. Libera tudo mas sem pânico visual.
             console.warn(
               "⚠️ Filtro estrito falhou. IDs da sessão:",
               allowed,
@@ -5686,20 +5568,17 @@
               DB.units.map((u) => u.id),
             );
             visibleUnits = DB.units;
-            isFallbackMode = true; // Marca que estamos no modo de segurança
+            isFallbackMode = true;
           }
         }
-        // =================================================================
 
         const isSingleUnit = role === "gestor" && visibleUnits.length === 1;
         const forcedUnitId = isSingleUnit ? visibleUnits[0].id : currentUnit;
 
-        // Se encontrou a unidade certa, trava o campo. Se entrou no modo fallback, deixa solto.
         const lockAttr = isSingleUnit
           ? 'disabled style="opacity:1; background:#162032; color:var(--text); border:1px solid var(--line); cursor:not-allowed; font-weight:bold;"'
           : "";
 
-        // Gera as opções (SEM O ÍCONE DE ALERTA PARA NÃO POLUIR)
         let unitOpt = "";
         if (visibleUnits.length === 0) {
           unitOpt = `<option value="">⏳ Carregando...</option>`;
@@ -5711,9 +5590,6 @@
             })
             .join("");
         }
-        // ---------------------------------------------------------------
-
-        // ... (O resto da função permanece idêntico) ...
 
         const currentSpec = window.tempSpecFilter || "";
         const safeSpecs = typeof SPECIALTIES !== "undefined" ? SPECIALTIES : [];
@@ -5770,7 +5646,6 @@
                 </div>
             </div>`;
         } else {
-          // ADMIN / GESTOR
           headerControls = `
             <div style="display:flex; flex-direction:column; gap:10px">
                 <div class="row" style="gap:8px">
@@ -5882,9 +5757,7 @@
         <td>${action}</td>
       </tr>`;
             } else {
-              // --- VISÃO DO ADMIN/GESTOR (Com botão de excluir) ---
 
-              // Só mostra o botão de apagar se NÃO tiver check-in
               const canDelete = !s.checkInAt && !s.checkOutAt;
               const delBtn = canDelete
                 ? `<button class="small danger" onclick="deleteShift('${s.id}')" title="Excluir plantão">🗑️</button>`
@@ -5915,7 +5788,6 @@
       }
 
       function calWeekHeaders() {
-        // Monday first
         const map = {
           pt: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
           en: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -5932,9 +5804,9 @@
         const [y, m] = month.split("-").map(Number);
         const first = new Date(y, m - 1, 1);
         const lastDay = daysInMonth(month);
-        const jsDow = first.getDay(); // 0 Sun..6 Sat
-        const dowMon = (jsDow + 6) % 7; // 0 Mon..6 Sun
-        const totalCells = 42; // 6 weeks
+        const jsDow = first.getDay(); 
+        const dowMon = (jsDow + 6) % 7; 
+        const totalCells = 42; 
         const baseList = listShiftsForView();
         const byDate = {};
         baseList.forEach((s) => {
@@ -5994,17 +5866,14 @@
         const u = getUnit(s.unitId);
         const p = getProf(s.profId);
 
-        // Verifica se é meu plantão
         const isMine =
           role === "prof" &&
           profScheduleMode === "mine" &&
           s.profId === session.profId;
 
-        // Formatações
         const ci = s.checkInAt ? s.checkInAt.slice(11, 16) : null;
         const co = s.checkOutAt ? s.checkOutAt.slice(11, 16) : null;
 
-        // Define o Status visual (Badge no topo)
         let statusBadge = "";
         if (s.published)
           statusBadge = `<span class="badge bGood" style="padding:2px 6px; font-size:9px">PUB</span>`;
@@ -6012,21 +5881,16 @@
           statusBadge = `<span class="badge bWarn" style="padding:2px 6px; font-size:9px">RASC</span>`;
         if (s.swapped)
           statusBadge = `<span class="badge bWarn" style="padding:2px 6px; font-size:9px">TROCA</span>`;
-
-        // --- LÓGICA DE AÇÃO (BOTÕES) ---
         let actionArea = "";
 
         if (isMine) {
-          // Cenário 1: Ainda não entrou
           if (!ci) {
-            // CORREÇÃO: O botão de troca abre o modal direto (openSwap), sem seleção confusa
             actionArea = `
                 <div class="cs-actions">
                     <button class="btn-action btn-in" onclick="doCheckIn('${s.id}')">ENTRAR (IN)</button>
                     <button class="btn-action btn-swap" onclick="openSwap('${s.id}')" title="Trocar ou Doar Plantão">↔</button>
                 </div>`;
           }
-          // Cenário 2: Já entrou, falta sair
           else if (ci && !co) {
             actionArea = `
                 <div class="cs-info">Entrada às ${ci}</div>
@@ -6035,7 +5899,6 @@
                     <button class="btn-action btn-swap" disabled style="opacity:0.3; cursor:not-allowed">↔</button>
                 </div>`;
           }
-          // Cenário 3: Finalizado
           else {
             actionArea = `
                 <div style="margin-top:6px; padding:6px; background:rgba(55,214,122,0.1); border-radius:6px; border:1px solid rgba(55,214,122,0.3); text-align:center">
@@ -6044,7 +5907,6 @@
                 </div>`;
           }
         } else {
-          // Visualização de plantão de OUTRO (ou Admin vendo)
           const profName = p
             ? p.name.split(" ")[0] + " " + (p.name.split(" ")[1] || "")
             : "—";
@@ -6052,14 +5914,10 @@
                 👨‍⚕️ ${profName}
             </div>`;
 
-          // Se for admin, adiciona botão de excluir discreto
           if (role !== "prof" && !ci) {
             actionArea += `<div style="text-align:right; margin-top:4px"><button class="small danger" style="padding:2px 6px; font-size:10px" onclick="deleteShift('${s.id}')">Excluir</button></div>`;
           }
         }
-
-        // --- RENDERIZAÇÃO FINAL (SEM ONCLICK NO CONTAINER) ---
-        // Removido o 'onclick="selectMyShift..."' daqui. Agora o card é inerte.
 
         return `
         <div class="calShift ${isMine ? "mine" : "other"}">
@@ -6079,7 +5937,6 @@
         </div>`;
       }
 
-      /* --- Calendar: add colleague shifts for swap view (mine mode) --- */
       function injectColleagueShiftsIntoCalendar() {
         if (
           session.role !== "prof" ||
@@ -6113,7 +5970,6 @@
           if (!list.length) return;
           const wrap = cell.querySelector(".calItems");
           if (!wrap) return;
-          // show up to 2 colleague shifts (compact)
           const cards = list
             .slice(0, 2)
             .map((s) => {
@@ -6154,13 +6010,10 @@
         openSwapPrefill(calSelectedMyShiftId, otherShiftId);
       };
 
-      /* ========= Check-in/out ========= */
       window.doCheckIn = async (id) => {
         const s = DB.shifts.find((x) => x.id === id);
         if (!s) return;
         if (s.checkInAt) return;
-
-        // Require Face ID/biometria + selfie + geolocalização (piloto)
         try {
           const me =
             session && session.role === "prof" ? getProf(session.profId) : null;
@@ -6184,7 +6037,7 @@
           s.checkInAt = nowISO();
           s.checkInLat = res.lat;
           s.checkInLon = res.lon;
-          s.checkInSelfie = res.selfieDataUrl; // base64
+          s.checkInSelfie = res.selfieDataUrl;
           saveDB();
           toast(t("msgCheckIn"));
           renderInternalBody("schedule");
@@ -6250,10 +6103,7 @@
         return isBusy;
       }
 
-      /* ========= GERAÇÃO DE ESCALA (VERSÃO FINAL: SEGURA + INTELIGENTE + RÁPIDA) ========= */
       async function genMonthlySchedule(month, unitId, spec, tplKey) {
-        // --- BLOQUEIO DE SEGURANÇA (Corrigido) ---
-        // Verifica se é Gestor e se tem a lista de unidades permitidas na sessão
         if (
           session.role === "gestor" &&
           session.allowedUnits &&
@@ -6263,13 +6113,8 @@
             return alert("⛔ ACESSO NEGADO: Você não gerencia esta unidade.");
           }
         }
-        // -----------------------------------------
-
-        // Validação original dos campos
         if (!month || !unitId || !spec || !tplKey)
           return toast("Preencha todos os campos.");
-
-        // ... o resto do código continua aqui (const ref = db.collection...)
 
         const tpl = getTpl(tplKey);
         if (!tpl) return false;
@@ -6280,8 +6125,7 @@
 
         toast("🔍 Analisando conflitos em todas as unidades...");
 
-        // 2. INTELIGÊNCIA: Mapeia ocupação global (Bracinni vê a agenda do Adilson)
-        const busyMap = new Set(); // Guarda chaves "ID_MEDICO|DATA"
+        const busyMap = new Set();
 
         try {
           const globalSnap = await db
@@ -6291,7 +6135,6 @@
 
           globalSnap.forEach((doc) => {
             const s = doc.data();
-            // Marca que o médico X está ocupado no dia Y em QUALQUER unidade
             busyMap.add(`${s.profId}|${s.date}`);
           });
         } catch (e) {
@@ -6301,14 +6144,12 @@
 
         toast("Gerando escala...");
 
-        // 3. PERFORMANCE: Prepara gravação em lote (Batch Write)
         const batch = db.batch();
         const n = daysInMonth(month);
         let pi = 0;
         let count = 0;
         let conflicts = 0;
 
-        // Verifica o que já existe NESTA unidade (para não duplicar visualmente na tela)
         const localShifts = DB.shifts.filter(
           (s) => s.month === month && s.unitId === unitId && s.spec === spec,
         );
@@ -6316,27 +6157,23 @@
         for (let day = 1; day <= n; day++) {
           const d = `${month}-${String(day).padStart(2, "0")}`;
 
-          // Pula se já existe plantão criado na MINHA unidade (visual)
           if (localShifts.find((s) => s.date === d && s.start === tpl.s))
             continue;
 
-          // Tenta encontrar um médico livre no rodízio
           let pickedProf = null;
           let attempts = 0;
 
           while (!pickedProf && attempts < pros.length) {
             const candidate = pros[pi % pros.length];
-            pi++; // Avança a fila
+            pi++; 
             attempts++;
 
-            // O PULO DO GATO: Verifica se o médico está livre no Mapa Global
             if (!busyMap.has(`${candidate.id}|${d}`)) {
               pickedProf = candidate;
             }
           }
 
           if (pickedProf) {
-            // Achou médico livre! Prepara a gravação.
             const newRef = db.collection("shifts").doc();
             batch.set(newRef, {
               unitId,
@@ -6353,11 +6190,10 @@
               createdAt: new Date().toISOString(),
             });
 
-            // Marca ele como ocupado agora (para não agendar 2x no mesmo dia se rodar o loop)
             busyMap.add(`${pickedProf.id}|${d}`);
             count++;
           } else {
-            conflicts++; // Ninguém livre neste dia (todos ocupados em outras unidades)
+            conflicts++;
           }
         }
 
@@ -6365,7 +6201,6 @@
           return toast("Dias já preenchidos.");
 
         if (count > 0) {
-          // 4. DISPARO: Envia tudo para o banco de uma vez só
           await batch.commit();
           toast(`✅ ${count} plantões gerados!`);
 
@@ -6380,10 +6215,8 @@
         }
       }
 
-      // Função de Publicar (Atualiza status na nuvem)
       async function publishMonth(month, unitId, spec) {
         toast("Publicando...");
-        // 1. Busca os rascunhos desse mês/unidade/spec
         const snap = await db
           .collection("shifts")
           .where("month", "==", month)
@@ -6395,8 +6228,6 @@
         if (snap.empty) {
           return toast("Tudo já está publicado.");
         }
-
-        // 2. Atualiza em lote
         const batch = db.batch();
         snap.forEach((doc) => {
           batch.update(doc.ref, {
@@ -6409,7 +6240,6 @@
         toast("✅ Escala publicada!");
       }
 
-      /* ========= Swap modal logic ========= */
       let swapCtx = { shiftId: null };
       function openSwap(shiftId) {
         const s = DB.shifts.find((x) => x.id === shiftId);
@@ -6591,15 +6421,10 @@
         noteCloseSwap();
         renderInternalBody("schedule");
       };
-
-      /* ========= CONTROLE DE ESCALA (LISTENER INTELIGENTE) ========= */
-
-      // Variáveis de controle FORA da função para não resetarem
       let _unsubscribeShifts = null;
       let _lastShiftQuery = "";
 
       function bindSchedule() {
-        // Botão para Editar Templates (Mantendo a feature que adicionamos antes)
         window.editTemplates = () => {
           const json = prompt(
             "Edite os templates (JSON):",
@@ -6618,38 +6443,27 @@
             alert("JSON Inválido");
           }
         };
-
-        // --- 1. FUNÇÃO DE CARGA INTELIGENTE ---
         function loadLiveShifts() {
           const monthEl = $("fMonth");
           const unitEl = $("fUnit");
-
-          // Se os inputs ainda não existem (renderizando), usa padrão ou memória
           const month = monthEl ? monthEl.value : isoMonth(nowISO());
           const unitId = unitEl ? unitEl.value : window.tempUnitFilter || "";
           const role = session.role;
           const mode = profScheduleMode;
-
-          // CRIA UMA ASSINATURA DA BUSCA ATUAL
           const currentQueryKey = `${role}|${month}|${unitId}|${mode}|${session.profId}`;
 
-          // [CORREÇÃO DO LOOP]
-          // Se já existe conexão aberta E a busca é idêntica à anterior, PARE AQUI.
           if (_unsubscribeShifts && _lastShiftQuery === currentQueryKey) {
             console.log("♻️ Conexão de escala já ativa. Mantendo.");
             return;
           }
 
-          // Se mudou a busca, fecha a conexão anterior
           if (_unsubscribeShifts) {
             _unsubscribeShifts();
             _unsubscribeShifts = null;
           }
 
-          // Atualiza a assinatura
           _lastShiftQuery = currentQueryKey;
 
-          // Monta a Query
           let query = db.collection("shifts").where("month", "==", month);
 
           if (role !== "prof" && unitId) {
@@ -6666,7 +6480,6 @@
             let list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
 
-            // Filtro de segurança (Gestor)
             if (window.currentUser && window.currentUser.role === "gestor") {
               const allowed = window.currentUser.allowedUnits || [];
               list = list.filter((s) => allowed.includes(s.unitId));
@@ -6674,14 +6487,10 @@
 
             DB.shifts = list;
 
-            // Só renderiza se estiver na aba certa
             const activeTab = document.querySelector(".tab.active");
             if (activeTab && activeTab.dataset.key === "schedule") {
-              // Ao chamar isso, o bindSchedule vai rodar de novo,
-              // mas vai cair no IF de proteção lá em cima e parar o loop!
               renderInternalBody("schedule");
 
-              // Restaura foco da busca
               if (window.tempSpecOther && $("fSpecOther")) {
                 $("fSpecOther").value = window.tempSpecOther;
                 $("fSpecOther").focus();
@@ -6690,7 +6499,6 @@
           });
         }
 
-        // --- 2. EVENTOS ---
         const btnTable = $("btnViewTable");
         const btnCal = $("btnViewCal");
         if (btnTable)
@@ -6708,7 +6516,7 @@
         const fUnit = $("fUnit");
         const fSpec = $("fSpec");
 
-        if (fMonth) fMonth.onchange = () => loadLiveShifts(); // Aqui forçamos nova busca
+        if (fMonth) fMonth.onchange = () => loadLiveShifts();
         if (fUnit)
           fUnit.onchange = (e) => {
             window.tempUnitFilter = e.target.value;
@@ -6732,7 +6540,6 @@
           };
         }
 
-        // --- 3. LÓGICA DE BOTÕES (ADMIN/PROF) ---
         if (session.role === "prof") {
           const bMine = $("btnModeMine");
           const bFull = $("btnModeFull");
@@ -6753,7 +6560,6 @@
           }
           injectColleagueShiftsIntoCalendar();
         } else {
-          // Admin/Gestor botões...
           const btnGen = $("btnGen");
           const btnPub = $("btnPub");
           if (btnGen)
@@ -6779,21 +6585,18 @@
             sTpl.onchange = () => {
               const val = sTpl.value;
               if (val === "CUSTOM") {
-                // Se for custom, limpa para digitar manual
                 $("sStart").value = "";
                 $("sEnd").value = "";
               } else {
-                // Busca o template na memória
                 const t = DB.timeTemplates.find((x) => x.k === val);
                 if (t) {
-                  $("sStart").value = t.s; // Preenche Início
-                  $("sEnd").value = t.e; // Preenche Fim
+                  $("sStart").value = t.s; 
+                  $("sEnd").value = t.e;
                 }
               }
             };
           }
 
-          // Preencher selects do modal
           const sSpec = $("sSpec");
           const sProf = $("sProf");
           const fillShiftProfs = () => {
@@ -6816,15 +6619,12 @@
 
           if (btnCreate)
             btnCreate.onclick = async () => {
-              // 1. Coleta os dados do formulário
               const date = $("sDate").value;
               const unit = $("sUnit").value;
               const spec = $("sSpec").value;
               const profId = $("sProf").value;
               const start = $("sStart").value;
 
-              // --- CORREÇÃO DE SEGURANÇA (NOVO) ---
-              // Impede que o Gestor crie plantão manual em unidade proibida
               if (session.role === "gestor" && session.allowedUnits) {
                 if (!session.allowedUnits.includes(unit)) {
                   return alert(
@@ -6832,30 +6632,24 @@
                   );
                 }
               }
-              // ------------------------------------
 
-              // 2. Validação básica
               if (!date || !unit || !spec || !profId)
                 return toast("Preencha tudo.");
 
-              // 3. Feedback visual no botão
               const btn = $("btnShiftCreate");
               const txt = btn.innerText;
               btn.disabled = true;
               btn.innerText = "Verificando...";
 
               try {
-                // 4. Verifica conflito de horário
                 const isBusy = await checkConflict(profId, date, start);
                 if (isBusy) {
                   alert("🚫 Conflito de horário.");
-                  // Restaura botão se houver conflito
                   btn.disabled = false;
                   btn.innerText = txt;
                   return;
                 }
 
-                // 5. Salva no banco de dados (Rascunho)
                 await db.collection("shifts").add({
                   unitId: unit,
                   spec,
@@ -6867,7 +6661,7 @@
                   profId,
                   originalProfId: profId,
                   swapped: false,
-                  published: false, // Cria como rascunho
+                  published: false, 
                   createdAt: new Date().toISOString(),
                 });
                 toast("✅ Criado!");
@@ -6875,18 +6669,15 @@
                 console.error(e);
                 toast("Erro.");
               } finally {
-                // 6. Restaura botão ao final (sucesso ou erro)
                 btn.disabled = false;
                 btn.innerText = txt;
               }
             };
         }
 
-        // --- 4. INICIALIZAÇÃO ---
         loadLiveShifts();
       }
 
-      /* ========= Approvals ========= */
       let cadFilter = "pending";
       function cadKindLabel(k) {
         return k === "network"
@@ -6904,11 +6695,9 @@
           return { txt: t("extStatusReview"), cls: "badge bWarn" };
         return { txt: t("extStatusReceived"), cls: "badge bWarn" };
       }
-      /* ===================== GERENCIAR EQUIPE (ADMINS + PROFS) ===================== */
       function renderTeam() {
         const isAdmin = session.role === "admin";
 
-        // 1. Tabela de Usuários do Sistema (Admins e Gestores)
         let systemUsersSection = "";
 
         if (isAdmin) {
@@ -6948,7 +6737,6 @@
             <div class="sp"></div>`;
         }
 
-        // 2. Tabela de Profissionais (Mantida igual)
         const profRows = (DB.profs || [])
           .map(
             (p) => `
@@ -6980,19 +6768,10 @@
       `;
       }
 
-      /* --- LÓGICA DE USUÁRIOS DO SISTEMA --- */
-
-      // Abrir Modal de Novo Admin
-      /* --- LÓGICA DE USUÁRIOS DO SISTEMA (MIGRADO PARA FIREBASE) --- */
-
-      // 1. Abrir Modal de Usuário (Criação ou Edição)
       window.openAddUserModal = (editId = null) => {
-        // Se for edição, busca os dados
         const userToEdit = editId
           ? DB.users.find((u) => u.id === editId)
           : null;
-
-        // Pega a unidade vinculada atual (se houver)
         const currentAllowed =
           userToEdit &&
           userToEdit.allowedUnits &&
@@ -7000,7 +6779,6 @@
             ? userToEdit.allowedUnits[0]
             : "";
 
-        // Gera as opções do Dropdown
         const unitOptions = DB.units
           .map(
             (u) =>
@@ -7063,10 +6841,6 @@
         const anchor = document.getElementById("teamModalAnchor");
         if (anchor) anchor.innerHTML = modalHtml;
       };
-
-      // 2. Salvar Usuário (Criação ou Atualização)
-      // 2. Salvar Usuário (BLINDADO)
-      // 2. Salvar Usuário (VERSÃO HIGIENIZADA E BLINDADA)
       window.saveNewSystemUser = async (editId) => {
         try {
           const name = $("newUName").value.trim();
@@ -7076,26 +6850,21 @@
           const role = $("newURole").value;
           const selectUnit = document.getElementById("newUAllowedUnit");
 
-          // Validação Básica
           if (!name || (!editId && !user) || (!editId && !pass)) {
             return toast("⚠️ Preencha nome, login e senha.");
           }
 
-          // --- LÓGICA DE UNIDADE BLINDADA ---
           let cleanUnitID = null;
           let selectedUnits = [];
 
           if (role === "gestor") {
             const rawID = selectUnit.value;
-
-            // 1. Busca a unidade na memória para garantir que o ID é legítimo
-            // Isso corrige o problema do '0' vs 'O' pois pegamos o ID direto do objeto original
             const realUnitObj = DB.units.find(
               (u) => String(u.id).trim() === String(rawID).trim(),
             );
 
             if (realUnitObj) {
-              cleanUnitID = realUnitObj.id; // ID Garantido e Limpo
+              cleanUnitID = realUnitObj.id;
               selectedUnits.push(cleanUnitID);
               console.log(
                 `✅ Unidade Validada: ${realUnitObj.name} (ID: ${cleanUnitID})`,
@@ -7104,7 +6873,6 @@
               return toast("⚠️ ERRO: Selecione uma unidade válida na lista.");
             }
           }
-          // ----------------------------------
 
           const btn =
             event.target ||
@@ -7115,7 +6883,6 @@
             btn.textContent = "Salvando...";
           }
 
-          // Verifica duplicidade de login (apenas para novos)
           if (!editId) {
             const check = await db
               .collection("users")
@@ -7130,14 +6897,11 @@
             }
           }
 
-          // Monta o pacote de dados limpo
           const payload = {
             name: name,
             role: role,
-            // Salva das DUAS formas para garantir compatibilidade total
             allowedUnits: role === "admin" ? [] : selectedUnits,
             unitId: role === "admin" ? null : cleanUnitID,
-            // Atualiza o timestamp para forçar atualização de cache
             updatedAt: new Date().toISOString(),
           };
 
@@ -7155,7 +6919,6 @@
             toast("✅ Usuário criado com sucesso!");
           }
 
-          // Fecha modal e atualiza lista
           const overlay = document.getElementById("userOverlay");
           if (overlay) overlay.remove();
 
@@ -7173,7 +6936,6 @@
         }
       };
 
-      // 3. Deletar Admin (NOVO: Apaga da coleção 'users')
       window.deleteSystemUser = async (id) => {
         if (!confirm("Tem certeza que deseja remover este acesso do servidor?"))
           return;
@@ -7185,9 +6947,6 @@
         }
       };
 
-      // --- LÓGICA DE PROFISSIONAIS (MÉDICOS) ---
-
-      // 4. Modal Profissional
       function openProfModal(id, isReadOnly) {
         const p = DB.profs.find((x) => x.id === id);
         if (!p) return;
@@ -7230,13 +6989,12 @@
         $("teamModalAnchor").innerHTML = "";
       };
 
-      // 5. Salvar Edição Médico (CORRIGIDO: Atualiza tela ao fechar)
       window.saveProfEdit = async (id) => {
         const p = DB.profs.find((x) => x.id === id);
         if (!p) return;
 
         const newWpp = document.getElementById("edWpp").value.trim();
-        const btn = event.target; // Pega o botão clicado
+        const btn = event.target;
         const originalText = btn.textContent;
 
         btn.disabled = true;
@@ -7268,7 +7026,6 @@
           toast("✅ Atualizado!");
           closeTeamModal();
 
-          // O PULO DO GATO: Força a atualização visual agora que o modal fechou
           renderInternalBody("team");
         } catch (e) {
           console.error(e);
@@ -7281,7 +7038,6 @@
         }
       };
 
-      // 6. Deletar Médico (NOVO: Remove de 'profs' e 'accounts')
       window.deleteProf = async (id) => {
         if (!confirm("⚠️ Tem certeza? Isso apagará o médico e o acesso dele."))
           return;
@@ -7289,7 +7045,6 @@
         try {
           await db.collection("profs").doc(id).delete();
 
-          // Limpa login associado
           const accSnap = await db
             .collection("accounts")
             .where("profId", "==", id)
@@ -7302,32 +7057,26 @@
         }
       };
 
-      // 7. BindTeam (CORRIGIDO: Com proteção de duplicidade)
       function bindTeam() {
-        // Se já estiver escutando, não cria novos ouvintes
         if (window._teamListenerActive) return;
         window._teamListenerActive = true;
 
-        // Escuta ADMINS
         db.collection("users").onSnapshot((snap) => {
           const list = [];
           snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
           DB.users = list;
-          tryRenderTeam(); // Tenta atualizar a tela
+          tryRenderTeam();
         });
 
-        // Escuta MÉDICOS
         db.collection("profs").onSnapshot((snap) => {
           const list = [];
           snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
           DB.profs = list;
-          tryRenderTeam(); // Tenta atualizar a tela
+          tryRenderTeam();
         });
 
-        // Função auxiliar para atualizar a tela apenas se seguro
         function tryRenderTeam() {
           const tab = document.querySelector(".tab.active");
-          // Só desenha se estiver na aba Equipe E não tiver modal de EDIÇÃO (teamOverlay) aberto
           if (tab && tab.dataset.key === "team") {
             const modalOpen = document.getElementById("teamOverlay");
             if (!modalOpen) {
@@ -7354,7 +7103,6 @@
           .map((c) => {
             const meta = cadStatusMeta(c.status);
             const kind = cadKindLabel(c.kind || "health");
-            // const reg = c.reg || c.crm || ""; // Removido daqui para limpar a view, vai para o modal
 
             return `<tr>
               <td>
@@ -7869,13 +7617,11 @@
       }
 
       function bindDiag() {
-        // Função para buscar os últimos 20 logs do servidor
         const fetchLogs = async () => {
           const tbody = document.getElementById("logsBody");
           if (!tbody) return;
 
           try {
-            // Busca os últimos 30 registros ordenados por data
             const snap = await db
               .collection("audit")
               .orderBy("ts", "desc")
@@ -7892,7 +7638,6 @@
               .map((doc) => {
                 const d = doc.data();
                 const date = new Date(d.ts).toLocaleString();
-                // Formata o detalhe para não ficar um JSON feio
                 let det = JSON.stringify(d.detail);
                 if (det.length > 50) det = det.substring(0, 50) + "...";
 
@@ -7913,14 +7658,11 @@
           }
         };
 
-        // Botão Atualizar
         const btnRef = document.getElementById("btnRefreshLogs");
         if (btnRef) btnRef.onclick = fetchLogs;
 
-        // Carrega logs ao abrir
         fetchLogs();
 
-        // --- MANTÉM AS FERRAMENTAS ANTIGAS ---
         $("btnDiagCopy").onclick = async () => {
           const pack = {
             app: "viaRGR",
@@ -7942,7 +7684,6 @@
         };
       }
 
-      /* ===================== Home interactions ===================== */
       function setRole(role) {
         currentRole = role;
         document
@@ -8006,29 +7747,24 @@
           "ADMIN: RGR1234 / admin123 • GESTOR: GESTOR1234 / gestor123 • (demo) 1234";
       }
 
-      /* ===================== External submit ===================== */
       function fillExternalLists() {
-        // 1. Preenche o Select de Especialidades
         const specSelect = $("extSpec");
         if (specSelect) {
-          // Adiciona opção "Outro" no final
           specSelect.innerHTML =
             SPECIALTIES.map(
               (s) => `<option value="${s}">${specLabel(s)}</option>`,
             ).join("") + `<option value="Outro">Outro (Especificar)</option>`;
 
-          // Lógica para mostrar/esconder o campo de texto
           specSelect.onchange = () => {
             const val = specSelect.value;
             const otherInput = $("extSpecOther");
             if (otherInput) {
               otherInput.style.display = val === "Outro" ? "block" : "none";
-              if (val !== "Outro") otherInput.value = ""; // Limpa se mudar
+              if (val !== "Outro") otherInput.value = "";
             }
           };
         }
 
-        // 2. Preenche Estados e Cidades (Mantido igual)
         $("extUF").innerHTML = Object.keys(UF_CITIES)
           .filter((x) => x)
           .map((uf) => `<option value="${uf}">${uf}</option>`)
@@ -8097,7 +7833,6 @@
         const d4 = $("doc4File").closest(".docItem");
         if (d2) d2.style.display = kind === "health" ? "" : "none";
         if (d4) d4.style.display = kind === "health" ? "" : "none";
-        // Ajusta textos do doc3 para rede/fornecedor
         const doc3TitleEl = document.querySelector('[data-i18n="doc3Title"]');
         const doc3HintEl = document.querySelector('[data-i18n="doc3Hint"]');
         if (kind === "health") {
@@ -8167,27 +7902,20 @@
         updateExternalKind();
       }
 
-      // Função auxiliar para enviar arquivo para a nuvem
       async function uploadToCloud(file, path) {
-        if (!file) return null; // Se não tiver arquivo, retorna null
+        if (!file) return null;
 
-        // Cria uma referência (ex: cadastros/doc1_data_nome.pdf)
-        // Usamos timestamp para evitar nomes duplicados
         const safeName =
           Date.now() + "_" + file.name.replace(/[^a-z0-9.]/gi, "_");
         const ref = storage.ref().child(path + "/" + safeName);
 
-        // Envia
         await ref.put(file);
 
-        // Pega o link público
         const url = await ref.getDownloadURL();
         return { name: file.name, url: url, type: file.type };
       }
 
-      // --- ENVIAR CADASTRO (COM UPLOAD REAL PARA O STORAGE) ---
       window.externalSubmit = async () => {
-        // 1. Validação (Mantém a mesma lógica visual)
         const v = validateExternal();
         if (!v.ok) {
           if (v.reason === "missingFields")
@@ -8202,18 +7930,15 @@
         const btn = $("btnSend");
         const originalText = btn.innerText;
         btn.disabled = true;
-        btn.innerText = "Enviando arquivos (aguarde)..."; // Feedback visual importante
+        btn.innerText = "Enviando arquivos (aguarde)...";
 
         try {
-          // 2. FAZ O UPLOAD DOS ARQUIVOS PRIMEIRO (Para o Firebase Storage)
-          // Isso pode levar alguns segundos dependendo da internet
           const doc1 = await uploadToCloud($("doc1File").files[0], "docs");
           const doc2F = await uploadToCloud($("doc2Front").files[0], "docs");
           const doc2B = await uploadToCloud($("doc2Back").files[0], "docs");
           const doc3 = await uploadToCloud($("doc3File").files[0], "docs");
           const doc4 = await uploadToCloud($("doc4File").files[0], "docs");
 
-          // 3. Coleta os Dados do Formulário
           const kind = $("extKind").value || "health";
           let spec = "";
           if (kind === "health") {
@@ -8221,31 +7946,24 @@
             if (spec === "Outro") spec = $("extSpecOther").value.trim();
           }
 
-          // 4. Monta o Objeto Final com os Links Reais
           const app = {
             kind,
             profession: kind === "health" ? $("extProfession").value || "" : "",
             name: $("extName").value.trim(),
             wpp: $("extWpp").value.trim(),
-            reg: $("extCrm").value.trim(), // CRM ou CNPJ
+            reg: $("extCrm").value.trim(),
             email: $("extEmail").value.trim(),
             spec,
             uf: $("extUF").value,
             city: $("extCity").value,
             addr: $("extAddr").value.trim(),
-
-            // AQUI ESTÁ A MÁGICA: Salvamos o objeto completo com a URL
             docs: {
               doc1Type: $("doc1Type").value,
-
-              // Se o upload funcionou, 'doc1' tem {name, url}. Se não, é null.
               doc1: doc1,
               doc2Front: doc2F,
               doc2Back: doc2B,
               doc3: doc3,
               doc4: doc4,
-
-              // Mantemos campos de compatibilidade visual (nomes)
               doc1Name: doc1 ? doc1.name : "Pendente",
               doc2FrontName: doc2F ? doc2F.name : "Pendente",
               doc2BackName: doc2B ? doc2B.name : "Pendente",
@@ -8258,13 +7976,11 @@
             rejectionReason: "",
           };
 
-          // 5. Salva no Banco de Dados (Firestore)
           await db.collection("cadastros").add(app);
 
           toast("✅ Cadastro enviado com sucesso!");
           clearExternal();
 
-          // Volta para a home após 2 segundos
           setTimeout(() => {
             goHome();
             btn.disabled = false;
@@ -8278,23 +7994,19 @@
         }
       };
 
-      /* ===================== BOOT (O CÉREBRO CONECTADO) ===================== */
       function boot() {
         console.log("🚀 Iniciando sistema...");
 
         if (typeof db !== "undefined") {
-          // 1. MÉDICOS (Profs)
           db.collection("profs").onSnapshot((snap) => {
             const list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
             DB.profs = list;
             console.log("👥 Médicos carregados: ", list.length);
-            renderHomeKPIs(); // <--- Atualiza o contador na Home
-            renderProfSelect(); // Atualiza o select de login
+            renderHomeKPIs();
+            renderProfSelect();
           });
 
-          // 2. UNIDADES (Units) - Correção aqui!
-          // 2. UNIDADES (Units) - COM VERIFICAÇÃO DE SEGURANÇA
           db.collection("units").onSnapshot((snap) => {
             const list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
@@ -8303,48 +8015,35 @@
 
             renderHomeKPIs();
 
-            // --- AQUI ENTRA O CÓDIGO NOVO (SEGURANÇA DO GESTOR) ---
             if (session && session.role === "gestor") {
-              // Se o gestor tem unidades permitidas na sessão
               const currentUnits = session.allowedUnits || [];
 
               if (currentUnits.length > 0) {
                 const unitId = currentUnits[0];
-                // Verifica se essa unidade REALMENTE existe na lista que acabou de chegar
                 const unitExists = DB.units.find((u) => u.id === unitId);
 
-                // Se a lista não está vazia, mas a unidade do gestor não tá nela:
                 if (!unitExists && DB.units.length > 0) {
                   console.warn(
                     "⚠️ A unidade permitida ao gestor foi deletada ou não existe.",
                   );
                   toast("⚠️ Sua unidade não existe mais. Relogue.");
-                  // Opcional: Forçar logout automático para evitar tela bugada
-                  // setSession(null);
-                  // location.reload();
                 }
               }
             }
-            // -------------------------------------------------------
 
-            // Atualiza dropdowns se estiverem na tela (Escalas)
             if (document.getElementById("sUnit"))
               renderInternalBody("schedule");
           });
 
-          // 3. PLANTÕES (Shifts) - Novo no boot para alimentar a Dashboard
           db.collection("shifts").onSnapshot((snap) => {
             const list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
             DB.shifts = list;
-            // Mantemos DB.schedule sincronizado para compatibilidade
             DB.schedule = list;
 
             console.log("📅 Plantões carregados:", list.length);
-            renderHomeKPIs(); // <--- Atualiza o contador na Home
+            renderHomeKPIs();
           });
-
-          // 4. CADASTROS (Pendentes) - Novo no boot para alimentar a Dashboard
           db.collection("cadastros")
             .orderBy("submittedAt", "desc")
             .onSnapshot((snap) => {
@@ -8353,13 +8052,11 @@
               DB.cadastros = list;
 
               console.log("📝 Cadastros carregados:", list.length);
-              renderHomeKPIs(); // <--- Atualiza o contador na Home
+              renderHomeKPIs();
             });
         }
 
-        // Carrega Configurações Globais (Regras e Templates)
         if (typeof db !== "undefined") {
-          // Escuta o documento 'payroll' dentro da coleção 'config'
           db.collection("config")
             .doc("payroll")
             .onSnapshot((doc) => {
@@ -8367,7 +8064,6 @@
                 DB.payRules = doc.data();
                 console.log("💰 Regras de pagamento atualizadas.");
               } else {
-                // Padrões se não existir na nuvem
                 DB.payRules = {
                   baseHour: 120,
                   nightMult: 1.2,
@@ -8376,7 +8072,6 @@
               }
             });
 
-          // Escuta o documento 'templates' dentro da coleção 'config'
           db.collection("config")
             .doc("templates")
             .onSnapshot((doc) => {
@@ -8384,7 +8079,6 @@
                 DB.timeTemplates = doc.data().list;
                 console.log("⏰ Templates de turno atualizados.");
               } else {
-                // Padrão se não existir
                 DB.timeTemplates = [
                   { k: "07-19", s: "07:00", e: "19:00", n: "Diurno (12h)" },
                   { k: "19-07", s: "19:00", e: "07:00", n: "Noturno (12h)" },
@@ -8392,7 +8086,6 @@
                   { k: "07-07", s: "07:00", e: "07:00", n: "Plantão (24h)" },
                 ];
               }
-              // Atualiza o select de templates se estiver na tela
               const sTpl = document.getElementById("sTpl");
               if (sTpl) {
                 sTpl.innerHTML = DB.timeTemplates
@@ -8402,12 +8095,10 @@
             });
         }
 
-        // Atualiza a Home se tiver sessão (para não ficar zerado)
         if (session) {
           renderHomeKPIs();
         }
 
-        // 2. CONFIGURAÇÕES VISUAIS (Mantendo o original)
         $("langSel").value = DB.lang || "pt";
         $("langSel").addEventListener("change", () => {
           DB.lang = $("langSel").value;
@@ -8421,16 +8112,13 @@
           toast(L() === "pt" ? "Idioma atualizado" : "Language updated");
         });
 
-        // --- LÓGICA DE LOGIN (VISUAL MELHORADO & CASE INSENSITIVE) ---
-        // --- LÓGICA DE LOGIN (SUBSTITUA TODO O BLOCO DO btnLoginUnified) ---
         if ($("btnLoginUnified")) {
           $("btnLoginUnified").onclick = async (e) => {
-            if (e) e.preventDefault(); // Evita recarregar
+            if (e) e.preventDefault(); 
 
             const btn = $("btnLoginUnified");
-            const originalContent = btn.innerHTML; // Guarda o texto/ícone original
+            const originalContent = btn.innerHTML; 
 
-            // Pega valores e força MINÚSCULO no usuário para bater com o banco
             const uInputRaw = $("lUser").value.trim();
             const uInput = uInputRaw.toLowerCase();
             const pInput = $("lPass").value.trim();
@@ -8440,7 +8128,6 @@
               return;
             }
 
-            // --- VISUAL DE CARREGAMENTO ---
             btn.disabled = true;
             btn.style.opacity = "0.7";
             btn.style.cursor = "wait";
@@ -8451,7 +8138,6 @@
             );
 
             try {
-              // 1. BUSCA NO BANCO DE DADOS (Coleção 'users' - Admins)
               const userQuery = await db
                 .collection("users")
                 .where("user", "==", uInput)
@@ -8463,28 +8149,18 @@
 
                 if (userData.pass === pInput) {
                   toast(`👋 Bem-vindo(a), ${userData.name}!`);
-
-                  // =========================================================
-                  // AQUI ENTRA O CÓDIGO NOVO (RECUPERAÇÃO INTELIGENTE)
-                  // =========================================================
-
-                  // 1. Tenta recuperar as permissões de qualquer jeito possível
                   let permissions = [];
                   if (userData.role === "gestor") {
-                    // Prioridade 1: Array correto (allowedUnits)
                     if (
                       userData.allowedUnits &&
                       Array.isArray(userData.allowedUnits)
                     ) {
                       permissions = userData.allowedUnits;
                     }
-                    // Prioridade 2: String única legada (unitId)
                     else if (userData.unitId) {
                       permissions = [userData.unitId];
                     }
                   }
-
-                  // 2. Monta a sessão blindada
                   const sessionData = {
                     role: userData.role,
                     profId: null,
@@ -8492,18 +8168,14 @@
                       userData.role === "admin" ? null : permissions,
                   };
 
-                  // LOG PARA VOCÊ VER NO CONSOLE (F12)
                   console.log("🔐 SESSÃO CRIADA:", sessionData);
 
-                  // 3. Salva
                   window.currentUser = userData;
                   localStorage.setItem(
                     "viargr_session_v19",
                     JSON.stringify(sessionData),
                   );
                   session = sessionData;
-
-                  // =========================================================
 
                   goInternal(userData.role);
                   return;
@@ -8517,7 +8189,6 @@
                 }
               }
 
-              // 2. SE NÃO ACHOU ADMIN, TENTA MÉDICO
               const accQuery = await db
                 .collection("accounts")
                 .where("user", "==", uInput)
@@ -8532,7 +8203,6 @@
                 }
               }
 
-              // Se chegou aqui, não existe
               console.warn("Usuário não encontrado no Firestore.");
               toast("❌ Usuário não cadastrado.");
             } catch (error) {
@@ -8549,7 +8219,6 @@
           };
         }
 
-        // Botão de Cadastro (Novo ID)
         if ($("btnGoRegister")) {
           $("btnGoRegister").onclick = goExternal;
         }
@@ -8565,7 +8234,6 @@
         $("btnLogout").onclick = goHome;
         $("btnBackHome1").onclick = goHomeAction;
 
-        // Configurações de Cadastro
         fillExternalLists();
         fillExternalProfession();
         if ($("extKind"))
@@ -8587,7 +8255,6 @@
           toast("OK");
         };
 
-        // Inicialização final
         renderProfSelect();
         renderHomeKPIs();
         renderSessionRestore();
@@ -8595,27 +8262,22 @@
         applyI18n();
       }
 
-      // --- LÓGICA DE INSTALAÇÃO PWA (UNIVERSAL) ---
       let deferredPrompt;
 
-      // 1. Detecta se é iPhone/iPad (iOS)
       const isIos = /iphone|ipad|ipod/.test(
         window.navigator.userAgent.toLowerCase(),
       );
       const isInStandaloneMode =
         "standalone" in window.navigator && window.navigator.standalone;
 
-      // 2. Lógica Principal
       window.addEventListener("beforeinstallprompt", (e) => {
-        // ANDROID / CHROME PC
         e.preventDefault();
         deferredPrompt = e;
         showInstallBanner();
       });
 
-      // Se for iPhone e AINDA NÃO estiver instalado
       if (isIos && !isInStandaloneMode) {
-        showInstallBanner(true); // true = modo iOS
+        showInstallBanner(true);
       }
 
       function showInstallBanner(isIosMode = false) {
@@ -8624,14 +8286,10 @@
 
         if (!banner) return;
 
-        // Mostra o banner
         banner.style.display = "block";
 
         if (isIosMode) {
-          // No iPhone não dá para instalar por botão, tem que ensinar o usuário
-          if (btn) btn.style.display = "none"; // Esconde o botão de clique
-
-          // Adiciona texto de instrução para iPhone
+          if (btn) btn.style.display = "none";
           const textDiv = banner.querySelector("div[style*='color: white']");
           if (textDiv) {
             textDiv.innerHTML += `
@@ -8641,7 +8299,6 @@
       `;
           }
         } else {
-          // No Android/PC, configura o clique do botão
           if (btn) {
             btn.onclick = async () => {
               if (deferredPrompt) {
@@ -8657,20 +8314,14 @@
         }
       }
 
-      // Se o app for instalado com sucesso, esconde tudo
       window.addEventListener("appinstalled", () => {
         const banner = document.getElementById("installBanner");
         if (banner) banner.style.display = "none";
       });
-      /* ===================== CONTROLE VISUAL DA NUVEM ===================== */
-      /* ===================== CONTROLE VISUAL DA NUVEM ===================== */
       function setCloudStatus(state) {
         const box = document.getElementById("cloudStatus");
 
-        // --- PROTEÇÃO CONTRA ERRO ---
-        // Se não achar a caixinha na tela, cancela a função e não dá erro.
         if (!box) return;
-        // ----------------------------
 
         const icon = document.getElementById("cIcon");
         const text = document.getElementById("cText");
@@ -8700,7 +8351,6 @@
           }
           if (text) text.textContent = "Erro / Offline";
         } else {
-          // IDLE
           box.style.border = "1px solid rgba(255,255,255,0.1)";
           if (icon) {
             icon.textContent = "☁️";
@@ -8710,14 +8360,11 @@
         }
       }
       boot();
-
-      /* ===================== viaRGR Platform Enhancements (v19.12.3) ===================== */
-      // Ensure DB.accounts and DB.offers and DB.availability exist
       (function ensurePlatformArrays() {
         try {
-          DB.accounts = DB.accounts || []; // {id, profId, phone, email, accessCode, passwordHash, mustChangePwd}
-          DB.offers = DB.offers || []; // {id, clientId, unitId, month, date, start, end, spec, status:"open|filled", createdAt}
-          DB.availability = DB.availability || []; // {profId, unitId, dayOfWeek, start, end, updatedAt}
+          DB.accounts = DB.accounts || [];
+          DB.offers = DB.offers || [];
+          DB.availability = DB.availability || []; 
           DB.audit = DB.audit || [];
           saveDB();
         } catch (e) {}
@@ -8728,16 +8375,14 @@
 
         try {
           const logEntry = {
-            ts: new Date().toISOString(), // Timestamp real
+            ts: new Date().toISOString(),
             user: session
               ? session.role + ":" + (session.profId || "admin")
               : "anon",
             action: action,
             detail: detail || {},
-            userAgent: navigator.userAgent, // Para saber se foi no celular ou PC
+            userAgent: navigator.userAgent,
           };
-
-          // Envia para a coleção 'audit' (sem esperar resposta para não travar a tela)
           db.collection("audit")
             .add(logEntry)
             .catch((err) => console.error("Falha ao auditar:", err));
@@ -8772,20 +8417,16 @@
       };
 
       window.approve = async (cid) => {
-        // Busca o cadastro na memória (que veio do bindCad)
         const c = DB.cadastros.find((x) => x.id === cid);
         if (!c) return;
 
         toast("Processando aprovação...");
 
         try {
-          // 1. Gera senha provisória
           const tempPass = Math.floor(
             100000 + Math.random() * 900000,
           ).toString();
           const now = new Date().toISOString();
-
-          // 2. Cria o Profissional na coleção 'profs'
           const profRef = await db.collection("profs").add({
             kind: c.kind || "health",
             profession: c.profession || "",
@@ -8796,25 +8437,20 @@
             approved: true,
             createdAt: now,
           });
-
-          // 3. Cria a Conta de Acesso em 'accounts'
           await db.collection("accounts").add({
             profId: profRef.id,
-            user: c.wpp, // Login é o WhatsApp
+            user: c.wpp,
             pass: tempPass,
             role: "prof",
             mustChangePwd: true,
             createdAt: now,
           });
-
-          // 4. Atualiza o status do cadastro para 'approved'
           await db.collection("cadastros").doc(cid).update({
             status: "approved",
             approvedAt: now,
             profId: profRef.id,
           });
 
-          // 5. Mostra credenciais
           $("credUser").textContent = c.wpp;
           $("credPass").textContent = tempPass;
           $("modalCreds").style.display = "flex";
@@ -8826,7 +8462,6 @@
         }
       };
 
-      // --- REPROVAR CADASTRO (MIGRADO PARA FIREBASE) ---
       window.reject = async (cid) => {
         const c = DB.cadastros.find((x) => x.id === cid);
         if (!c) return;
@@ -8845,28 +8480,23 @@
             rejectedAt: new Date().toISOString(),
           });
 
-          // Grava auditoria (já migrada)
           audit("cad_rejected", { cid, reason: reason.trim() });
 
           toast("⛔ Cadastro Reprovado.");
-          // O listener do bindCad vai atualizar a tela sozinho
         } catch (e) {
           console.error(e);
           toast("Erro ao reprovar.");
         }
       };
 
-      // Professional login: require code if account exists and mustChangePwd handled
       (function patchDoLogin() {
         const orig = window.doLogin;
         window.doLogin = async function () {
-          // 1. Externo
           if (currentRole === "externo") {
             goExternal();
             return;
           }
 
-          // 2. Profissional (SEGURANÇA FORÇADA)
           if (currentRole === "prof") {
             const pid = $("profSel") ? $("profSel").value : "";
             if (!pid) {
@@ -8874,10 +8504,9 @@
               return;
             }
 
-            // Busca conta
+            
             const acc = (DB.accounts || []).find((a) => a.profId === pid);
 
-            // SE NÃO TIVER CONTA, BLOQUEIA (Correção do item 3 Profissional)
             if (!acc) {
               toast(
                 "ERRO: Este profissional não possui credenciais. Peça ao Admin para reprovar e aprovar novamente para gerar a senha.",
@@ -8890,7 +8519,6 @@
             );
             if (!inputPass) return;
 
-            // Validação Simples (Texto) ou Hash
             let isValid = false;
             if (acc.pass && inputPass === acc.pass) isValid = true;
             else if (
@@ -8900,7 +8528,6 @@
               isValid = true;
 
             if (isValid) {
-              // Rotina de troca de senha no 1º acesso
               if (acc.mustChangePwd) {
                 const newP = prompt(
                   "👋 Bem-vindo! Crie sua nova senha pessoal:",
@@ -8920,7 +8547,6 @@
             return;
           }
 
-          // 3. Admin/Gestor
           const pwd = $("pwd").value.trim();
           if (!pwd) {
             toast(t("msgNeedPwd"));
@@ -8940,7 +8566,6 @@
         };
       })();
 
-      // Inject code+password inputs for professional on login screen (layout preserved: same cards/inputs)
       (function injectProfAuthFields() {
         const box = document.getElementById("profBox");
         if (!box) return;
@@ -9031,19 +8656,15 @@
       }
 
       function bindOffers() {
-        // --- LISTENERS (Ouvintes em Tempo Real) ---
-        // Só liga se ainda não estiverem ligados para evitar duplicidade
         if (!window._offersListenerActive) {
           window._offersListenerActive = true;
 
-          // A. Escuta VAGAS (Offers)
           db.collection("offers")
-            .where("status", "==", "open") // Traz apenas as abertas para economizar dados
+            .where("status", "==", "open")
             .onSnapshot((snap) => {
               const list = [];
               snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
 
-              // Atualiza memória e tela se estiver na aba
               DB.offers = list;
               if (document.querySelector(".tab.active[data-key='offers']")) {
                 const container = document.querySelector(
@@ -9051,17 +8672,15 @@
                 );
                 if (container)
                   document.getElementById("inBody").innerHTML = renderOffers();
-                rebindOffersEvents(); // Reconecta botões após redesenhar
+                rebindOffersEvents();
               }
             });
 
-          // B. Escuta DISPONIBILIDADE (Availability)
           db.collection("availability").onSnapshot((snap) => {
             const list = [];
             snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
             DB.availability = list;
 
-            // Se for médico vendo a tela, atualiza a lista de "Minha disponibilidade"
             if (
               session.role === "prof" &&
               document.querySelector(".tab.active[data-key='offers']")
@@ -9071,9 +8690,8 @@
           });
         }
 
-        // Função auxiliar para religar eventos manuais (Botões de criar)
         function rebindOffersEvents() {
-          // ADMIN: Criar Nova Vaga
+
           const btnNew = document.getElementById("btnNewOffer");
           if (btnNew) {
             btnNew.onclick = async () => {
@@ -9085,12 +8703,11 @@
               btn.textContent = "Criando...";
 
               try {
-                // Cria na nuvem
                 await db.collection("offers").add({
                   clientId: "c_default",
                   unitId,
-                  month: isoMonth(isoDateAdd(1)), // Mês seguinte ou atual (simplificado)
-                  date: isoDateAdd(1), // Amanhã (padrão)
+                  month: isoMonth(isoDateAdd(1)), 
+                  date: isoDateAdd(1), 
                   start: "07:00",
                   end: "19:00",
                   spec: "Clínica Geral",
@@ -9098,7 +8715,7 @@
                   createdAt: new Date().toISOString(),
                 });
                 toast("✅ Vaga publicada!");
-                // Listener atualiza a tela
+
               } catch (e) {
                 toast("Erro ao criar.");
               } finally {
@@ -9108,7 +8725,6 @@
             };
           }
 
-          // PROFISSIONAL: Salvar Disponibilidade
           const btnAvail = document.getElementById("btnSaveAvail");
           if (btnAvail) {
             btnAvail.onclick = async () => {
@@ -9122,8 +8738,6 @@
               toast("Salvando...");
 
               try {
-                // Verifica se já existe regra igual para atualizar (Upsert)
-                // Como o Firestore não tem "chave composta", vamos procurar antes
                 const profId = session.profId;
                 const snap = await db
                   .collection("availability")
@@ -9133,14 +8747,12 @@
                   .get();
 
                 if (!snap.empty) {
-                  // Atualiza existente
                   await snap.docs[0].ref.update({
                     start,
                     end,
                     updatedAt: new Date().toISOString(),
                   });
                 } else {
-                  // Cria novo
                   await db.collection("availability").add({
                     profId,
                     unitId,
@@ -9159,7 +8771,6 @@
           }
         }
 
-        // Função auxiliar para renderizar a listinha de disponibilidade (local)
         function renderAvailList() {
           const avList = document.getElementById("avList");
           if (!avList) return;
@@ -9179,7 +8790,6 @@
             : "Nenhuma disponibilidade registrada.";
         }
 
-        // Inicialização
         rebindOffersEvents();
         if (session.role === "prof") renderAvailList();
       }
@@ -9192,7 +8802,7 @@
           return toast("Apenas profissionais podem aceitar vagas.");
 
         const profId = session.profId;
-        const btn = event.target; // Pega o botão clicado para feedback visual
+        const btn = event.target;
         const originalText = btn.textContent;
 
         if (
@@ -9207,8 +8817,6 @@
           btn.textContent = "Processando...";
 
           const batch = db.batch();
-
-          // A. Atualiza status da vaga para 'preenchida'
           const offerRef = db.collection("offers").doc(offerId);
           batch.update(offerRef, {
             status: "filled",
@@ -9216,7 +8824,6 @@
             filledAt: new Date().toISOString(),
           });
 
-          // B. Cria o plantão na escala (shifts)
           const shiftRef = db.collection("shifts").doc();
           batch.set(shiftRef, {
             month: o.month,
@@ -9227,14 +8834,13 @@
             start: o.start,
             end: o.end,
             tpl: "CUSTOM_OFFER",
-            published: true, // Já nasce publicado pois foi "match"
+            published: true,
             swapped: false,
             createdAt: new Date().toISOString(),
           });
 
           await batch.commit();
           toast("✅ Vaga aceita! Plantão adicionado à sua escala.");
-          // O listener vai atualizar a tela sozinho
         } catch (e) {
           console.error(e);
           toast("Erro ao aceitar vaga: " + e.message);
@@ -9257,7 +8863,6 @@
         }
       };
 
-      /* ===== Face ID / Biometria (WebAuthn) ===== */
       function _b64urlEncode(buf) {
         const bytes = new Uint8Array(buf);
         let str = "";
@@ -9287,7 +8892,7 @@
         if (!webauthnReady()) throw new Error("webauthn_unavailable");
         const challenge = crypto.getRandomValues(new Uint8Array(32));
         const userId = new TextEncoder().encode("viargr:" + prof.id);
-        const rpId = location.hostname || undefined; // undefined lets browser choose
+        const rpId = location.hostname || undefined;
 
         const publicKey = {
           challenge,
@@ -9298,8 +8903,8 @@
             displayName: prof.name || prof.id,
           },
           pubKeyCredParams: [
-            { type: "public-key", alg: -7 }, // ES256
-            { type: "public-key", alg: -257 }, // RS256
+            { type: "public-key", alg: -7 },
+            { type: "public-key", alg: -257 },
           ],
           authenticatorSelection: {
             authenticatorAttachment: "platform",
@@ -9343,15 +8948,11 @@
       function openBioModal() {
         const prof = getProf(session.profId);
         const modal = document.createElement("div");
-
-        // Aumentei um pouco a escuridão do fundo (overlay) para destacar mais
         modal.style.cssText =
           "position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:9999;";
 
         const on = !!(prof && prof.bioCredId);
         const secure = !!window.isSecureContext;
-
-        // CORREÇÃO AQUI: Adicionei background:#0f1624 e box-shadow no style do card
         modal.innerHTML = `
     <div class="card" style="width:min(560px,92vw); background:#0f1624; border:1px solid var(--line); box-shadow: 0 25px 50px rgba(0,0,0,0.7);"><div class="cardin">
       <div class="row" style="justify-content:space-between; align-items:flex-start">
@@ -9419,7 +9020,6 @@
       }
 
       async function requireBiometric(prof) {
-        // Enforce for check-in/out. Fallback if unsupported: block with clear message.
         if (!webauthnReady()) {
           toast(t("bioUnsupported"));
           return false;
@@ -9437,8 +9037,6 @@
           return false;
         }
       }
-
-      /* ===== Selfie + Geo helpers ===== */
       function haversineMeters(lat1, lon1, lat2, lon2) {
         const R = 6371000;
         const toRad = (x) => (x * Math.PI) / 180;
@@ -9535,28 +9133,23 @@
         };
       }
 
-      /* ===== Minor UI: show access code in Cadastros table when approved ===== */
       (function patchRenderCad() {
-        // If the renderCad already prints access code, ok. Otherwise, it will still be visible by opening record.
       })();
 
-      // MENU MOBILE COM TRAVAMENTO DE SCROLL
       $("btnMobMenu").onclick = () => {
         const nav = $("mobNav");
         const isOpen = nav.classList.contains("open");
 
         if (isOpen) {
           nav.classList.remove("open");
-          document.body.classList.remove("noscroll"); // Destrava fundo
+          document.body.classList.remove("noscroll"); 
         } else {
           nav.classList.add("open");
-          document.body.classList.add("noscroll"); // Trava fundo
+          document.body.classList.add("noscroll");
 
-          // Reconstrói o menu garantindo que está atualizado
           const linkBox = $("mobLinks");
           linkBox.innerHTML = "";
 
-          // Se logado, mostra abas internas
           if (session) {
             const tabs = document.querySelectorAll("#inTabs .tab");
             tabs.forEach((t) => {
@@ -9575,19 +9168,17 @@
               linkBox.appendChild(btn);
             });
 
-            // Botão Sair explícito no menu
             const btnSair = document.createElement("button");
             btnSair.className = "small danger";
             btnSair.style.width = "100%";
             btnSair.textContent = "Sair / Logout";
             btnSair.onclick = () => {
-              goHome(); // Isso zera a sessão
+              goHome();
               nav.classList.remove("open");
               document.body.classList.remove("noscroll");
             };
             linkBox.appendChild(btnSair);
           } else {
-            // Se não logado, mostra opção de ir para Home/Login
             linkBox.innerHTML =
               "<div class='muted' style='padding:10px'>Faça login para acessar o menu.</div>";
             const btnHome = document.createElement("button");
@@ -9604,7 +9195,6 @@
         }
       };
 
-      // PWA: service worker
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker.register("./sw.js").catch(() => {});
