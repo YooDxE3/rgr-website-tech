@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-01-25T12:21:05.664957",
+  "generated_at": "2026-01-29T12:30:41.456462",
   "posts": [
     {
-      "id": "rgr-saude-tip1-pt",
+      "id": "rgr1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas para Saúde!",
-      "excerpt": "Evite longos períodos sentado. Faça pequenas pausas para alongar e caminhar. Melhorar sua postura e circulação aumenta a energia e previne dores. Mantenha-se ativo no trabalho!",
-      "content": "<p>Evite longos períodos sentado. Faça pequenas pausas para alongar e caminhar. Melhorar sua postura e circulação aumenta a energia e previne dores. Mantenha-se ativo no trabalho!</p>",
+      "title": "Mexa-se: Pausas Ativas e Alongamento Essencial.",
+      "excerpt": "Faça pequenas pausas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e renova a energia para suas tarefas diárias. Mantenha-se ativo, corpo e mente agradecem!",
+      "content": "<p>Faça pequenas pausas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e renova a energia para suas tarefas diárias. Mantenha-se ativo, corpo e mente agradecem!</p>",
       "tags": [
-        "movimento",
-        "postura",
-        "energia"
+        "alongamento",
+        "atividade física",
+        "ergonomia"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip1-en",
+      "id": "rgr1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks Boost Health!",
-      "excerpt": "Avoid long periods of sitting. Take short breaks to stretch and walk. Improving posture and circulation boosts energy and prevents aches. Stay active during your workday!",
-      "content": "<p>Avoid long periods of sitting. Take short breaks to stretch and walk. Improving posture and circulation boosts energy and prevents aches. Stay active during your workday!</p>",
+      "title": "Move More: Active Breaks & Essential Stretching.",
+      "excerpt": "Take short breaks to stretch and walk. This relieves muscle tension, improves circulation, and refreshes your energy for daily tasks. Stay active, your body and mind will thank you!",
+      "content": "<p>Take short breaks to stretch and walk. This relieves muscle tension, improves circulation, and refreshes your energy for daily tasks. Stay active, your body and mind will thank you!</p>",
       "tags": [
-        "movimento",
-        "postura",
-        "energia"
+        "alongamento",
+        "atividade física",
+        "ergonomia"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip1-es",
+      "id": "rgr1-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Muévete Más: Pausas Activas Saludables!",
-      "excerpt": "Evita largos períodos sentado. Haz pequeñas pausas para estirar y caminar. Mejorar tu postura y circulación aumenta la energía y previene dolores. ¡Mantente activo en el trabajo!",
-      "content": "<p>Evita largos períodos sentado. Haz pequeñas pausas para estirar y caminar. Mejorar tu postura y circulación aumenta la energía y previene dolores. ¡Mantente activo en el trabajo!</p>",
+      "title": "Muévete: Pausas Activas y Estiramientos Esenciales.",
+      "excerpt": "Haz pequeñas pausas para estirar y caminar. Esto alivia la tensión muscular, mejora la circulación y renueva la energía para tus tareas diarias. Mantente activo, tu cuerpo y mente te lo agradecerán!",
+      "content": "<p>Haz pequeñas pausas para estirar y caminar. Esto alivia la tensión muscular, mejora la circulación y renueva la energía para tus tareas diarias. Mantente activo, tu cuerpo y mente te lo agradecerán!</p>",
       "tags": [
-        "movimento",
-        "postura",
-        "energia"
+        "alongamento",
+        "atividade física",
+        "ergonomia"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip2-pt",
+      "id": "rgr2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Foco e Bem-estar",
-      "excerpt": "Beba água regularmente para manter a mente alerta e o corpo funcionando bem. Ter uma garrafa sempre por perto ajuda a lembrar. Hidratação é chave para sua produtividade e saúde.",
-      "content": "<p>Beba água regularmente para manter a mente alerta e o corpo funcionando bem. Ter uma garrafa sempre por perto ajuda a lembrar. Hidratação é chave para sua produtividade e saúde.</p>",
+      "title": "Respire Fundo: Pausas Mentais e Foco.",
+      "excerpt": "Dedique alguns minutos para uma pausa mental. Respire fundo, olhe pela janela ou tome um chá. Pequenos intervalos reduzem o estresse e aumentam sua concentração e produtividade no trabalho. Cuide da sua mente!",
+      "content": "<p>Dedique alguns minutos para uma pausa mental. Respire fundo, olhe pela janela ou tome um chá. Pequenos intervalos reduzem o estresse e aumentam sua concentração e produtividade no trabalho. Cuide da sua mente!</p>",
       "tags": [
-        "hidratação",
-        "foco",
-        "saúde"
+        "saúde mental",
+        "mindfulness",
+        "produtividade"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip2-en",
+      "id": "rgr2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate: Focus and Well-being",
-      "excerpt": "Drink water regularly to keep your mind alert and body functioning well. Having a bottle nearby helps you remember. Hydration is key to your productivity and overall health.",
-      "content": "<p>Drink water regularly to keep your mind alert and body functioning well. Having a bottle nearby helps you remember. Hydration is key to your productivity and overall health.</p>",
+      "title": "Breathe Deep: Mental Breaks and Focus.",
+      "excerpt": "Dedicate a few minutes for a mental break. Breathe deeply, look out the window, or have a tea. Short breaks reduce stress and increase your concentration and productivity at work. Take care of your mind!",
+      "content": "<p>Dedicate a few minutes for a mental break. Breathe deeply, look out the window, or have a tea. Short breaks reduce stress and increase your concentration and productivity at work. Take care of your mind!</p>",
       "tags": [
-        "hidratação",
-        "foco",
-        "saúde"
+        "saúde mental",
+        "mindfulness",
+        "produtividade"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip2-es",
+      "id": "rgr2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate: Enfoque y Bienestar",
-      "excerpt": "Bebe agua regularmente para mantener la mente alerta y el cuerpo funcionando bien. Tener una botella cerca te ayuda a recordar. La hidratación es clave para tu productividad y salud.",
-      "content": "<p>Bebe agua regularmente para mantener la mente alerta y el cuerpo funcionando bien. Tener una botella cerca te ayuda a recordar. La hidratación es clave para tu productividad y salud.</p>",
+      "title": "Respira Profundo: Pausas Mentales y Enfoque.",
+      "excerpt": "Dedica unos minutos para una pausa mental. Respira profundamente, mira por la ventana o toma un té. Pequeños descansos reducen el estrés y aumentan tu concentración y productividad en el trabajo. Cuida tu mente!",
+      "content": "<p>Dedica unos minutos para una pausa mental. Respira profundamente, mira por la ventana o toma un té. Pequeños descansos reducen el estrés y aumentan tu concentración y productividad en el trabajo. Cuida tu mente!</p>",
       "tags": [
-        "hidratação",
-        "foco",
-        "saúde"
+        "saúde mental",
+        "mindfulness",
+        "produtividade"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip3-pt",
+      "id": "rgr3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Pausas Mentais: Recarregue Sua Mente!",
-      "excerpt": "Reserve momentos curtos para desconectar. Olhe pela janela, respire profundamente ou medite por um minuto. Pequenas pausas mentais reduzem o estresse e aumentam o foco. Priorize seu bem-estar!",
-      "content": "<p>Reserve momentos curtos para desconectar. Olhe pela janela, respire profundamente ou medite por um minuto. Pequenas pausas mentais reduzem o estresse e aumentam o foco. Priorize seu bem-estar!</p>",
+      "title": "Hidrate-se e Alimente-se Bem: Energia para o Dia.",
+      "excerpt": "Mantenha-se hidratado bebendo água regularmente e opte por lanches saudáveis. Uma boa nutrição e hidratação são essenciais para manter sua energia, foco e bem-estar durante toda a jornada de trabalho. Seu corpo merece!",
+      "content": "<p>Mantenha-se hidratado bebendo água regularmente e opte por lanches saudáveis. Uma boa nutrição e hidratação são essenciais para manter sua energia, foco e bem-estar durante toda a jornada de trabalho. Seu corpo merece!</p>",
       "tags": [
-        "bem-estar",
-        "estresse",
-        "mente"
+        "hidratação",
+        "alimentação",
+        "energia"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip3-en",
+      "id": "rgr3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Mental Breaks: Recharge Your Mind!",
-      "excerpt": "Set aside short moments to disconnect. Look out a window, breathe deeply, or meditate for a minute. Small mental breaks reduce stress and increase focus. Prioritize your well-being!",
-      "content": "<p>Set aside short moments to disconnect. Look out a window, breathe deeply, or meditate for a minute. Small mental breaks reduce stress and increase focus. Prioritize your well-being!</p>",
+      "title": "Hydrate & Eat Well: Energy for Your Day.",
+      "excerpt": "Stay hydrated by drinking water regularly and opt for healthy snacks. Good nutrition and hydration are essential for maintaining your energy, focus, and well-being throughout the workday. Your body deserves it!",
+      "content": "<p>Stay hydrated by drinking water regularly and opt for healthy snacks. Good nutrition and hydration are essential for maintaining your energy, focus, and well-being throughout the workday. Your body deserves it!</p>",
       "tags": [
-        "bem-estar",
-        "estresse",
-        "mente"
+        "hidratação",
+        "alimentação",
+        "energia"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-tip3-es",
+      "id": "rgr3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Pausas Mentales: ¡Recarga Tu Mente!",
-      "excerpt": "Reserva momentos cortos para desconectar. Mira por la ventana, respira profundamente o medita un minuto. Pequeñas pausas mentales reducen el estrés y aumentan el enfoque. ¡Prioriza tu bienestar!",
-      "content": "<p>Reserva momentos cortos para desconectar. Mira por la ventana, respira profundamente o medita un minuto. Pequeñas pausas mentales reducen el estrés y aumentan el enfoque. ¡Prioriza tu bienestar!</p>",
+      "title": "Hidrátate y Aliméntate Bien: Energía para el Día.",
+      "excerpt": "Mantente hidratado bebiendo agua regularmente y opta por snacks saludables. Una buena nutrición e hidratación son esenciales para mantener tu energía, enfoque y bienestar durante toda la jornada laboral. Tu cuerpo lo merece!",
+      "content": "<p>Mantente hidratado bebiendo agua regularmente y opta por snacks saludables. Una buena nutrición e hidratación son esenciales para mantener tu energía, enfoque y bienestar durante toda la jornada laboral. Tu cuerpo lo merece!</p>",
       "tags": [
-        "bem-estar",
-        "estresse",
-        "mente"
+        "hidratação",
+        "alimentação",
+        "energia"
       ],
-      "published_at": "2026-01-25T12:21:05.664957",
+      "published_at": "2026-01-29T12:30:41.456462",
       "author": "RGR Saúde (IA)"
     }
   ]
