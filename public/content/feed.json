@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-01-31T12:22:45.198652",
+  "generated_at": "2026-02-01T12:24:12.547654",
   "posts": [
     {
-      "id": "rgr-postura-pt",
+      "id": "tip1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mantenha a Postura Correta no Trabalho",
-      "excerpt": "Ajuste sua cadeira e monitor. Uma boa postura previne dores e aumenta o conforto, melhorando sua produtividade diária e bem-estar. Cuide-se!",
-      "content": "<p>Ajuste sua cadeira e monitor. Uma boa postura previne dores e aumenta o conforto, melhorando sua produtividade diária e bem-estar. Cuide-se!</p>",
+      "title": "Faça Pausas Ativas",
+      "excerpt": "Levante-se e movimente-se a cada hora. Pequenas pausas aumentam a energia e reduzem o estresse, melhorando sua produtividade e bem-estar geral no trabalho.",
+      "content": "<p>Levante-se e movimente-se a cada hora. Pequenas pausas aumentam a energia e reduzem o estresse, melhorando sua produtividade e bem-estar geral no trabalho.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "conforto"
+        "Pausas Ativas",
+        "Movimento",
+        "Bem-estar"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-postura-en",
+      "id": "tip1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Maintain Correct Posture at Work",
-      "excerpt": "Adjust your chair and monitor. Good posture prevents pain and increases comfort, improving your daily productivity and well-being. Take care!",
-      "content": "<p>Adjust your chair and monitor. Good posture prevents pain and increases comfort, improving your daily productivity and well-being. Take care!</p>",
+      "title": "Take Active Breaks",
+      "excerpt": "Stand up and move every hour. Short breaks boost energy and reduce stress, improving your productivity and overall well-being at work, keeping you refreshed.",
+      "content": "<p>Stand up and move every hour. Short breaks boost energy and reduce stress, improving your productivity and overall well-being at work, keeping you refreshed.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "conforto"
+        "Pausas Ativas",
+        "Movimento",
+        "Bem-estar"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-postura-es",
+      "id": "tip1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Mantén Postura Correcta en el Trabajo",
-      "excerpt": "Ajusta tu silla y monitor. Una buena postura previene dolores y aumenta la comodidad, mejorando tu productividad diaria y bienestar. ¡Cuídate!",
-      "content": "<p>Ajusta tu silla y monitor. Una buena postura previene dolores y aumenta la comodidad, mejorando tu productividad diaria y bienestar. ¡Cuídate!</p>",
+      "title": "Toma Pausas Activas",
+      "excerpt": "Levántate y muévete cada hora. Pequeñas pausas aumentan la energía y reducen el estrés, mejorando tu productividad y bienestar general en el trabajo.",
+      "content": "<p>Levántate y muévete cada hora. Pequeñas pausas aumentan la energía y reducen el estrés, mejorando tu productividad y bienestar general en el trabajo.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "conforto"
+        "Pausas Ativas",
+        "Movimento",
+        "Bem-estar"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-pausas-pt",
+      "id": "tip2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Faça Pequenas Pausas para Recarregar",
-      "excerpt": "Levante-se, estique-se ou dê uma curta caminhada a cada hora. Isso alivia a tensão muscular, reduz o estresse e renova sua energia para seguir em frente. Essencial!",
-      "content": "<p>Levante-se, estique-se ou dê uma curta caminhada a cada hora. Isso alivia a tensão muscular, reduz o estresse e renova sua energia para seguir em frente. Essencial!</p>",
+      "title": "Hidrate-se Constantemente",
+      "excerpt": "Beba água regularmente ao longo do dia. A hidratação adequada mantém o cérebro focado, previne dores de cabeça e eleva seus níveis de energia, crucial para um bom desempenho.",
+      "content": "<p>Beba água regularmente ao longo do dia. A hidratação adequada mantém o cérebro focado, previne dores de cabeça e eleva seus níveis de energia, crucial para um bom desempenho.</p>",
       "tags": [
-        "pausas",
-        "movimento",
-        "estresse"
+        "Hidratação",
+        "Foco",
+        "Energia"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-pausas-en",
+      "id": "tip2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Take Short Breaks to Recharge",
-      "excerpt": "Stand up, stretch, or take a short walk every hour. This relieves muscle tension, reduces stress, and renews your energy to keep going. Essential!",
-      "content": "<p>Stand up, stretch, or take a short walk every hour. This relieves muscle tension, reduces stress, and renews your energy to keep going. Essential!</p>",
+      "title": "Stay Hydrated Always",
+      "excerpt": "Drink water regularly throughout the day. Proper hydration keeps your brain focused, prevents headaches, and boosts energy levels, essential for optimal performance and health.",
+      "content": "<p>Drink water regularly throughout the day. Proper hydration keeps your brain focused, prevents headaches, and boosts energy levels, essential for optimal performance and health.</p>",
       "tags": [
-        "pausas",
-        "movimento",
-        "estresse"
+        "Hidratação",
+        "Foco",
+        "Energia"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-pausas-es",
+      "id": "tip2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Toma Pequeñas Pausas para Recargar",
-      "excerpt": "Levántate, estírate o da un paseo corto cada hora. Esto alivia la tensión muscular, reduce el estrés y renueva tu energía para seguir. ¡Esencial!",
-      "content": "<p>Levántate, estírate o da un paseo corto cada hora. Esto alivia la tensión muscular, reduce el estrés y renueva tu energía para seguir. ¡Esencial!</p>",
+      "title": "Hidrátate Constantemente",
+      "excerpt": "Bebe agua regularmente durante el día. La hidratación adecuada mantiene el cerebro enfocado, previene dolores de cabeza y eleva tu energía, clave para un buen rendimiento.",
+      "content": "<p>Bebe agua regularmente durante el día. La hidratación adecuada mantiene el cerebro enfocado, previene dolores de cabeza y eleva tu energía, clave para un buen rendimiento.</p>",
       "tags": [
-        "pausas",
-        "movimento",
-        "estresse"
+        "Hidratação",
+        "Foco",
+        "Energia"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-hidratacao-pt",
+      "id": "tip3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Beba Água Regularmente",
-      "excerpt": "Mantenha uma garrafa de água por perto e beba ao longo do dia. A hidratação adequada melhora o foco, a energia e o humor, mantendo você produtivo e saudável. Beba mais!",
-      "content": "<p>Mantenha uma garrafa de água por perto e beba ao longo do dia. A hidratação adequada melhora o foco, a energia e o humor, mantendo você produtivo e saudável. Beba mais!</p>",
+      "title": "Mantenha Boa Postura",
+      "excerpt": "Ajuste sua cadeira e monitor para uma postura ergonômica. Uma boa postura previne dores nas costas e pescoço, promovendo conforto e concentração para suas tarefas diárias.",
+      "content": "<p>Ajuste sua cadeira e monitor para uma postura ergonômica. Uma boa postura previne dores nas costas e pescoço, promovendo conforto e concentração para suas tarefas diárias.</p>",
       "tags": [
-        "hidratação",
-        "foco",
-        "energia"
+        "Ergonomia",
+        "Postura",
+        "Conforto"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-hidratacao-en",
+      "id": "tip3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate: Drink Water Regularly",
-      "excerpt": "Keep a water bottle nearby and drink throughout the day. Proper hydration improves focus, energy, and mood, keeping you productive and healthy. Drink more!",
-      "content": "<p>Keep a water bottle nearby and drink throughout the day. Proper hydration improves focus, energy, and mood, keeping you productive and healthy. Drink more!</p>",
+      "title": "Maintain Good Posture",
+      "excerpt": "Adjust your chair and monitor for ergonomic posture. Good posture prevents back and neck pain, promoting comfort and concentration for your daily tasks efficiently.",
+      "content": "<p>Adjust your chair and monitor for ergonomic posture. Good posture prevents back and neck pain, promoting comfort and concentration for your daily tasks efficiently.</p>",
       "tags": [
-        "hidratação",
-        "foco",
-        "energia"
+        "Ergonomia",
+        "Postura",
+        "Conforto"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-hidratacao-es",
+      "id": "tip3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidratación: Bebe Agua Regularmente",
-      "excerpt": "Ten una botella de agua cerca y bebe durante el día. La hidratación adequada mejora el enfoque, la energía y el estado de ánimo, manteniéndote productivo y sano. ¡Bebe más!",
-      "content": "<p>Ten una botella de agua cerca y bebe durante el día. La hidratación adequada mejora el enfoque, la energía y el estado de ánimo, manteniéndote productivo y sano. ¡Bebe más!</p>",
+      "title": "Mantén Buena Postura",
+      "excerpt": "Ajusta tu silla y monitor para una postura ergonómica. Una buena postura previene dolores de espalda y cuello, promoviendo confort y concentración para tus tareas diarias.",
+      "content": "<p>Ajusta tu silla y monitor para una postura ergonómica. Una buena postura previene dolores de espalda y cuello, promoviendo confort y concentración para tus tareas diarias.</p>",
       "tags": [
-        "hidratação",
-        "foco",
-        "energia"
+        "Ergonomia",
+        "Postura",
+        "Conforto"
       ],
-      "published_at": "2026-01-31T12:22:45.198652",
+      "published_at": "2026-02-01T12:24:12.547654",
       "author": "RGR Saúde (IA)"
     }
   ]
