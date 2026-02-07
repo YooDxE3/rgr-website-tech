@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-02-05T12:35:02.657614",
+  "generated_at": "2026-02-07T12:23:27.505242",
   "posts": [
     {
-      "id": "tip1-pt",
+      "id": "rgrs_tip1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Pausas Ativas: Revigore-se e Produza Mais!",
-      "excerpt": "Faça pausas curtas para se alongar ou caminhar. Isso alivia a tensão muscular, melhora a circulação e aumenta seu foco e produtividade ao longo do dia de trabalho.",
-      "content": "<p>Faça pausas curtas para se alongar ou caminhar. Isso alivia a tensão muscular, melhora a circulação e aumenta seu foco e produtividade ao longo do dia de trabalho.</p>",
+      "title": "Faça Pausas Ativas",
+      "excerpt": "A cada hora, levante-se, alongue-se ou dê uma curta caminhada. Isso melhora a circulação e reduz a fadiga, aumentando sua produtividade e bem-estar.",
+      "content": "<p>A cada hora, levante-se, alongue-se ou dê uma curta caminhada. Isso melhora a circulação e reduz a fadiga, aumentando sua produtividade e bem-estar.</p>",
       "tags": [
         "movimento",
         "pausa",
-        "produtividade"
+        "ergonomia"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1-en",
+      "id": "rgrs_tip1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Active Breaks: Refresh and Boost Productivity!",
-      "excerpt": "Take short breaks to stretch or walk around. This relieves muscle tension, improves circulation, and enhances your focus and productivity throughout the workday, keeping you energized.",
-      "content": "<p>Take short breaks to stretch or walk around. This relieves muscle tension, improves circulation, and enhances your focus and productivity throughout the workday, keeping you energized.</p>",
+      "title": "Take Active Breaks",
+      "excerpt": "Every hour, stand up, stretch, or take a short walk. This improves circulation and reduces fatigue, boosting your productivity and well-being at work.",
+      "content": "<p>Every hour, stand up, stretch, or take a short walk. This improves circulation and reduces fatigue, boosting your productivity and well-being at work.</p>",
       "tags": [
         "movimento",
         "pausa",
-        "produtividade"
+        "ergonomia"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1-es",
+      "id": "rgrs_tip1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Pausas Activas: ¡Revitaliza y Rinde Más!",
-      "excerpt": "Haz pausas cortas para estirar o caminar. Esto alivia la tensión muscular, mejora la circulación y aumenta tu concentración y productividad a lo largo de la jornada laboral.",
-      "content": "<p>Haz pausas cortas para estirar o caminar. Esto alivia la tensión muscular, mejora la circulación y aumenta tu concentración y productividad a lo largo de la jornada laboral.</p>",
+      "title": "Toma Descansos Activos",
+      "excerpt": "Cada hora, levántate, estírate o camina un poco. Esto mejora la circulación y reduce la fatiga, aumentando tu productividad y bienestar laboral.",
+      "content": "<p>Cada hora, levántate, estírate o camina un poco. Esto mejora la circulación y reduce la fatiga, aumentando tu productividad y bienestar laboral.</p>",
       "tags": [
         "movimento",
         "pausa",
-        "produtividade"
+        "ergonomia"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-pt",
+      "id": "rgrs_tip2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se e Alimente-se Bem no Trabalho!",
-      "excerpt": "Mantenha uma garrafa de água por perto e opte por lanches saudáveis. A hidratação e uma boa alimentação são essenciais para manter a energia e o bom funcionamento cerebral, garantindo seu bem-estar.",
-      "content": "<p>Mantenha uma garrafa de água por perto e opte por lanches saudáveis. A hidratação e uma boa alimentação são essenciais para manter a energia e o bom funcionamento cerebral, garantindo seu bem-estar.</p>",
+      "title": "Hidrate-se Constantemente",
+      "excerpt": "Beba água regularmente ao longo do dia. A hidratação adequada mantém o foco, a energia e previne dores de cabeça, essencial para um bom desempenho.",
+      "content": "<p>Beba água regularmente ao longo do dia. A hidratação adequada mantém o foco, a energia e previne dores de cabeça, essencial para um bom desempenho.</p>",
       "tags": [
         "hidratação",
-        "nutrição",
-        "energia"
+        "água",
+        "foco"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-en",
+      "id": "rgrs_tip2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate and Eat Well at Work!",
-      "excerpt": "Keep a water bottle close and choose healthy snacks. Hydration and good nutrition are essential for maintaining energy levels and optimal brain function, ensuring your overall well-being and focus.",
-      "content": "<p>Keep a water bottle close and choose healthy snacks. Hydration and good nutrition are essential for maintaining energy levels and optimal brain function, ensuring your overall well-being and focus.</p>",
+      "title": "Stay Hydrated Always",
+      "excerpt": "Drink water regularly throughout the day. Proper hydration maintains focus, energy, and prevents headaches, essential for good performance at work.",
+      "content": "<p>Drink water regularly throughout the day. Proper hydration maintains focus, energy, and prevents headaches, essential for good performance at work.</p>",
       "tags": [
         "hidratação",
-        "nutrição",
-        "energia"
+        "água",
+        "foco"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-es",
+      "id": "rgrs_tip2-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Hidrátate y Come Bien en el Trabajo!",
-      "excerpt": "Mantén una botella de agua cerca y elige snacks saludables. La hidratación y una buena alimentación son esenciales para mantener la energía y el buen funcionamiento cerebral, garantizando tu bienestar.",
-      "content": "<p>Mantén una botella de agua cerca y elige snacks saludables. La hidratación y una buena alimentación son esenciales para mantener la energía y el buen funcionamiento cerebral, garantizando tu bienestar.</p>",
+      "title": "Hidrátate Constantemente",
+      "excerpt": "Bebe agua regularmente durante el día. La hidratación adecuada mantiene el enfoque, la energía y previene dolores de cabeza, esencial para el rendimiento.",
+      "content": "<p>Bebe agua regularmente durante el día. La hidratación adecuada mantiene el enfoque, la energía y previene dolores de cabeza, esencial para el rendimiento.</p>",
       "tags": [
         "hidratação",
-        "nutrição",
-        "energia"
+        "água",
+        "foco"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-pt",
+      "id": "rgrs_tip3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Postura Correta e Mente Calma no Trabalho!",
-      "excerpt": "Ajuste sua cadeira e monitor para uma postura ergonômica. Reserve momentos para respirar profundamente e gerenciar o estresse, mantendo sua mente focada e seu corpo saudável ao longo do dia.",
-      "content": "<p>Ajuste sua cadeira e monitor para uma postura ergonômica. Reserve momentos para respirar profundamente e gerenciar o estresse, mantendo sua mente focada e seu corpo saudável ao longo do dia.</p>",
+      "title": "Cuide da Sua Mente",
+      "excerpt": "Reserve alguns minutos para respirar profundamente ou meditar. Isso reduz o estresse, melhora a clareza mental e promove um ambiente de trabalho mais tranquilo.",
+      "content": "<p>Reserve alguns minutos para respirar profundamente ou meditar. Isso reduz o estresse, melhora a clareza mental e promove um ambiente de trabalho mais tranquilo.</p>",
       "tags": [
-        "ergonomia",
         "mente",
-        "estresse"
+        "estresse",
+        "bem-estar"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-en",
+      "id": "rgrs_tip3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Correct Posture & Calm Mind at Work!",
-      "excerpt": "Adjust your chair and monitor for ergonomic posture. Take moments to breathe deeply and manage stress, keeping your mind focused and your body healthy throughout the workday for better performance.",
-      "content": "<p>Adjust your chair and monitor for ergonomic posture. Take moments to breathe deeply and manage stress, keeping your mind focused and your body healthy throughout the workday for better performance.</p>",
+      "title": "Prioritize Mental Wellness",
+      "excerpt": "Take a few minutes to breathe deeply or meditate. This reduces stress, improves mental clarity, and fosters a calmer, more productive work environment.",
+      "content": "<p>Take a few minutes to breathe deeply or meditate. This reduces stress, improves mental clarity, and fosters a calmer, more productive work environment.</p>",
       "tags": [
-        "ergonomia",
         "mente",
-        "estresse"
+        "estresse",
+        "bem-estar"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-es",
+      "id": "rgrs_tip3-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Postura Correcta y Mente Tranquila en el Trabajo!",
-      "excerpt": "Ajusta tu silla y monitor para una postura ergonómica. Dedica momentos para respirar profundamente y manejar el estrés, manteniendo tu mente enfocada y tu cuerpo sano durante el día laboral.",
-      "content": "<p>Ajusta tu silla y monitor para una postura ergonómica. Dedica momentos para respirar profundamente y manejar el estrés, manteniendo tu mente enfocada y tu cuerpo sano durante el día laboral.</p>",
+      "title": "Cuida Tu Mente",
+      "excerpt": "Dedica unos minutos a respirar profundamente o meditar. Esto reduce el estrés, mejora la claridad mental y promueve un ambiente laboral más tranquilo.",
+      "content": "<p>Dedica unos minutos a respirar profundamente o meditar. Esto reduce el estrés, mejora la claridad mental y promueve un ambiente laboral más tranquilo.</p>",
       "tags": [
-        "ergonomia",
         "mente",
-        "estresse"
+        "estresse",
+        "bem-estar"
       ],
-      "published_at": "2026-02-05T12:35:02.657614",
+      "published_at": "2026-02-07T12:23:27.505242",
       "author": "RGR Saúde (IA)"
     }
   ]
