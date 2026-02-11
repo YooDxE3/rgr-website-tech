@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-02-09T12:40:12.837797",
+  "generated_at": "2026-02-11T12:40:57.564666",
   "posts": [
     {
-      "id": "saude-dica-1-pt",
+      "id": "dica1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas e Alongamentos!",
-      "excerpt": "Faça pausas curtas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e renova sua energia, prevenindo desconfortos.",
-      "content": "<p>Faça pausas curtas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e renova sua energia, prevenindo desconfortos.</p>",
+      "title": "Mexa-se: Pausas Ativas Revigoram!",
+      "excerpt": "Levante-se a cada hora para alongar-se. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam sua energia e produtividade ao longo do dia de trabalho. Seu corpo agradece!",
+      "content": "<p>Levante-se a cada hora para alongar-se. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam sua energia e produtividade ao longo do dia de trabalho. Seu corpo agradece!</p>",
       "tags": [
-        "postura",
         "movimento",
+        "pausas",
         "energia"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-1-en",
+      "id": "dica1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks & Stretching!",
-      "excerpt": "Take short breaks to stretch and walk around. This relieves muscle tension, improves circulation, and recharges your energy, preventing discomfort.",
-      "content": "<p>Take short breaks to stretch and walk around. This relieves muscle tension, improves circulation, and recharges your energy, preventing discomfort.</p>",
+      "title": "Move More: Active Breaks Revitalize!",
+      "excerpt": "Stand up every hour to stretch. Small active breaks improve circulation, reduce fatigue, and boost your energy and productivity throughout the workday. Your body will thank you!",
+      "content": "<p>Stand up every hour to stretch. Small active breaks improve circulation, reduce fatigue, and boost your energy and productivity throughout the workday. Your body will thank you!</p>",
       "tags": [
-        "postura",
         "movimento",
+        "pausas",
         "energia"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-1-es",
+      "id": "dica1-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Muévase: Pausas Activas y Estiramientos!",
-      "excerpt": "Tome pausas cortas para estirarse y caminar. Esto alivia la tensión muscular, mejora la circulación y recarga su energía, previniendo molestias.",
-      "content": "<p>Tome pausas cortas para estirarse y caminar. Esto alivia la tensión muscular, mejora la circulación y recarga su energía, previniendo molestias.</p>",
+      "title": "Muévase: ¡Pausas Activas Revitalizan!",
+      "excerpt": "Levántese cada hora para estirarse. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan su energía y productividad durante la jornada laboral. ¡Su cuerpo se lo agradecerá!",
+      "content": "<p>Levántese cada hora para estirarse. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan su energía y productividad durante la jornada laboral. ¡Su cuerpo se lo agradecerá!</p>",
       "tags": [
-        "postura",
         "movimento",
+        "pausas",
         "energia"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-2-pt",
+      "id": "dica2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Beba Água Regularmente!",
-      "excerpt": "Manter-se hidratado é crucial para o foco e bem-estar. Tenha uma garrafa de água sempre por perto e beba pequenas quantidades durante o dia.",
-      "content": "<p>Manter-se hidratado é crucial para o foco e bem-estar. Tenha uma garrafa de água sempre por perto e beba pequenas quantidades durante o dia.</p>",
+      "title": "Hidrate-se: Foco e Bem-Estar Garantidos!",
+      "excerpt": "Beba água regularmente. A hidratação adequada é fundamental para manter o foco, a energia e a saúde geral. Mantenha uma garrafa de água por perto para lembrar-se de beber.",
+      "content": "<p>Beba água regularmente. A hidratação adequada é fundamental para manter o foco, a energia e a saúde geral. Mantenha uma garrafa de água por perto para lembrar-se de beber.</p>",
       "tags": [
-        "foco",
         "hidratação",
-        "produtividade"
+        "água",
+        "foco"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-2-en",
+      "id": "dica2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Stay Hydrated: Drink Water Regularly!",
-      "excerpt": "Staying hydrated is crucial for focus and well-being. Keep a water bottle close and drink small amounts throughout the day for better performance.",
-      "content": "<p>Staying hydrated is crucial for focus and well-being. Keep a water bottle close and drink small amounts throughout the day for better performance.</p>",
+      "title": "Hydrate: Focus and Well-being Guaranteed!",
+      "excerpt": "Drink water regularly. Proper hydration is essential for maintaining focus, energy, and overall health. Keep a water bottle nearby to remind yourself to drink throughout the day.",
+      "content": "<p>Drink water regularly. Proper hydration is essential for maintaining focus, energy, and overall health. Keep a water bottle nearby to remind yourself to drink throughout the day.</p>",
       "tags": [
-        "foco",
         "hidratação",
-        "produtividade"
+        "água",
+        "foco"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-2-es",
+      "id": "dica2-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Hidrátese: Beba Agua Regularmente!",
-      "excerpt": "Mantenerse hidratado es clave para el enfoque y bienestar. Tenga una botella de agua cerca y beba pequeñas cantidades durante el día.",
-      "content": "<p>Mantenerse hidratado es clave para el enfoque y bienestar. Tenga una botella de agua cerca y beba pequeñas cantidades durante el día.</p>",
+      "title": "Hidrátese: ¡Foco y Bienestar Asegurados!",
+      "excerpt": "Beba agua regularmente. La hidratación adecuada es fundamental para mantener el enfoque, la energía y la salud general. Tenga una botella de agua cerca para recordar beber.",
+      "content": "<p>Beba agua regularmente. La hidratación adecuada es fundamental para mantener el enfoque, la energía y la salud general. Tenga una botella de agua cerca para recordar beber.</p>",
       "tags": [
-        "foco",
         "hidratação",
-        "produtividade"
+        "água",
+        "foco"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-3-pt",
+      "id": "dica3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Pausas Mentais: Desconecte para Recarregar!",
-      "excerpt": "Reserve momentos para pequenas pausas mentais. Afaste-se da tela, respire profundamente ou converse brevemente. Isso reduz o estresse e aumenta a clareza.",
-      "content": "<p>Reserve momentos para pequenas pausas mentais. Afaste-se da tela, respire profundamente ou converse brevemente. Isso reduz o estresse e aumenta a clareza.</p>",
+      "title": "Desconecte para Recarregar: Mente Renovada!",
+      "excerpt": "Faça pequenas pausas digitais. Afaste-se da tela por alguns minutos para descansar os olhos e a mente. Isso ajuda a reduzir o estresse e a aumentar a clareza mental para as tarefas.",
+      "content": "<p>Faça pequenas pausas digitais. Afaste-se da tela por alguns minutos para descansar os olhos e a mente. Isso ajuda a reduzir o estresse e a aumentar a clareza mental para as tarefas.</p>",
       "tags": [
-        "mindfulness",
-        "bem-estar",
-        "estresse"
+        "mente",
+        "pausa",
+        "bem-estar"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-3-en",
+      "id": "dica3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Mental Breaks: Disconnect to Recharge!",
-      "excerpt": "Schedule short mental breaks. Step away from the screen, breathe deeply, or have a brief chat. This reduces stress and improves mental clarity.",
-      "content": "<p>Schedule short mental breaks. Step away from the screen, breathe deeply, or have a brief chat. This reduces stress and improves mental clarity.</p>",
+      "title": "Disconnect to Recharge: Renew Your Mind!",
+      "excerpt": "Take short digital breaks. Step away from the screen for a few minutes to rest your eyes and mind. This helps reduce stress and increase mental clarity for your tasks.",
+      "content": "<p>Take short digital breaks. Step away from the screen for a few minutes to rest your eyes and mind. This helps reduce stress and increase mental clarity for your tasks.</p>",
       "tags": [
-        "mindfulness",
-        "bem-estar",
-        "estresse"
+        "mente",
+        "pausa",
+        "bem-estar"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "saude-dica-3-es",
+      "id": "dica3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Pausas Mentales: ¡Desconecte para Recargar!",
-      "excerpt": "Reserve momentos para pequeñas pausas mentales. Aléjese de la pantalla, respire profundamente o converse brevemente. Reduce el estrés y aclara la mente.",
-      "content": "<p>Reserve momentos para pequeñas pausas mentales. Aléjese de la pantalla, respire profundamente o converse brevemente. Reduce el estrés y aclara la mente.</p>",
+      "title": "Desconecte para Recargar: ¡Mente Renovada!",
+      "excerpt": "Tome pequeñas pausas digitales. Aléjese de la pantalla por unos minutos para descansar la vista y la mente. Esto ayuda a reducir el estrés y aumentar la claridad mental para las tareas.",
+      "content": "<p>Tome pequeñas pausas digitales. Aléjese de la pantalla por unos minutos para descansar la vista y la mente. Esto ayuda a reducir el estrés y aumentar la claridad mental para las tareas.</p>",
       "tags": [
-        "mindfulness",
-        "bem-estar",
-        "estresse"
+        "mente",
+        "pausa",
+        "bem-estar"
       ],
-      "published_at": "2026-02-09T12:40:12.837797",
+      "published_at": "2026-02-11T12:40:57.564666",
       "author": "RGR Saúde (IA)"
     }
   ]
