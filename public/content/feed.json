@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-02-15T12:24:35.081380",
+  "generated_at": "2026-02-17T12:35:55.560252",
   "posts": [
     {
-      "id": "rgr-001-pt",
+      "id": "tip1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas Melhoram Energia",
-      "excerpt": "Faça pequenas pausas para alongar ou caminhar. Isso alivia a tensão muscular, melhora a circulação e renova sua energia para continuar produtivo.",
-      "content": "<p>Faça pequenas pausas para alongar ou caminhar. Isso alivia a tensão muscular, melhora a circulação e renova sua energia para continuar produtivo.</p>",
+      "title": "Mova-se: Pausas Ativas Valem Ouro!",
+      "excerpt": "Levante-se a cada hora. Pequenas caminhadas ou alongamentos melhoram a circulação, reduzem a fadiga e aumentam o foco. Sua saúde agradece.",
+      "content": "<p>Levante-se a cada hora. Pequenas caminhadas ou alongamentos melhoram a circulação, reduzem a fadiga e aumentam o foco. Sua saúde agradece.</p>",
       "tags": [
-        "atividade física",
-        "pausa",
-        "energia"
+        "pausas ativas",
+        "bem-estar",
+        "movimento"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-001-en",
+      "id": "tip1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks Boost Energy",
-      "excerpt": "Take short breaks to stretch or walk. This relieves muscle tension, improves circulation, and renews your energy to stay productive.",
-      "content": "<p>Take short breaks to stretch or walk. This relieves muscle tension, improves circulation, and renews your energy to stay productive.</p>",
+      "title": "Move More: Active Breaks Boost Energy!",
+      "excerpt": "Stand up every hour. Short walks or stretches improve circulation, reduce fatigue, and boost focus. Your well-being will thank you.",
+      "content": "<p>Stand up every hour. Short walks or stretches improve circulation, reduce fatigue, and boost focus. Your well-being will thank you.</p>",
       "tags": [
-        "atividade física",
-        "pausa",
-        "energia"
+        "pausas ativas",
+        "bem-estar",
+        "movimento"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-001-es",
+      "id": "tip1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Muévase: Pausas Activas Aumentan Energía",
-      "excerpt": "Tome breves descansos para estirarse o caminar. Esto alivia la tensión muscular, mejora la circulación y renueva su energía para mantenerse productivo.",
-      "content": "<p>Tome breves descansos para estirarse o caminar. Esto alivia la tensión muscular, mejora la circulación y renueva su energía para mantenerse productivo.</p>",
+      "title": "¡Muévete! Pausas Activas Revitalizan",
+      "excerpt": "Levántate cada hora. Pequeñas caminatas o estiramientos mejoran la circulación, reducen la fatiga y aumentan el enfoque. Tu salud lo agradecerá.",
+      "content": "<p>Levántate cada hora. Pequeñas caminatas o estiramientos mejoran la circulación, reducen la fatiga y aumentan el enfoque. Tu salud lo agradecerá.</p>",
       "tags": [
-        "atividade física",
-        "pausa",
-        "energia"
+        "pausas ativas",
+        "bem-estar",
+        "movimento"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-002-pt",
+      "id": "tip2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Beba Água: Hidratação É Essencial",
-      "excerpt": "Mantenha-se hidratado ao longo do dia. Beber água regularmente melhora o foco, a energia e a saúde geral. Tenha sempre uma garrafa por perto.",
-      "content": "<p>Mantenha-se hidratado ao longo do dia. Beber água regularmente melhora o foco, a energia e a saúde geral. Tenha sempre uma garrafa por perto.</p>",
+      "title": "Hidrate-se: Água É Energia Pura!",
+      "excerpt": "Beba água regularmente. A hidratação adequada melhora a concentração, a produtividade e combate dores de cabeça. Mantenha uma garrafa sempre por perto.",
+      "content": "<p>Beba água regularmente. A hidratação adequada melhora a concentração, a produtividade e combate dores de cabeça. Mantenha uma garrafa sempre por perto.</p>",
       "tags": [
         "hidratação",
-        "bem-estar",
-        "foco"
+        "foco",
+        "energia"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-002-en",
+      "id": "tip2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Drink Water: Hydration Is Essential",
-      "excerpt": "Stay hydrated throughout the day. Drinking water regularly improves focus, energy, and overall health. Always keep a bottle nearby.",
-      "content": "<p>Stay hydrated throughout the day. Drinking water regularly improves focus, energy, and overall health. Always keep a bottle nearby.</p>",
+      "title": "Hydrate: Water Fuels Your Brain!",
+      "excerpt": "Drink water regularly. Proper hydration improves concentration, productivity, and helps prevent headaches. Keep a bottle close by for constant sips.",
+      "content": "<p>Drink water regularly. Proper hydration improves concentration, productivity, and helps prevent headaches. Keep a bottle close by for constant sips.</p>",
       "tags": [
         "hidratação",
-        "bem-estar",
-        "foco"
+        "foco",
+        "energia"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-002-es",
+      "id": "tip2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Beba Agua: Hidratación Es Esencial",
-      "excerpt": "Manténgase hidratado durante el día. Beber agua regularmente mejora el enfoque, la energía y la salud general. Tenga siempre una botella cerca.",
-      "content": "<p>Manténgase hidratado durante el día. Beber agua regularmente mejora el enfoque, la energía y la salud general. Tenga siempre una botella cerca.</p>",
+      "title": "Hidrátate: ¡Agua Es Vitalidad!",
+      "excerpt": "Bebe agua regularmente. La hidratación adecuada mejora la concentración, la productividad y combate dolores de cabeza. Ten una botella siempre cerca.",
+      "content": "<p>Bebe agua regularmente. La hidratación adecuada mejora la concentración, la productividad y combate dolores de cabeza. Ten una botella siempre cerca.</p>",
       "tags": [
         "hidratação",
-        "bem-estar",
-        "foco"
+        "foco",
+        "energia"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-003-pt",
+      "id": "tip3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mente Sã: Gerencie Seu Estresse",
-      "excerpt": "Dedique alguns minutos para uma pausa mental. Respire fundo, medite ou foque em algo positivo. Isso reduz o estresse, aumenta a clareza e melhora o humor.",
-      "content": "<p>Dedique alguns minutos para uma pausa mental. Respire fundo, medite ou foque em algo positivo. Isso reduz o estresse, aumenta a clareza e melhora o humor.</p>",
+      "title": "Postura Correta: Previna Dores E Cansaço!",
+      "excerpt": "Ajuste sua cadeira e monitor. Mantenha a coluna reta, pés no chão e ombros relaxados. Uma boa postura previne desconfortos e melhora seu bem-estar diário.",
+      "content": "<p>Ajuste sua cadeira e monitor. Mantenha a coluna reta, pés no chão e ombros relaxados. Uma boa postura previne desconfortos e melhora seu bem-estar diário.</p>",
       "tags": [
-        "saúde mental",
-        "estresse",
-        "equilíbrio"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-003-en",
+      "id": "tip3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Healthy Mind: Manage Your Stress",
-      "excerpt": "Dedicate a few minutes for a mental break. Breathe deeply, meditate, or focus on something positive. This reduces stress, increases clarity, and improves mood.",
-      "content": "<p>Dedicate a few minutes for a mental break. Breathe deeply, meditate, or focus on something positive. This reduces stress, increases clarity, and improves mood.</p>",
+      "title": "Good Posture: Beat Aches, Boost Comfort!",
+      "excerpt": "Adjust your chair and monitor. Keep your spine straight, feet flat, and shoulders relaxed. Good posture prevents discomfort and improves your daily well-being significantly.",
+      "content": "<p>Adjust your chair and monitor. Keep your spine straight, feet flat, and shoulders relaxed. Good posture prevents discomfort and improves your daily well-being significantly.</p>",
       "tags": [
-        "saúde mental",
-        "estresse",
-        "equilíbrio"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-003-es",
+      "id": "tip3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Mente Sana: Gestione Su Estrés",
-      "excerpt": "Dedique unos minutos a un descanso mental. Respire profundamente, medite o concéntrese en algo positivo. Esto reduce el estrés, aumenta la claridad y mejora el ánimo.",
-      "content": "<p>Dedique unos minutos a un descanso mental. Respire profundamente, medite o concéntrese en algo positivo. Esto reduce el estrés, aumenta la claridad y mejora el ánimo.</p>",
+      "title": "Postura Correcta: ¡Adiós Molestias!",
+      "excerpt": "Ajusta tu silla y monitor. Mantén la columna recta, pies en el suelo y hombros relajados. Una buena postura previene molestias y mejora tu bienestar diario.",
+      "content": "<p>Ajusta tu silla y monitor. Mantén la columna recta, pies en el suelo y hombros relajados. Una buena postura previene molestias y mejora tu bienestar diario.</p>",
       "tags": [
-        "saúde mental",
-        "estresse",
-        "equilíbrio"
+        "ergonomia",
+        "postura",
+        "conforto"
       ],
-      "published_at": "2026-02-15T12:24:35.081380",
+      "published_at": "2026-02-17T12:35:55.560252",
       "author": "RGR Saúde (IA)"
     }
   ]
