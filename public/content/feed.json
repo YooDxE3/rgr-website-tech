@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-02-19T12:36:34.829968",
+  "generated_at": "2026-02-21T12:22:56.627510",
   "posts": [
     {
-      "id": "tip1-pt",
+      "id": "rgr_tip_01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Saúde em Movimento!",
-      "excerpt": "Pequenas pausas para alongar e caminhar a cada hora melhoram a circulação, previnem dores e revitalizam corpo e mente. Priorize sua saúde!",
-      "content": "<p>Pequenas pausas para alongar e caminhar a cada hora melhoram a circulação, previnem dores e revitalizam corpo e mente. Priorize sua saúde!</p>",
+      "title": "Mexa-se: Pausas Ativas Revigoram!",
+      "excerpt": "Levante-se e caminhe por 5 minutos a cada hora. Isso melhora a circulação, reduz a fadiga e aumenta sua concentração para o trabalho. Sua saúde agradece!",
+      "content": "<p>Levante-se e caminhe por 5 minutos a cada hora. Isso melhora a circulação, reduz a fadiga e aumenta sua concentração para o trabalho. Sua saúde agradece!</p>",
       "tags": [
         "movimento",
-        "pausas",
-        "bem-estar"
+        "pausa",
+        "ergonomia"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1-en",
+      "id": "rgr_tip_01-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More, Feel Better!",
-      "excerpt": "Short breaks to stretch and walk every hour improve circulation, prevent pain, and revitalize body and mind. Prioritize your health!",
-      "content": "<p>Short breaks to stretch and walk every hour improve circulation, prevent pain, and revitalize body and mind. Prioritize your health!</p>",
+      "title": "Move More: Active Breaks Revitalize!",
+      "excerpt": "Stand up and walk for 5 minutes every hour. This improves circulation, reduces fatigue, and boosts your concentration for work. Your health will thank you!",
+      "content": "<p>Stand up and walk for 5 minutes every hour. This improves circulation, reduces fatigue, and boosts your concentration for work. Your health will thank you!</p>",
       "tags": [
         "movimento",
-        "pausas",
-        "bem-estar"
+        "pausa",
+        "ergonomia"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1-es",
+      "id": "rgr_tip_01-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Muévete: Salud en Acción!",
-      "excerpt": "Pequeñas pausas para estirar y caminar cada hora mejoran la circulación, previenen dolores y revitalizan cuerpo y mente. ¡Prioriza tu salud!",
-      "content": "<p>Pequeñas pausas para estirar y caminar cada hora mejoran la circulación, previenen dolores y revitalizan cuerpo y mente. ¡Prioriza tu salud!</p>",
+      "title": "¡Muévase: Pausas Activas Revitalizan!",
+      "excerpt": "Levántese y camine 5 minutos cada hora. Esto mejora la circulación, reduce la fatiga y aumenta su concentración para el trabajo. ¡Su salud lo agradecerá!",
+      "content": "<p>Levántese y camine 5 minutos cada hora. Esto mejora la circulación, reduce la fatiga y aumenta su concentración para el trabajo. ¡Su salud lo agradecerá!</p>",
       "tags": [
         "movimento",
-        "pausas",
-        "bem-estar"
+        "pausa",
+        "ergonomia"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-pt",
+      "id": "rgr_tip_02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Foco Total!",
-      "excerpt": "Beber água regularmente é essencial para manter a energia e a concentração ao longo do dia. Tenha sempre uma garrafa por perto para lembrar.",
-      "content": "<p>Beber água regularmente é essencial para manter a energia e a concentração ao longo do dia. Tenha sempre uma garrafa por perto para lembrar.</p>",
+      "title": "Hidrate-se: Foco e Energia!",
+      "excerpt": "Mantenha uma garrafa de água por perto e beba pequenas quantidades durante o dia. A hidratação adequada é essencial para manter a energia, o foco e a produtividade no trabalho!",
+      "content": "<p>Mantenha uma garrafa de água por perto e beba pequenas quantidades durante o dia. A hidratação adequada é essencial para manter a energia, o foco e a produtividade no trabalho!</p>",
       "tags": [
         "hidratação",
-        "foco",
+        "água",
         "energia"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-en",
+      "id": "rgr_tip_02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate for Focus!",
-      "excerpt": "Drinking water regularly is essential to maintain energy and concentration throughout the day. Always keep a bottle nearby as a reminder.",
-      "content": "<p>Drinking water regularly is essential to maintain energy and concentration throughout the day. Always keep a bottle nearby as a reminder.</p>",
+      "title": "Hydrate: Focus and Energy!",
+      "excerpt": "Keep a water bottle nearby and drink small amounts throughout the day. Proper hydration is essential for maintaining energy, focus, and productivity at work!",
+      "content": "<p>Keep a water bottle nearby and drink small amounts throughout the day. Proper hydration is essential for maintaining energy, focus, and productivity at work!</p>",
       "tags": [
         "hidratação",
-        "foco",
+        "água",
         "energia"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-es",
+      "id": "rgr_tip_02-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate: ¡Concentración Máxima!",
-      "excerpt": "Beber agua regularmente es esencial para mantener la energía y la concentración durante todo el día. Ten siempre una botella cerca para recordar.",
-      "content": "<p>Beber agua regularmente es esencial para mantener la energía y la concentración durante todo el día. Ten siempre una botella cerca para recordar.</p>",
+      "title": "¡Hidrátese: Enfoque y Energía!",
+      "excerpt": "Mantenga una botella de agua cerca y beba pequeñas cantidades durante el día. La hidratación adecuada es esencial para mantener la energía, el enfoque y la productividad en el trabajo.",
+      "content": "<p>Mantenga una botella de agua cerca y beba pequeñas cantidades durante el día. La hidratación adecuada es esencial para mantener la energía, el enfoque y la productividad en el trabajo.</p>",
       "tags": [
         "hidratação",
-        "foco",
+        "água",
         "energia"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-pt",
+      "id": "rgr_tip_03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Alimente-se Bem: Energia Duradoura!",
-      "excerpt": "Faça escolhas inteligentes nas refeições e lanches. Uma alimentação equilibrada fornece a energia necessária para um dia produtivo e sem quedas de humor.",
-      "content": "<p>Faça escolhas inteligentes nas refeições e lanches. Uma alimentação equilibrada fornece a energia necessária para um dia produtivo e sem quedas de humor.</p>",
+      "title": "Lanches Saudáveis: Combustível para o Dia!",
+      "excerpt": "Opte por frutas, nozes ou iogurte nos lanches. Evite açúcares e industrializados. Alimentar-se bem mantém seu corpo e mente funcionando no máximo, aumentando a performance!",
+      "content": "<p>Opte por frutas, nozes ou iogurte nos lanches. Evite açúcares e industrializados. Alimentar-se bem mantém seu corpo e mente funcionando no máximo, aumentando a performance!</p>",
       "tags": [
-        "nutrição",
-        "produtividade",
-        "saúde"
+        "alimentação",
+        "saudável",
+        "bem-estar"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-en",
+      "id": "rgr_tip_03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Eat Well: Lasting Energy!",
-      "excerpt": "Make smart choices for meals and snacks. A balanced diet provides the necessary energy for a productive day without mood swings.",
-      "content": "<p>Make smart choices for meals and snacks. A balanced diet provides the necessary energy for a productive day without mood swings.</p>",
+      "title": "Healthy Snacks: Fuel Your Day!",
+      "excerpt": "Choose fruits, nuts, or yogurt for snacks. Avoid sugars and processed foods. Eating well keeps your body and mind performing at their best, boosting your performance!",
+      "content": "<p>Choose fruits, nuts, or yogurt for snacks. Avoid sugars and processed foods. Eating well keeps your body and mind performing at their best, boosting your performance!</p>",
       "tags": [
-        "nutrição",
-        "produtividade",
-        "saúde"
+        "alimentação",
+        "saudável",
+        "bem-estar"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-es",
+      "id": "rgr_tip_03-es",
       "category": "saude",
       "lang": "es",
-      "title": "Come Bien: ¡Energía Constante!",
-      "excerpt": "Haz elecciones inteligentes en comidas y meriendas. Una alimentación equilibrada proporciona la energía necesaria para un día productivo y sin bajones de ánimo.",
-      "content": "<p>Haz elecciones inteligentes en comidas y meriendas. Una alimentación equilibrada proporciona la energía necesaria para un día productivo y sin bajones de ánimo.</p>",
+      "title": "Meriendas Saludables: ¡Energía para el Día!",
+      "excerpt": "Opte por frutas, nueces o yogur en las meriendas. Evite azúcares y alimentos procesados. Comer bien mantiene su cuerpo y mente funcionando al máximo, ¡mejorando el rendimiento!",
+      "content": "<p>Opte por frutas, nueces o yogur en las meriendas. Evite azúcares y alimentos procesados. Comer bien mantiene su cuerpo y mente funcionando al máximo, ¡mejorando el rendimiento!</p>",
       "tags": [
-        "nutrição",
-        "produtividade",
-        "saúde"
+        "alimentação",
+        "saudável",
+        "bem-estar"
       ],
-      "published_at": "2026-02-19T12:36:34.829968",
+      "published_at": "2026-02-21T12:22:56.627510",
       "author": "RGR Saúde (IA)"
     }
   ]
