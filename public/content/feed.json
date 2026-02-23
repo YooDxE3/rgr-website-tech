@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-02-21T12:22:56.627510",
+  "generated_at": "2026-02-23T12:36:44.618274",
   "posts": [
     {
-      "id": "rgr_tip_01-pt",
+      "id": "tip1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas Revigoram!",
-      "excerpt": "Levante-se e caminhe por 5 minutos a cada hora. Isso melhora a circulação, reduz a fadiga e aumenta sua concentração para o trabalho. Sua saúde agradece!",
-      "content": "<p>Levante-se e caminhe por 5 minutos a cada hora. Isso melhora a circulação, reduz a fadiga e aumenta sua concentração para o trabalho. Sua saúde agradece!</p>",
+      "title": "Mexa-se: Pausas Ativas para o Corpo!",
+      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, aliviam tensões e recarregam sua energia, prevenindo dores e aumentando a produtividade diária.",
+      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, aliviam tensões e recarregam sua energia, prevenindo dores e aumentando a produtividade diária.</p>",
       "tags": [
-        "movimento",
+        "mobilidade",
         "pausa",
-        "ergonomia"
+        "bem-estar"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_01-en",
+      "id": "tip1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks Revitalize!",
-      "excerpt": "Stand up and walk for 5 minutes every hour. This improves circulation, reduces fatigue, and boosts your concentration for work. Your health will thank you!",
-      "content": "<p>Stand up and walk for 5 minutes every hour. This improves circulation, reduces fatigue, and boosts your concentration for work. Your health will thank you!</p>",
+      "title": "Move More: Active Breaks Boost Focus!",
+      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, relieve tension, and recharge your energy, preventing pain and boosting daily productivity.",
+      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, relieve tension, and recharge your energy, preventing pain and boosting daily productivity.</p>",
       "tags": [
-        "movimento",
+        "mobilidade",
         "pausa",
-        "ergonomia"
+        "bem-estar"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_01-es",
+      "id": "tip1-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Muévase: Pausas Activas Revitalizan!",
-      "excerpt": "Levántese y camine 5 minutos cada hora. Esto mejora la circulación, reduce la fatiga y aumenta su concentración para el trabajo. ¡Su salud lo agradecerá!",
-      "content": "<p>Levántese y camine 5 minutos cada hora. Esto mejora la circulación, reduce la fatiga y aumenta su concentración para el trabajo. ¡Su salud lo agradecerá!</p>",
+      "title": "Muévase: ¡Pausas Activas para el Cuerpo!",
+      "excerpt": "Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, alivian tensiones y recargan su energía, previniendo dolores y aumentando la productividad diaria.",
+      "content": "<p>Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, alivian tensiones y recargan su energía, previniendo dolores y aumentando la productividad diaria.</p>",
       "tags": [
-        "movimento",
+        "mobilidade",
         "pausa",
-        "ergonomia"
+        "bem-estar"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_02-pt",
+      "id": "tip2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Foco e Energia!",
-      "excerpt": "Mantenha uma garrafa de água por perto e beba pequenas quantidades durante o dia. A hidratação adequada é essencial para manter a energia, o foco e a produtividade no trabalho!",
-      "content": "<p>Mantenha uma garrafa de água por perto e beba pequenas quantidades durante o dia. A hidratação adequada é essencial para manter a energia, o foco e a produtividade no trabalho!</p>",
+      "title": "Hidrate-se: Energia e Foco Garantidos!",
+      "excerpt": "Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada é essencial para o bom funcionamento do cérebro, mantendo seu foco e energia ao longo do dia.",
+      "content": "<p>Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada é essencial para o bom funcionamento do cérebro, mantendo seu foco e energia ao longo do dia.</p>",
       "tags": [
         "hidratação",
-        "água",
-        "energia"
+        "energia",
+        "foco"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_02-en",
+      "id": "tip2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate: Focus and Energy!",
-      "excerpt": "Keep a water bottle nearby and drink small amounts throughout the day. Proper hydration is essential for maintaining energy, focus, and productivity at work!",
-      "content": "<p>Keep a water bottle nearby and drink small amounts throughout the day. Proper hydration is essential for maintaining energy, focus, and productivity at work!</p>",
+      "title": "Hydrate Smart: Boost Energy & Focus!",
+      "excerpt": "Keep a water bottle nearby and drink regularly. Proper hydration is essential for optimal brain function, maintaining your focus and energy throughout the workday.",
+      "content": "<p>Keep a water bottle nearby and drink regularly. Proper hydration is essential for optimal brain function, maintaining your focus and energy throughout the workday.</p>",
       "tags": [
         "hidratação",
-        "água",
-        "energia"
+        "energia",
+        "foco"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_02-es",
+      "id": "tip2-es",
       "category": "saude",
       "lang": "es",
-      "title": "¡Hidrátese: Enfoque y Energía!",
-      "excerpt": "Mantenga una botella de agua cerca y beba pequeñas cantidades durante el día. La hidratación adecuada es esencial para mantener la energía, el enfoque y la productividad en el trabajo.",
-      "content": "<p>Mantenga una botella de agua cerca y beba pequeñas cantidades durante el día. La hidratación adecuada es esencial para mantener la energía, el enfoque y la productividad en el trabajo.</p>",
+      "title": "Hidratación: ¡Energía y Enfoque Asegurados!",
+      "excerpt": "Mantenga una botella de agua cerca y beba regularmente. La hidratación adecuada es esencial para el buen funcionamiento cerebral, manteniendo su enfoque y energía durante el día.",
+      "content": "<p>Mantenga una botella de agua cerca y beba regularmente. La hidratación adecuada es esencial para el buen funcionamiento cerebral, manteniendo su enfoque y energía durante el día.</p>",
       "tags": [
         "hidratação",
-        "água",
-        "energia"
+        "energia",
+        "foco"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_03-pt",
+      "id": "tip3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Lanches Saudáveis: Combustível para o Dia!",
-      "excerpt": "Opte por frutas, nozes ou iogurte nos lanches. Evite açúcares e industrializados. Alimentar-se bem mantém seu corpo e mente funcionando no máximo, aumentando a performance!",
-      "content": "<p>Opte por frutas, nozes ou iogurte nos lanches. Evite açúcares e industrializados. Alimentar-se bem mantém seu corpo e mente funcionando no máximo, aumentando a performance!</p>",
+      "title": "Postura Correta: Saúde da Coluna no Trabalho!",
+      "excerpt": "Ajuste sua cadeira e monitore para manter uma postura ergonômica. Evitar dores nas costas e no pescoço melhora seu conforto, concentração e bem-estar geral durante o expediente.",
+      "content": "<p>Ajuste sua cadeira e monitore para manter uma postura ergonômica. Evitar dores nas costas e no pescoço melhora seu conforto, concentração e bem-estar geral durante o expediente.</p>",
       "tags": [
-        "alimentação",
-        "saudável",
-        "bem-estar"
+        "ergonomia",
+        "postura",
+        "saúde"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_03-en",
+      "id": "tip3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Healthy Snacks: Fuel Your Day!",
-      "excerpt": "Choose fruits, nuts, or yogurt for snacks. Avoid sugars and processed foods. Eating well keeps your body and mind performing at their best, boosting your performance!",
-      "content": "<p>Choose fruits, nuts, or yogurt for snacks. Avoid sugars and processed foods. Eating well keeps your body and mind performing at their best, boosting your performance!</p>",
+      "title": "Good Posture: Spine Health at Work!",
+      "excerpt": "Adjust your chair and monitor for an ergonomic posture. Avoiding back and neck pain improves comfort, concentration, and overall well-being throughout your workday.",
+      "content": "<p>Adjust your chair and monitor for an ergonomic posture. Avoiding back and neck pain improves comfort, concentration, and overall well-being throughout your workday.</p>",
       "tags": [
-        "alimentação",
-        "saudável",
-        "bem-estar"
+        "ergonomia",
+        "postura",
+        "saúde"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr_tip_03-es",
+      "id": "tip3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Meriendas Saludables: ¡Energía para el Día!",
-      "excerpt": "Opte por frutas, nueces o yogur en las meriendas. Evite azúcares y alimentos procesados. Comer bien mantiene su cuerpo y mente funcionando al máximo, ¡mejorando el rendimiento!",
-      "content": "<p>Opte por frutas, nueces o yogur en las meriendas. Evite azúcares y alimentos procesados. Comer bien mantiene su cuerpo y mente funcionando al máximo, ¡mejorando el rendimiento!</p>",
+      "title": "Postura Correcta: ¡Salud de Columna en el Trabajo!",
+      "excerpt": "Ajuste su silla y monitor para mantener una postura ergonómica. Evitar dolores de espalda y cuello mejora su comodidad, concentración y bienestar general durante la jornada.",
+      "content": "<p>Ajuste su silla y monitor para mantener una postura ergonómica. Evitar dolores de espalda y cuello mejora su comodidad, concentración y bienestar general durante la jornada.</p>",
       "tags": [
-        "alimentação",
-        "saudável",
-        "bem-estar"
+        "ergonomia",
+        "postura",
+        "saúde"
       ],
-      "published_at": "2026-02-21T12:22:56.627510",
+      "published_at": "2026-02-23T12:36:44.618274",
       "author": "RGR Saúde (IA)"
     }
   ]
