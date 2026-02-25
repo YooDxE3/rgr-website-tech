@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-02-23T12:36:44.618274",
+  "generated_at": "2026-02-25T12:37:02.876550",
   "posts": [
     {
-      "id": "tip1-pt",
+      "id": "rgr_tip_01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas para o Corpo!",
-      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, aliviam tensões e recarregam sua energia, prevenindo dores e aumentando a produtividade diária.",
-      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, aliviam tensões e recarregam sua energia, prevenindo dores e aumentando a produtividade diária.</p>",
+      "title": "Alongue-se e Revitalize-se no Trabalho",
+      "excerpt": "Pequenas pausas para alongar previnem dores e melhoram a circulação. Mantenha seu corpo ativo e sua mente focada durante o dia.",
+      "content": "<p>Pequenas pausas para alongar previnem dores e melhoram a circulação. Mantenha seu corpo ativo e sua mente focada durante o dia.</p>",
       "tags": [
-        "mobilidade",
-        "pausa",
+        "alongamento",
+        "pausas",
         "bem-estar"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1-en",
+      "id": "rgr_tip_01-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks Boost Focus!",
-      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, relieve tension, and recharge your energy, preventing pain and boosting daily productivity.",
-      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, relieve tension, and recharge your energy, preventing pain and boosting daily productivity.</p>",
+      "title": "Stretch and Revitalize at Work",
+      "excerpt": "Short stretching breaks prevent pain and improve circulation. Keep your body active and your mind focused throughout the day.",
+      "content": "<p>Short stretching breaks prevent pain and improve circulation. Keep your body active and your mind focused throughout the day.</p>",
       "tags": [
-        "mobilidade",
-        "pausa",
+        "alongamento",
+        "pausas",
         "bem-estar"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip1-es",
+      "id": "rgr_tip_01-es",
       "category": "saude",
       "lang": "es",
-      "title": "Muévase: ¡Pausas Activas para el Cuerpo!",
-      "excerpt": "Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, alivian tensiones y recargan su energía, previniendo dolores y aumentando la productividad diaria.",
-      "content": "<p>Levántese y estírese cada hora. Pequeñas pausas activas mejoran la circulación, alivian tensiones y recargan su energía, previniendo dolores y aumentando la productividad diaria.</p>",
+      "title": "Estírate y Revitalízate en el Trabajo",
+      "excerpt": "Pequeñas pausas para estirar previenen dolores y mejoran la circulación. Mantén tu cuerpo activo y tu mente enfocada durante el día.",
+      "content": "<p>Pequeñas pausas para estirar previenen dolores y mejoran la circulación. Mantén tu cuerpo activo y tu mente enfocada durante el día.</p>",
       "tags": [
-        "mobilidade",
-        "pausa",
+        "alongamento",
+        "pausas",
         "bem-estar"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-pt",
+      "id": "rgr_tip_02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Energia e Foco Garantidos!",
-      "excerpt": "Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada é essencial para o bom funcionamento do cérebro, mantendo seu foco e energia ao longo do dia.",
-      "content": "<p>Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada é essencial para o bom funcionamento do cérebro, mantendo seu foco e energia ao longo do dia.</p>",
+      "title": "Mantenha-se Hidratado: Mais Energia e Foco",
+      "excerpt": "Beba água regularmente para manter seu cérebro funcionando em alta performance. Uma boa hidratação aumenta sua energia e concentração ao longo do dia.",
+      "content": "<p>Beba água regularmente para manter seu cérebro funcionando em alta performance. Uma boa hidratação aumenta sua energia e concentração ao longo do dia.</p>",
       "tags": [
         "hidratação",
-        "energia",
-        "foco"
+        "foco",
+        "energia"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-en",
+      "id": "rgr_tip_02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate Smart: Boost Energy & Focus!",
-      "excerpt": "Keep a water bottle nearby and drink regularly. Proper hydration is essential for optimal brain function, maintaining your focus and energy throughout the workday.",
-      "content": "<p>Keep a water bottle nearby and drink regularly. Proper hydration is essential for optimal brain function, maintaining your focus and energy throughout the workday.</p>",
+      "title": "Stay Hydrated: More Energy and Focus",
+      "excerpt": "Drink water regularly to keep your brain performing at its best. Good hydration boosts your energy and concentration throughout the day.",
+      "content": "<p>Drink water regularly to keep your brain performing at its best. Good hydration boosts your energy and concentration throughout the day.</p>",
       "tags": [
         "hidratação",
-        "energia",
-        "foco"
+        "foco",
+        "energia"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip2-es",
+      "id": "rgr_tip_02-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidratación: ¡Energía y Enfoque Asegurados!",
-      "excerpt": "Mantenga una botella de agua cerca y beba regularmente. La hidratación adecuada es esencial para el buen funcionamiento cerebral, manteniendo su enfoque y energía durante el día.",
-      "content": "<p>Mantenga una botella de agua cerca y beba regularmente. La hidratación adecuada es esencial para el buen funcionamiento cerebral, manteniendo su enfoque y energía durante el día.</p>",
+      "title": "Mantente Hidratado: Más Energía y Enfoque",
+      "excerpt": "Bebe agua regularmente para mantener tu cerebro funcionando al máximo. Una buena hidratación aumenta tu energía y concentración a lo largo del día.",
+      "content": "<p>Bebe agua regularmente para mantener tu cerebro funcionando al máximo. Una buena hidratación aumenta tu energía y concentración a lo largo del día.</p>",
       "tags": [
         "hidratação",
-        "energia",
-        "foco"
+        "foco",
+        "energia"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-pt",
+      "id": "rgr_tip_03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Postura Correta: Saúde da Coluna no Trabalho!",
-      "excerpt": "Ajuste sua cadeira e monitore para manter uma postura ergonômica. Evitar dores nas costas e no pescoço melhora seu conforto, concentração e bem-estar geral durante o expediente.",
-      "content": "<p>Ajuste sua cadeira e monitore para manter uma postura ergonômica. Evitar dores nas costas e no pescoço melhora seu conforto, concentração e bem-estar geral durante o expediente.</p>",
+      "title": "Desconecte-se: Recarregue Sua Mente",
+      "excerpt": "Faça pequenas pausas para se desconectar do trabalho e respirar. Momentos de relaxamento reduzem o estresse e aumentam sua produtividade ao retornar.",
+      "content": "<p>Faça pequenas pausas para se desconectar do trabalho e respirar. Momentos de relaxamento reduzem o estresse e aumentam sua produtividade ao retornar.</p>",
       "tags": [
-        "ergonomia",
-        "postura",
-        "saúde"
+        "pausa mental",
+        "estresse",
+        "produtividade"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-en",
+      "id": "rgr_tip_03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Good Posture: Spine Health at Work!",
-      "excerpt": "Adjust your chair and monitor for an ergonomic posture. Avoiding back and neck pain improves comfort, concentration, and overall well-being throughout your workday.",
-      "content": "<p>Adjust your chair and monitor for an ergonomic posture. Avoiding back and neck pain improves comfort, concentration, and overall well-being throughout your workday.</p>",
+      "title": "Disconnect: Recharge Your Mind",
+      "excerpt": "Take short breaks to disconnect from work and breathe. Moments of relaxation reduce stress and boost your productivity upon returning.",
+      "content": "<p>Take short breaks to disconnect from work and breathe. Moments of relaxation reduce stress and boost your productivity upon returning.</p>",
       "tags": [
-        "ergonomia",
-        "postura",
-        "saúde"
+        "pausa mental",
+        "estresse",
+        "produtividade"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "tip3-es",
+      "id": "rgr_tip_03-es",
       "category": "saude",
       "lang": "es",
-      "title": "Postura Correcta: ¡Salud de Columna en el Trabajo!",
-      "excerpt": "Ajuste su silla y monitor para mantener una postura ergonómica. Evitar dolores de espalda y cuello mejora su comodidad, concentración y bienestar general durante la jornada.",
-      "content": "<p>Ajuste su silla y monitor para mantener una postura ergonómica. Evitar dolores de espalda y cuello mejora su comodidad, concentración y bienestar general durante la jornada.</p>",
+      "title": "Desconéctate: Recarga Tu Mente",
+      "excerpt": "Toma pequeños descansos para desconectarte del trabajo y respirar. Momentos de relajación reducen el estrés y aumentan tu productividad al regresar.",
+      "content": "<p>Toma pequeños descansos para desconectarte del trabajo y respirar. Momentos de relajación reducen el estrés y aumentan tu productividad al regresar.</p>",
       "tags": [
-        "ergonomia",
-        "postura",
-        "saúde"
+        "pausa mental",
+        "estresse",
+        "produtividade"
       ],
-      "published_at": "2026-02-23T12:36:44.618274",
+      "published_at": "2026-02-25T12:37:02.876550",
       "author": "RGR Saúde (IA)"
     }
   ]
