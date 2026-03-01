@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-02-27T12:32:34.437696",
+  "generated_at": "2026-03-01T12:24:24.311058",
   "posts": [
     {
-      "id": "rgr-tip-1-pt",
+      "id": "rgr_tip1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Pequenas Pausas, Grande Impacto.",
-      "excerpt": "Faça pausas curtas para alongar e caminhar. Isso alivia a tensão, melhora a circulação e aumenta seu foco para as tarefas do dia a dia. Seu corpo agradece!",
-      "content": "<p>Faça pausas curtas para alongar e caminhar. Isso alivia a tensão, melhora a circulação e aumenta seu foco para as tarefas do dia a dia. Seu corpo agradece!</p>",
+      "title": "Mexa-se: Pausas Ativas Revigoram!",
+      "excerpt": "Faça pequenas pausas para alongar ou caminhar. Isso melhora a circulação, reduz a fadiga e aumenta sua energia e produtividade ao longo do dia. Seu corpo agradece!",
+      "content": "<p>Faça pequenas pausas para alongar ou caminhar. Isso melhora a circulação, reduz a fadiga e aumenta sua energia e produtividade ao longo do dia. Seu corpo agradece!</p>",
       "tags": [
-        "alongamento",
-        "pausa",
-        "foco"
+        "movimento",
+        "energia",
+        "pausas"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-1-en",
+      "id": "rgr_tip1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Small Breaks, Big Impact.",
-      "excerpt": "Take short breaks to stretch and walk. This relieves tension, improves circulation, and boosts your focus for daily tasks. Your body will thank you!",
-      "content": "<p>Take short breaks to stretch and walk. This relieves tension, improves circulation, and boosts your focus for daily tasks. Your body will thank you!</p>",
+      "title": "Move It: Active Breaks Revitalize!",
+      "excerpt": "Take short breaks to stretch or walk. This improves circulation, reduces fatigue, and boosts your energy and productivity throughout the day. Your body will thank you!",
+      "content": "<p>Take short breaks to stretch or walk. This improves circulation, reduces fatigue, and boosts your energy and productivity throughout the day. Your body will thank you!</p>",
       "tags": [
-        "alongamento",
-        "pausa",
-        "foco"
+        "movimento",
+        "energia",
+        "pausas"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-1-es",
+      "id": "rgr_tip1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Pequeñas Pausas, Gran Impacto.",
-      "excerpt": "Tome pausas cortas para estirarse y caminar. Esto alivia la tensión, mejora la circulación y aumenta su concentración para las tareas diarias. ¡Su cuerpo se lo agradecerá!",
-      "content": "<p>Tome pausas cortas para estirarse y caminar. Esto alivia la tensión, mejora la circulación y aumenta su concentración para las tareas diarias. ¡Su cuerpo se lo agradecerá!</p>",
+      "title": "Muévete: ¡Pausas Activas Revitalizan!",
+      "excerpt": "Haz pausas cortas para estirar o caminar. Esto mejora la circulación, reduce la fatiga y aumenta tu energía y productividad durante el día. ¡Tu cuerpo te lo agradecerá!",
+      "content": "<p>Haz pausas cortas para estirar o caminar. Esto mejora la circulación, reduce la fatiga y aumenta tu energía y productividad durante el día. ¡Tu cuerpo te lo agradecerá!</p>",
       "tags": [
-        "alongamento",
-        "pausa",
-        "foco"
+        "movimento",
+        "energia",
+        "pausas"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-2-pt",
+      "id": "rgr_tip2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Energia e Foco!",
-      "excerpt": "Mantenha uma garrafa de água por perto. A hidratação adequada é essencial para manter a energia, clareza mental e produtividade ao longo do expediente. Beba água regularmente!",
-      "content": "<p>Mantenha uma garrafa de água por perto. A hidratação adequada é essencial para manter a energia, clareza mental e produtividade ao longo do expediente. Beba água regularmente!</p>",
+      "title": "Hidrate-se: Foco e Energia Diária!",
+      "excerpt": "Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada melhora a concentração, previne dores de cabeça e sustenta sua energia ao longo do expediente. É essencial!",
+      "content": "<p>Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada melhora a concentração, previne dores de cabeça e sustenta sua energia ao longo do expediente. É essencial!</p>",
       "tags": [
         "hidratação",
-        "energia",
-        "produtividade"
+        "foco",
+        "bem-estar"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-2-en",
+      "id": "rgr_tip2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate: Energy and Focus!",
-      "excerpt": "Keep a water bottle nearby. Proper hydration is essential to maintain energy, mental clarity, and productivity throughout the workday. Drink water regularly!",
-      "content": "<p>Keep a water bottle nearby. Proper hydration is essential to maintain energy, mental clarity, and productivity throughout the workday. Drink water regularly!</p>",
+      "title": "Hydrate: Daily Focus and Energy!",
+      "excerpt": "Keep a water bottle close and drink regularly. Proper hydration improves concentration, prevents headaches, and sustains your energy throughout the workday. It's essential!",
+      "content": "<p>Keep a water bottle close and drink regularly. Proper hydration improves concentration, prevents headaches, and sustains your energy throughout the workday. It's essential!</p>",
       "tags": [
         "hidratação",
-        "energia",
-        "produtividade"
+        "foco",
+        "bem-estar"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-2-es",
+      "id": "rgr_tip2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátese: ¡Energía y Enfoque!",
-      "excerpt": "Mantenga una botella de agua cerca. La hidratación adecuada es esencial para mantener la energía, la claridad mental y la productividad durante la jornada. ¡Beba agua regularmente!",
-      "content": "<p>Mantenga una botella de agua cerca. La hidratación adecuada es esencial para mantener la energía, la claridad mental y la productividad durante la jornada. ¡Beba agua regularmente!</p>",
+      "title": "Hidrátate: ¡Foco y Energía Diaria!",
+      "excerpt": "Mantén una botella de agua cerca y bebe regularmente. La hidratación adecuada mejora la concentración, previene dolores de cabeza y mantiene tu energía durante la jornada. ¡Es esencial!",
+      "content": "<p>Mantén una botella de agua cerca y bebe regularmente. La hidratación adecuada mejora la concentración, previene dolores de cabeza y mantiene tu energía durante la jornada. ¡Es esencial!</p>",
       "tags": [
         "hidratação",
-        "energia",
-        "produtividade"
+        "foco",
+        "bem-estar"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-3-pt",
+      "id": "rgr_tip3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Postura Correta: Bem-Estar no Trabalho.",
-      "excerpt": "Ajuste sua cadeira e monitor para uma postura ergonômica. Uma boa postura previne dores, melhora a respiração e contribui para seu conforto e bem-estar geral no expediente.",
-      "content": "<p>Ajuste sua cadeira e monitor para uma postura ergonômica. Uma boa postura previne dores, melhora a respiração e contribui para seu conforto e bem-estar geral no expediente.</p>",
+      "title": "Respire Fundo: Pausas Mentais Valem Ouro!",
+      "excerpt": "Dedique alguns minutos para desconectar. Olhe pela janela, ouça uma música calma ou simplesmente feche os olhos. Isso reduz o estresse, clareia a mente e aumenta sua capacidade de foco.",
+      "content": "<p>Dedique alguns minutos para desconectar. Olhe pela janela, ouça uma música calma ou simplesmente feche os olhos. Isso reduz o estresse, clareia a mente e aumenta sua capacidade de foco.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "conforto"
+        "mente",
+        "pausa",
+        "estresse"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-3-en",
+      "id": "rgr_tip3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Correct Posture: Workplace Well-being.",
-      "excerpt": "Adjust your chair and monitor for ergonomic posture. Good posture prevents pain, improves breathing, and contributes to your overall comfort and well-being at work.",
-      "content": "<p>Adjust your chair and monitor for ergonomic posture. Good posture prevents pain, improves breathing, and contributes to your overall comfort and well-being at work.</p>",
+      "title": "Breathe Deep: Mental Breaks are Gold!",
+      "excerpt": "Dedicate a few minutes to disconnect. Look out the window, listen to calming music, or simply close your eyes. This reduces stress, clears your mind, and boosts your ability to focus.",
+      "content": "<p>Dedicate a few minutes to disconnect. Look out the window, listen to calming music, or simply close your eyes. This reduces stress, clears your mind, and boosts your ability to focus.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "conforto"
+        "mente",
+        "pausa",
+        "estresse"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-tip-3-es",
+      "id": "rgr_tip3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Postura Correcta: Bienestar Laboral.",
-      "excerpt": "Ajuste su silla y monitor para una postura ergonómica. Una buena postura previene dolores, mejora la respiración y contribuye a su comodidad y bienestar general en el trabajo.",
-      "content": "<p>Ajuste su silla y monitor para una postura ergonómica. Una buena postura previene dolores, mejora la respiración y contribuye a su comodidad y bienestar general en el trabajo.</p>",
+      "title": "Respira Hondo: ¡Pausas Mentales Valen Oro!",
+      "excerpt": "Dedica unos minutos a desconectar. Mira por la ventana, escucha música tranquila o simplemente cierra los ojos. Esto reduce el estrés, aclara la mente y aumenta tu capacidad de concentración.",
+      "content": "<p>Dedica unos minutos a desconectar. Mira por la ventana, escucha música tranquila o simplemente cierra los ojos. Esto reduce el estrés, aclara la mente y aumenta tu capacidad de concentración.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "conforto"
+        "mente",
+        "pausa",
+        "estresse"
       ],
-      "published_at": "2026-02-27T12:32:34.437696",
+      "published_at": "2026-03-01T12:24:24.311058",
       "author": "RGR Saúde (IA)"
     }
   ]
