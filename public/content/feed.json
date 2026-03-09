@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-03-07T12:22:55.075338",
+  "generated_at": "2026-03-09T12:34:33.259320",
   "posts": [
     {
-      "id": "rgrs_tip_01-pt",
+      "id": "rgrs_dica1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Faça Pausas Ativas",
-      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam o foco. Movimente-se para um dia mais produtivo e saudável.",
-      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam o foco. Movimente-se para um dia mais produtivo e saudável.</p>",
+      "title": "Faça Pausas Ativas e Alongue-se",
+      "excerpt": "Levante-se a cada hora para caminhar ou alongar. Isso melhora a circulação, reduz a tensão muscular e renova a energia para suas tarefas.",
+      "content": "<p>Levante-se a cada hora para caminhar ou alongar. Isso melhora a circulação, reduz a tensão muscular e renova a energia para suas tarefas.</p>",
       "tags": [
-        "pausas",
+        "pausa",
         "movimento",
         "energia"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_01-en",
+      "id": "rgrs_dica1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Take Active Breaks",
-      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost focus. Move for a more productive and healthier day at work.",
-      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost focus. Move for a more productive and healthier day at work.</p>",
+      "title": "Take Active Breaks and Stretch",
+      "excerpt": "Stand up every hour to walk or stretch. This improves circulation, reduces muscle tension, and renews energy for your tasks.",
+      "content": "<p>Stand up every hour to walk or stretch. This improves circulation, reduces muscle tension, and renews energy for your tasks.</p>",
       "tags": [
-        "pausas",
+        "pausa",
         "movimento",
         "energia"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_01-es",
+      "id": "rgrs_dica1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Haz Pausas Activas",
-      "excerpt": "Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan el enfoque. Muévete para un día de trabajo más productivo y saludable.",
-      "content": "<p>Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan el enfoque. Muévete para un día de trabajo más productivo y saludable.</p>",
+      "title": "Toma Pausas Activas y Estírate",
+      "excerpt": "Levántate cada hora para caminar o estirarte. Mejora la circulación, reduce la tensión muscular y renueva la energía para tus tareas.",
+      "content": "<p>Levántate cada hora para caminar o estirarte. Mejora la circulación, reduce la tensión muscular y renueva la energía para tus tareas.</p>",
       "tags": [
-        "pausas",
+        "pausa",
         "movimento",
         "energia"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_02-pt",
+      "id": "rgrs_dica2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se Constantemente",
-      "excerpt": "Mantenha uma garrafa de água na sua mesa. Beber água regularmente é crucial para manter a energia, a concentração e a saúde geral. Sua mente e corpo agradecem a hidratação constante.",
-      "content": "<p>Mantenha uma garrafa de água na sua mesa. Beber água regularmente é crucial para manter a energia, a concentração e a saúde geral. Sua mente e corpo agradecem a hidratação constante.</p>",
+      "title": "Hidrate-se e Alimente-se Consciente",
+      "excerpt": "Beba água regularmente e faça lanches saudáveis. Evite alimentos processados para manter seu foco e bem-estar ao longo do dia.",
+      "content": "<p>Beba água regularmente e faça lanches saudáveis. Evite alimentos processados para manter seu foco e bem-estar ao longo do dia.</p>",
       "tags": [
-        "água",
-        "foco",
-        "bem-estar"
+        "hidratação",
+        "alimentação",
+        "foco"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_02-en",
+      "id": "rgrs_dica2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Stay Hydrated Constantly",
-      "excerpt": "Keep a water bottle on your desk. Regular water intake is crucial for maintaining energy, concentration, and overall health. Your mind and body will thank you for constant hydration.",
-      "content": "<p>Keep a water bottle on your desk. Regular water intake is crucial for maintaining energy, concentration, and overall health. Your mind and body will thank you for constant hydration.</p>",
+      "title": "Hydrate and Eat Mindfully",
+      "excerpt": "Drink water regularly and choose healthy snacks. Avoid processed foods to maintain your focus and well-being throughout the day.",
+      "content": "<p>Drink water regularly and choose healthy snacks. Avoid processed foods to maintain your focus and well-being throughout the day.</p>",
       "tags": [
-        "água",
-        "foco",
-        "bem-estar"
+        "hidratação",
+        "alimentação",
+        "foco"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_02-es",
+      "id": "rgrs_dica2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate Constantemente",
-      "excerpt": "Mantén una botella de agua en tu escritorio. Beber agua regularmente es crucial para mantener la energía, la concentración y la salud general. Tu mente y cuerpo agradecen la hidratación constante.",
-      "content": "<p>Mantén una botella de agua en tu escritorio. Beber agua regularmente es crucial para mantener la energía, la concentración y la salud general. Tu mente y cuerpo agradecen la hidratación constante.</p>",
+      "title": "Hidrátate y Come Consciente",
+      "excerpt": "Bebe agua regularmente y opta por aperitivos saludables. Evita alimentos procesados para mantener el enfoque y el bienestar durante todo el día.",
+      "content": "<p>Bebe agua regularmente y opta por aperitivos saludables. Evita alimentos procesados para mantener el enfoque y el bienestar durante todo el día.</p>",
       "tags": [
-        "água",
-        "foco",
-        "bem-estar"
+        "hidratação",
+        "alimentação",
+        "foco"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_03-pt",
+      "id": "rgrs_dica3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Atenção à Postura",
-      "excerpt": "Ajuste sua cadeira e monitor para uma postura ergonômica. Sentar-se corretamente previne dores e desconfortos. Invista no seu bem-estar físico para ter mais conforto e produtividade ao longo do dia.",
-      "content": "<p>Ajuste sua cadeira e monitor para uma postura ergonômica. Sentar-se corretamente previne dores e desconfortos. Invista no seu bem-estar físico para ter mais conforto e produtividade ao longo do dia.</p>",
+      "title": "Cuide da Sua Postura e Mente",
+      "excerpt": "Ajuste sua cadeira e monitor para uma boa postura. Dedique alguns minutos para respirar fundo, aliviando o estresse e melhorando a clareza.",
+      "content": "<p>Ajuste sua cadeira e monitor para uma boa postura. Dedique alguns minutos para respirar fundo, aliviando o estresse e melhorando a clareza.</p>",
       "tags": [
         "postura",
         "ergonomia",
-        "conforto"
+        "mente"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_03-en",
+      "id": "rgrs_dica3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Mind Your Posture",
-      "excerpt": "Adjust your chair and monitor for ergonomic posture. Sitting correctly prevents aches and discomfort. Invest in your physical well-being for more comfort and productivity throughout your workday.",
-      "content": "<p>Adjust your chair and monitor for ergonomic posture. Sitting correctly prevents aches and discomfort. Invest in your physical well-being for more comfort and productivity throughout your workday.</p>",
+      "title": "Mind Your Posture and Mind",
+      "excerpt": "Adjust your chair and monitor for good posture. Dedicate a few minutes to deep breathing, relieving stress and improving mental clarity.",
+      "content": "<p>Adjust your chair and monitor for good posture. Dedicate a few minutes to deep breathing, relieving stress and improving mental clarity.</p>",
       "tags": [
         "postura",
         "ergonomia",
-        "conforto"
+        "mente"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_tip_03-es",
+      "id": "rgrs_dica3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Atención a tu Postura",
-      "excerpt": "Ajusta tu silla y monitor para una postura ergonómica. Sentarse correctamente previene dolores y molestias. Invierte en tu bienestar físico para tener más comodidad y productividad durante el día.",
-      "content": "<p>Ajusta tu silla y monitor para una postura ergonómica. Sentarse correctamente previene dolores y molestias. Invierte en tu bienestar físico para tener más comodidad y productividad durante el día.</p>",
+      "title": "Cuida Tu Postura y Mente",
+      "excerpt": "Ajusta tu silla y monitor para una buena postura. Dedica unos minutos a respirar profundamente, aliviando el estrés y mejorando la claridad mental.",
+      "content": "<p>Ajusta tu silla y monitor para una buena postura. Dedica unos minutos a respirar profundamente, aliviando el estrés y mejorando la claridad mental.</p>",
       "tags": [
         "postura",
         "ergonomia",
-        "conforto"
+        "mente"
       ],
-      "published_at": "2026-03-07T12:22:55.075338",
+      "published_at": "2026-03-09T12:34:33.259320",
       "author": "RGR Saúde (IA)"
     }
   ]
