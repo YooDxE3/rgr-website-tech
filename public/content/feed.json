@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-03-09T12:34:33.259320",
+  "generated_at": "2026-03-11T12:33:51.784924",
   "posts": [
     {
-      "id": "rgrs_dica1-pt",
+      "id": "saude_01-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Faça Pausas Ativas e Alongue-se",
-      "excerpt": "Levante-se a cada hora para caminhar ou alongar. Isso melhora a circulação, reduz a tensão muscular e renova a energia para suas tarefas.",
-      "content": "<p>Levante-se a cada hora para caminhar ou alongar. Isso melhora a circulação, reduz a tensão muscular e renova a energia para suas tarefas.</p>",
+      "title": "Mexa-se: Pausas Ativas para o Corpo",
+      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, aliviam a tensão muscular e aumentam sua energia e foco no trabalho diário. Sua saúde agradece!",
+      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, aliviam a tensão muscular e aumentam sua energia e foco no trabalho diário. Sua saúde agradece!</p>",
       "tags": [
-        "pausa",
-        "movimento",
-        "energia"
+        "Movimento",
+        "Pausas",
+        "Ergonomia"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica1-en",
+      "id": "saude_01-en",
       "category": "saude",
       "lang": "en",
-      "title": "Take Active Breaks and Stretch",
-      "excerpt": "Stand up every hour to walk or stretch. This improves circulation, reduces muscle tension, and renews energy for your tasks.",
-      "content": "<p>Stand up every hour to walk or stretch. This improves circulation, reduces muscle tension, and renews energy for your tasks.</p>",
+      "title": "Move More: Active Breaks",
+      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, relieve muscle tension, and boost your energy and focus daily. Your health will thank you!",
+      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, relieve muscle tension, and boost your energy and focus daily. Your health will thank you!</p>",
       "tags": [
-        "pausa",
-        "movimento",
-        "energia"
+        "Movimento",
+        "Pausas",
+        "Ergonomia"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica1-es",
+      "id": "saude_01-es",
       "category": "saude",
       "lang": "es",
-      "title": "Toma Pausas Activas y Estírate",
-      "excerpt": "Levántate cada hora para caminar o estirarte. Mejora la circulación, reduce la tensión muscular y renueva la energía para tus tareas.",
-      "content": "<p>Levántate cada hora para caminar o estirarte. Mejora la circulación, reduce la tensión muscular y renueva la energía para tus tareas.</p>",
+      "title": "Muévete: Pausas Activas para el Cuerpo",
+      "excerpt": "Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, alivian la tensión muscular y aumentan tu energía y concentración diaria. ¡Tu salud te lo agradecerá!",
+      "content": "<p>Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, alivian la tensión muscular y aumentan tu energía y concentración diaria. ¡Tu salud te lo agradecerá!</p>",
       "tags": [
-        "pausa",
-        "movimento",
-        "energia"
+        "Movimento",
+        "Pausas",
+        "Ergonomia"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica2-pt",
+      "id": "saude_02-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se e Alimente-se Consciente",
-      "excerpt": "Beba água regularmente e faça lanches saudáveis. Evite alimentos processados para manter seu foco e bem-estar ao longo do dia.",
-      "content": "<p>Beba água regularmente e faça lanches saudáveis. Evite alimentos processados para manter seu foco e bem-estar ao longo do dia.</p>",
+      "title": "Hidrate-se: Foco e Energia no Dia",
+      "excerpt": "Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada é fundamental para manter o cérebro funcionando bem, aumentar o foco e garantir mais energia ao longo do dia.",
+      "content": "<p>Mantenha uma garrafa de água por perto e beba regularmente. A hidratação adequada é fundamental para manter o cérebro funcionando bem, aumentar o foco e garantir mais energia ao longo do dia.</p>",
       "tags": [
-        "hidratação",
-        "alimentação",
-        "foco"
+        "Água",
+        "Foco",
+        "Bem-estar"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica2-en",
+      "id": "saude_02-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate and Eat Mindfully",
-      "excerpt": "Drink water regularly and choose healthy snacks. Avoid processed foods to maintain your focus and well-being throughout the day.",
-      "content": "<p>Drink water regularly and choose healthy snacks. Avoid processed foods to maintain your focus and well-being throughout the day.</p>",
+      "title": "Hydrate: Focus and Energy Daily",
+      "excerpt": "Keep a water bottle close and drink regularly. Proper hydration is key to maintaining good brain function, increasing focus, and ensuring more energy throughout your day.",
+      "content": "<p>Keep a water bottle close and drink regularly. Proper hydration is key to maintaining good brain function, increasing focus, and ensuring more energy throughout your day.</p>",
       "tags": [
-        "hidratação",
-        "alimentação",
-        "foco"
+        "Água",
+        "Foco",
+        "Bem-estar"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica2-es",
+      "id": "saude_02-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate y Come Consciente",
-      "excerpt": "Bebe agua regularmente y opta por aperitivos saludables. Evita alimentos procesados para mantener el enfoque y el bienestar durante todo el día.",
-      "content": "<p>Bebe agua regularmente y opta por aperitivos saludables. Evita alimentos procesados para mantener el enfoque y el bienestar durante todo el día.</p>",
+      "title": "Hidrátate: Concentración y Energía",
+      "excerpt": "Mantén una botella de agua cerca y bebe regularmente. La hidratación adecuada es clave para mantener el cerebro funcionando bien, aumentar la concentración y tener más energía durante el día.",
+      "content": "<p>Mantén una botella de agua cerca y bebe regularmente. La hidratación adecuada es clave para mantener el cerebro funcionando bien, aumentar la concentración y tener más energía durante el día.</p>",
       "tags": [
-        "hidratação",
-        "alimentação",
-        "foco"
+        "Água",
+        "Foco",
+        "Bem-estar"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica3-pt",
+      "id": "saude_03-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Cuide da Sua Postura e Mente",
-      "excerpt": "Ajuste sua cadeira e monitor para uma boa postura. Dedique alguns minutos para respirar fundo, aliviando o estresse e melhorando a clareza.",
-      "content": "<p>Ajuste sua cadeira e monitor para uma boa postura. Dedique alguns minutos para respirar fundo, aliviando o estresse e melhorando a clareza.</p>",
+      "title": "Desconecte-se: Pausas para a Mente",
+      "excerpt": "Tire alguns minutos para respirar fundo ou fazer uma pequena caminhada. Desconectar-se brevemente das tarefas ajuda a reduzir o estresse, clarear a mente e retornar ao trabalho com mais produtividade.",
+      "content": "<p>Tire alguns minutos para respirar fundo ou fazer uma pequena caminhada. Desconectar-se brevemente das tarefas ajuda a reduzir o estresse, clarear a mente e retornar ao trabalho com mais produtividade.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "mente"
+        "Mente",
+        "Estresse",
+        "Produtividade"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica3-en",
+      "id": "saude_03-en",
       "category": "saude",
       "lang": "en",
-      "title": "Mind Your Posture and Mind",
-      "excerpt": "Adjust your chair and monitor for good posture. Dedicate a few minutes to deep breathing, relieving stress and improving mental clarity.",
-      "content": "<p>Adjust your chair and monitor for good posture. Dedicate a few minutes to deep breathing, relieving stress and improving mental clarity.</p>",
+      "title": "Unplug: Breaks for Your Mind",
+      "excerpt": "Take a few minutes to breathe deeply or take a short walk. Briefly disconnecting from tasks helps reduce stress, clear your mind, and return to work with increased productivity.",
+      "content": "<p>Take a few minutes to breathe deeply or take a short walk. Briefly disconnecting from tasks helps reduce stress, clear your mind, and return to work with increased productivity.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "mente"
+        "Mente",
+        "Estresse",
+        "Produtividade"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgrs_dica3-es",
+      "id": "saude_03-es",
       "category": "saude",
       "lang": "es",
-      "title": "Cuida Tu Postura y Mente",
-      "excerpt": "Ajusta tu silla y monitor para una buena postura. Dedica unos minutos a respirar profundamente, aliviando el estrés y mejorando la claridad mental.",
-      "content": "<p>Ajusta tu silla y monitor para una buena postura. Dedica unos minutos a respirar profundamente, aliviando el estrés y mejorando la claridad mental.</p>",
+      "title": "Desconéctate: Pausas para la Mente",
+      "excerpt": "Tómate unos minutos para respirar profundamente o dar un breve paseo. Desconectarse brevemente de las tareas ayuda a reducir el estrés, aclarar la mente y volver al trabajo con más productividad.",
+      "content": "<p>Tómate unos minutos para respirar profundamente o dar un breve paseo. Desconectarse brevemente de las tareas ayuda a reducir el estrés, aclarar la mente y volver al trabajo con más productividad.</p>",
       "tags": [
-        "postura",
-        "ergonomia",
-        "mente"
+        "Mente",
+        "Estresse",
+        "Produtividade"
       ],
-      "published_at": "2026-03-09T12:34:33.259320",
+      "published_at": "2026-03-11T12:33:51.784924",
       "author": "RGR Saúde (IA)"
     }
   ]
