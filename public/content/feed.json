@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-03-13T12:32:39.307530",
+  "generated_at": "2026-03-15T12:28:13.803902",
   "posts": [
     {
-      "id": "rgr-001-pt",
+      "id": "rgr-saude-1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas Revitalizam!",
-      "excerpt": "Faça pequenas pausas para alongar ou caminhar. Alivie tensões, melhore a circulação e aumente sua energia e foco durante o dia de trabalho.",
-      "content": "<p>Faça pequenas pausas para alongar ou caminhar. Alivie tensões, melhore a circulação e aumente sua energia e foco durante o dia de trabalho.</p>",
+      "title": "Mexa-se: Pausas Ativas Melhoram o Foco",
+      "excerpt": "Faça pequenas pausas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade ao longo do dia de trabalho. Seu corpo agradece!",
+      "content": "<p>Faça pequenas pausas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade ao longo do dia de trabalho. Seu corpo agradece!</p>",
       "tags": [
-        "movimento",
-        "pausas",
-        "bem-estar"
+        "alongamento",
+        "pausa",
+        "produtividade"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-001-en",
+      "id": "rgr-saude-1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks Boost You!",
-      "excerpt": "Take short breaks to stretch or walk. Relieve tension, improve circulation, and boost your energy and focus throughout the workday. Stay active!",
-      "content": "<p>Take short breaks to stretch or walk. Relieve tension, improve circulation, and boost your energy and focus throughout the workday. Stay active!</p>",
+      "title": "Move More: Active Breaks Boost Focus",
+      "excerpt": "Take short breaks to stretch and walk around. This relieves muscle tension, improves circulation, and increases productivity throughout your workday. Your body will thank you!",
+      "content": "<p>Take short breaks to stretch and walk around. This relieves muscle tension, improves circulation, and increases productivity throughout your workday. Your body will thank you!</p>",
       "tags": [
-        "movimento",
-        "pausas",
-        "bem-estar"
+        "alongamento",
+        "pausa",
+        "produtividade"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-001-es",
+      "id": "rgr-saude-1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Muévete: ¡Pausas Activas Revitalizan!",
-      "excerpt": "Realiza pequeñas pausas para estirar o caminar. Alivia tensiones, mejora la circulación y aumenta tu energía y concentración durante la jornada laboral.",
-      "content": "<p>Realiza pequeñas pausas para estirar o caminar. Alivia tensiones, mejora la circulación y aumenta tu energía y concentración durante la jornada laboral.</p>",
+      "title": "Muévase: Pausas Activas Mejoran Enfoque",
+      "excerpt": "Tome pausas cortas para estirarse y caminar. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad durante su jornada laboral. ¡Su cuerpo se lo agradecerá!",
+      "content": "<p>Tome pausas cortas para estirarse y caminar. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad durante su jornada laboral. ¡Su cuerpo se lo agradecerá!</p>",
       "tags": [
-        "movimento",
-        "pausas",
-        "bem-estar"
+        "alongamento",
+        "pausa",
+        "produtividade"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-002-pt",
+      "id": "rgr-saude-2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Respire Fundo: Pausas Mentais Melhoram Foco!",
-      "excerpt": "Dedique alguns minutos para uma pausa mental. Respire fundo, desconecte-se e retorne com mais clareza e produtividade para suas tarefas diárias.",
-      "content": "<p>Dedique alguns minutos para uma pausa mental. Respire fundo, desconecte-se e retorne com mais clareza e produtividade para suas tarefas diárias.</p>",
+      "title": "Hidrate-se: Mantenha Mente e Corpo Ativos",
+      "excerpt": "Beba água regularmente para manter a hidratação. Uma garrafa sempre à mão ajuda a evitar a fadiga, melhorar a concentração e sustentar sua energia durante o expediente.",
+      "content": "<p>Beba água regularmente para manter a hidratação. Uma garrafa sempre à mão ajuda a evitar a fadiga, melhorar a concentração e sustentar sua energia durante o expediente.</p>",
       "tags": [
-        "foco",
-        "mente",
-        "estresse"
+        "hidratação",
+        "água",
+        "foco"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-002-en",
+      "id": "rgr-saude-2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Breathe Deep: Mental Breaks Boost Focus!",
-      "excerpt": "Dedicate a few minutes for a mental break. Breathe deeply, disconnect, and return with greater clarity and productivity to your daily tasks. Recharge!",
-      "content": "<p>Dedicate a few minutes for a mental break. Breathe deeply, disconnect, and return with greater clarity and productivity to your daily tasks. Recharge!</p>",
+      "title": "Stay Hydrated: Keep Mind and Body Active",
+      "excerpt": "Drink water regularly to maintain hydration. A bottle always at hand helps prevent fatigue, improve concentration, and sustain your energy throughout your workday.",
+      "content": "<p>Drink water regularly to maintain hydration. A bottle always at hand helps prevent fatigue, improve concentration, and sustain your energy throughout your workday.</p>",
       "tags": [
-        "foco",
-        "mente",
-        "estresse"
+        "hidratação",
+        "água",
+        "foco"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-002-es",
+      "id": "rgr-saude-2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Respira Hondo: ¡Pausas Mentales Mejoran Enfoque!",
-      "excerpt": "Dedica unos minutos para una pausa mental. Respira hondo, desconéctate y vuelve con mayor claridad y productividad para tus tareas diarias en el trabajo.",
-      "content": "<p>Dedica unos minutos para una pausa mental. Respira hondo, desconéctate y vuelve con mayor claridad y productividad para tus tareas diarias en el trabajo.</p>",
+      "title": "Hidrátese: Mantenga Mente y Cuerpo Activos",
+      "excerpt": "Beba agua regularmente para mantenerse hidratado. Una botella siempre a mano ayuda a prevenir la fatiga, mejorar la concentración y mantener su energía durante la jornada laboral.",
+      "content": "<p>Beba agua regularmente para mantenerse hidratado. Una botella siempre a mano ayuda a prevenir la fatiga, mejorar la concentración y mantener su energía durante la jornada laboral.</p>",
       "tags": [
-        "foco",
-        "mente",
-        "estresse"
+        "hidratação",
+        "água",
+        "foco"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-003-pt",
+      "id": "rgr-saude-3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Energia e Foco Duradouro!",
-      "excerpt": "Mantenha uma garrafa de água por perto. A hidratação constante melhora a concentração, combate a fadiga e mantém seu corpo e mente funcionando bem.",
-      "content": "<p>Mantenha uma garrafa de água por perto. A hidratação constante melhora a concentração, combate a fadiga e mantém seu corpo e mente funcionando bem.</p>",
+      "title": "Desconecte-se: Pequenas Pausas Para Recarregar",
+      "excerpt": "Tire 5 minutos para uma pausa mental. Respire fundo, olhe pela janela ou faça algo relaxante. Isso ajuda a reduzir o estresse e a retornar ao trabalho com mais clareza e vigor.",
+      "content": "<p>Tire 5 minutos para uma pausa mental. Respire fundo, olhe pela janela ou faça algo relaxante. Isso ajuda a reduzir o estresse e a retornar ao trabalho com mais clareza e vigor.</p>",
       "tags": [
-        "hidratação",
-        "saúde",
-        "bem-estar"
+        "estresse",
+        "mindfulness",
+        "pausa mental"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-003-en",
+      "id": "rgr-saude-3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Hydrate Smart: Lasting Energy and Focus!",
-      "excerpt": "Keep a water bottle close. Consistent hydration improves concentration, fights fatigue, and keeps your body and mind functioning optimally throughout the day.",
-      "content": "<p>Keep a water bottle close. Consistent hydration improves concentration, fights fatigue, and keeps your body and mind functioning optimally throughout the day.</p>",
+      "title": "Disconnect: Short Breaks to Recharge",
+      "excerpt": "Take 5 minutes for a mental break. Breathe deeply, look out the window, or do something relaxing. This helps reduce stress and return to work with more clarity and vigor.",
+      "content": "<p>Take 5 minutes for a mental break. Breathe deeply, look out the window, or do something relaxing. This helps reduce stress and return to work with more clarity and vigor.</p>",
       "tags": [
-        "hidratação",
-        "saúde",
-        "bem-estar"
+        "estresse",
+        "mindfulness",
+        "pausa mental"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-003-es",
+      "id": "rgr-saude-3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate: ¡Energía y Enfoque Sostenido!",
-      "excerpt": "Mantén una botella de agua cerca. La hidratación constante mejora la concentración, combate la fatiga y mantiene tu cuerpo y mente funcionando al máximo.",
-      "content": "<p>Mantén una botella de agua cerca. La hidratación constante mejora la concentración, combate la fatiga y mantiene tu cuerpo y mente funcionando al máximo.</p>",
+      "title": "Desconecte: Pequeñas Pausas Para Recargar",
+      "excerpt": "Tome 5 minutos para un descanso mental. Respire profundamente, mire por la ventana o haga algo relajante. Esto ayuda a reducir el estrés y regresar al trabajo con más claridad y vigor.",
+      "content": "<p>Tome 5 minutos para un descanso mental. Respire profundamente, mire por la ventana o haga algo relajante. Esto ayuda a reducir el estrés y regresar al trabajo con más claridad y vigor.</p>",
       "tags": [
-        "hidratação",
-        "saúde",
-        "bem-estar"
+        "estresse",
+        "mindfulness",
+        "pausa mental"
       ],
-      "published_at": "2026-03-13T12:32:39.307530",
+      "published_at": "2026-03-15T12:28:13.803902",
       "author": "RGR Saúde (IA)"
     }
   ]
