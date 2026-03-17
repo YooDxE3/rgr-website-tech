@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-03-15T12:28:13.803902",
+  "generated_at": "2026-03-17T12:42:25.695014",
   "posts": [
     {
-      "id": "rgr-saude-1-pt",
+      "id": "rgr1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Mexa-se: Pausas Ativas Melhoram o Foco",
-      "excerpt": "Faça pequenas pausas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade ao longo do dia de trabalho. Seu corpo agradece!",
-      "content": "<p>Faça pequenas pausas para alongar e caminhar. Isso alivia a tensão muscular, melhora a circulação e aumenta a produtividade ao longo do dia de trabalho. Seu corpo agradece!</p>",
+      "title": "Faça Pausas Ativas: Mais Energia!",
+      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam o seu foco e produtividade no trabalho. Mexa-se!",
+      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam o seu foco e produtividade no trabalho. Mexa-se!</p>",
       "tags": [
-        "alongamento",
         "pausa",
-        "produtividade"
+        "movimento",
+        "energia"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-1-en",
+      "id": "rgr1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Move More: Active Breaks Boost Focus",
-      "excerpt": "Take short breaks to stretch and walk around. This relieves muscle tension, improves circulation, and increases productivity throughout your workday. Your body will thank you!",
-      "content": "<p>Take short breaks to stretch and walk around. This relieves muscle tension, improves circulation, and increases productivity throughout your workday. Your body will thank you!</p>",
+      "title": "Take Active Breaks: Boost Energy!",
+      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your focus and productivity at work. Keep moving!",
+      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your focus and productivity at work. Keep moving!</p>",
       "tags": [
-        "alongamento",
         "pausa",
-        "produtividade"
+        "movimento",
+        "energia"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-1-es",
+      "id": "rgr1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Muévase: Pausas Activas Mejoran Enfoque",
-      "excerpt": "Tome pausas cortas para estirarse y caminar. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad durante su jornada laboral. ¡Su cuerpo se lo agradecerá!",
-      "content": "<p>Tome pausas cortas para estirarse y caminar. Esto alivia la tensión muscular, mejora la circulación y aumenta la productividad durante su jornada laboral. ¡Su cuerpo se lo agradecerá!</p>",
+      "title": "Haz Pausas Activas: Más Energía!",
+      "excerpt": "Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan tu concentración y productividad en el trabajo. ¡Muévete!",
+      "content": "<p>Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan tu concentración y productividad en el trabajo. ¡Muévete!</p>",
       "tags": [
-        "alongamento",
         "pausa",
-        "produtividade"
+        "movimento",
+        "energia"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-2-pt",
+      "id": "rgr2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se: Mantenha Mente e Corpo Ativos",
-      "excerpt": "Beba água regularmente para manter a hidratação. Uma garrafa sempre à mão ajuda a evitar a fadiga, melhorar a concentração e sustentar sua energia durante o expediente.",
-      "content": "<p>Beba água regularmente para manter a hidratação. Uma garrafa sempre à mão ajuda a evitar a fadiga, melhorar a concentração e sustentar sua energia durante o expediente.</p>",
+      "title": "Respire Fundo: Alivie o Estresse",
+      "excerpt": "Tire um minuto para respirar profundamente algumas vezes. Isso acalma a mente, reduz a tensão e ajuda a retomar suas tarefas com mais clareza e bem-estar. Experimente!",
+      "content": "<p>Tire um minuto para respirar profundamente algumas vezes. Isso acalma a mente, reduz a tensão e ajuda a retomar suas tarefas com mais clareza e bem-estar. Experimente!</p>",
       "tags": [
-        "hidratação",
-        "água",
-        "foco"
+        "estresse",
+        "foco",
+        "respiração"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-2-en",
+      "id": "rgr2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Stay Hydrated: Keep Mind and Body Active",
-      "excerpt": "Drink water regularly to maintain hydration. A bottle always at hand helps prevent fatigue, improve concentration, and sustain your energy throughout your workday.",
-      "content": "<p>Drink water regularly to maintain hydration. A bottle always at hand helps prevent fatigue, improve concentration, and sustain your energy throughout your workday.</p>",
+      "title": "Breathe Deeply: Relieve Stress",
+      "excerpt": "Take a minute to breathe deeply a few times. This calms the mind, reduces tension, and helps you return to your tasks with greater clarity and well-being. Try it!",
+      "content": "<p>Take a minute to breathe deeply a few times. This calms the mind, reduces tension, and helps you return to your tasks with greater clarity and well-being. Try it!</p>",
       "tags": [
-        "hidratação",
-        "água",
-        "foco"
+        "estresse",
+        "foco",
+        "respiração"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-2-es",
+      "id": "rgr2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátese: Mantenga Mente y Cuerpo Activos",
-      "excerpt": "Beba agua regularmente para mantenerse hidratado. Una botella siempre a mano ayuda a prevenir la fatiga, mejorar la concentración y mantener su energía durante la jornada laboral.",
-      "content": "<p>Beba agua regularmente para mantenerse hidratado. Una botella siempre a mano ayuda a prevenir la fatiga, mejorar la concentración y mantener su energía durante la jornada laboral.</p>",
+      "title": "Respira Hondo: Alivia el Estrés",
+      "excerpt": "Tómate un minuto para respirar profundamente varias veces. Esto calma la mente, reduce la tensión y te ayuda a retomar tus tareas con mayor claridad y bienestar. ¡Inténtalo!",
+      "content": "<p>Tómate un minuto para respirar profundamente varias veces. Esto calma la mente, reduce la tensión y te ayuda a retomar tus tareas con mayor claridad y bienestar. ¡Inténtalo!</p>",
       "tags": [
-        "hidratação",
-        "água",
-        "foco"
+        "estresse",
+        "foco",
+        "respiração"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-3-pt",
+      "id": "rgr3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Desconecte-se: Pequenas Pausas Para Recarregar",
-      "excerpt": "Tire 5 minutos para uma pausa mental. Respire fundo, olhe pela janela ou faça algo relaxante. Isso ajuda a reduzir o estresse e a retornar ao trabalho com mais clareza e vigor.",
-      "content": "<p>Tire 5 minutos para uma pausa mental. Respire fundo, olhe pela janela ou faça algo relaxante. Isso ajuda a reduzir o estresse e a retornar ao trabalho com mais clareza e vigor.</p>",
+      "title": "Hidrate-se Bem: Mantenha o Foco",
+      "excerpt": "Beba água regularmente ao longo do dia. A hidratação adequada é crucial para a função cerebral, mantendo você alerta, focado e prevenindo dores de cabeça. Tenha sua garrafa sempre perto!",
+      "content": "<p>Beba água regularmente ao longo do dia. A hidratação adequada é crucial para a função cerebral, mantendo você alerta, focado e prevenindo dores de cabeça. Tenha sua garrafa sempre perto!</p>",
       "tags": [
-        "estresse",
-        "mindfulness",
-        "pausa mental"
+        "hidratação",
+        "nutrição",
+        "produtividade"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-3-en",
+      "id": "rgr3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Disconnect: Short Breaks to Recharge",
-      "excerpt": "Take 5 minutes for a mental break. Breathe deeply, look out the window, or do something relaxing. This helps reduce stress and return to work with more clarity and vigor.",
-      "content": "<p>Take 5 minutes for a mental break. Breathe deeply, look out the window, or do something relaxing. This helps reduce stress and return to work with more clarity and vigor.</p>",
+      "title": "Stay Hydrated: Maintain Focus",
+      "excerpt": "Drink water regularly throughout the day. Proper hydration is crucial for brain function, keeping you alert, focused, and preventing headaches. Keep your bottle always close!",
+      "content": "<p>Drink water regularly throughout the day. Proper hydration is crucial for brain function, keeping you alert, focused, and preventing headaches. Keep your bottle always close!</p>",
       "tags": [
-        "estresse",
-        "mindfulness",
-        "pausa mental"
+        "hidratação",
+        "nutrição",
+        "produtividade"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr-saude-3-es",
+      "id": "rgr3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Desconecte: Pequeñas Pausas Para Recargar",
-      "excerpt": "Tome 5 minutos para un descanso mental. Respire profundamente, mire por la ventana o haga algo relajante. Esto ayuda a reducir el estrés y regresar al trabajo con más claridad y vigor.",
-      "content": "<p>Tome 5 minutos para un descanso mental. Respire profundamente, mire por la ventana o haga algo relajante. Esto ayuda a reducir el estrés y regresar al trabajo con más claridad y vigor.</p>",
+      "title": "Hidrátate Bien: Mantén el Enfoque",
+      "excerpt": "Bebe agua regularmente durante el día. La hidratación adecuada es crucial para la función cerebral, manteniéndote alerta, concentrado y previniendo dolores de cabeza. ¡Ten tu botella siempre cerca!",
+      "content": "<p>Bebe agua regularmente durante el día. La hidratación adecuada es crucial para la función cerebral, manteniéndote alerta, concentrado y previniendo dolores de cabeza. ¡Ten tu botella siempre cerca!</p>",
       "tags": [
-        "estresse",
-        "mindfulness",
-        "pausa mental"
+        "hidratação",
+        "nutrição",
+        "produtividade"
       ],
-      "published_at": "2026-03-15T12:28:13.803902",
+      "published_at": "2026-03-17T12:42:25.695014",
       "author": "RGR Saúde (IA)"
     }
   ]
