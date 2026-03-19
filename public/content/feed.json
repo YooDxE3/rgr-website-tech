@@ -1,139 +1,139 @@
 {
-  "generated_at": "2026-03-17T12:42:25.695014",
+  "generated_at": "2026-03-19T12:36:25.049038",
   "posts": [
     {
-      "id": "rgr1-pt",
+      "id": "rgr_tip_1-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Faça Pausas Ativas: Mais Energia!",
-      "excerpt": "Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam o seu foco e produtividade no trabalho. Mexa-se!",
-      "content": "<p>Levante-se e estique-se a cada hora. Pequenas pausas ativas melhoram a circulação, reduzem a fadiga e aumentam o seu foco e produtividade no trabalho. Mexa-se!</p>",
+      "title": "Pausas Ativas: Mais Foco e Energia!",
+      "excerpt": "Faça pequenas pausas para alongar ou caminhar. Isso alivia a tensão, melhora a circulação e aumenta a concentração, recarregando sua energia para o trabalho.",
+      "content": "<p>Faça pequenas pausas para alongar ou caminhar. Isso alivia a tensão, melhora a circulação e aumenta a concentração, recarregando sua energia para o trabalho.</p>",
       "tags": [
-        "pausa",
+        "pausas",
         "movimento",
         "energia"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr1-en",
+      "id": "rgr_tip_1-en",
       "category": "saude",
       "lang": "en",
-      "title": "Take Active Breaks: Boost Energy!",
-      "excerpt": "Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your focus and productivity at work. Keep moving!",
-      "content": "<p>Stand up and stretch every hour. Short active breaks improve circulation, reduce fatigue, and boost your focus and productivity at work. Keep moving!</p>",
+      "title": "Active Breaks: Focus and Energy Boost!",
+      "excerpt": "Take short breaks to stretch or walk. This relieves tension, improves circulation, and boosts concentration, recharging your energy for work effectively.",
+      "content": "<p>Take short breaks to stretch or walk. This relieves tension, improves circulation, and boosts concentration, recharging your energy for work effectively.</p>",
       "tags": [
-        "pausa",
+        "pausas",
         "movimento",
         "energia"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr1-es",
+      "id": "rgr_tip_1-es",
       "category": "saude",
       "lang": "es",
-      "title": "Haz Pausas Activas: Más Energía!",
-      "excerpt": "Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan tu concentración y productividad en el trabajo. ¡Muévete!",
-      "content": "<p>Levántate y estírate cada hora. Pequeñas pausas activas mejoran la circulación, reducen la fatiga y aumentan tu concentración y productividad en el trabajo. ¡Muévete!</p>",
+      "title": "Pausas Activas: ¡Más Enfoque y Energía!",
+      "excerpt": "Haz pausas cortas para estirar o caminar. Esto alivia la tensión, mejora la circulación y aumenta la concentración, recargando tu energía para el trabajo.",
+      "content": "<p>Haz pausas cortas para estirar o caminar. Esto alivia la tensión, mejora la circulación y aumenta la concentración, recargando tu energía para el trabajo.</p>",
       "tags": [
-        "pausa",
+        "pausas",
         "movimento",
         "energia"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr2-pt",
+      "id": "rgr_tip_2-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Respire Fundo: Alivie o Estresse",
-      "excerpt": "Tire um minuto para respirar profundamente algumas vezes. Isso acalma a mente, reduz a tensão e ajuda a retomar suas tarefas com mais clareza e bem-estar. Experimente!",
-      "content": "<p>Tire um minuto para respirar profundamente algumas vezes. Isso acalma a mente, reduz a tensão e ajuda a retomar suas tarefas com mais clareza e bem-estar. Experimente!</p>",
+      "title": "Hidrate-se: Mantenha o Foco o Dia Todo!",
+      "excerpt": "Beba água regularmente. A hidratação adequada melhora a função cerebral, mantém os níveis de energia e ajuda a evitar dores de cabeça. Tenha sua garrafa sempre por perto.",
+      "content": "<p>Beba água regularmente. A hidratação adequada melhora a função cerebral, mantém os níveis de energia e ajuda a evitar dores de cabeça. Tenha sua garrafa sempre por perto.</p>",
       "tags": [
-        "estresse",
+        "hidratação",
         "foco",
-        "respiração"
+        "bem-estar"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr2-en",
+      "id": "rgr_tip_2-en",
       "category": "saude",
       "lang": "en",
-      "title": "Breathe Deeply: Relieve Stress",
-      "excerpt": "Take a minute to breathe deeply a few times. This calms the mind, reduces tension, and helps you return to your tasks with greater clarity and well-being. Try it!",
-      "content": "<p>Take a minute to breathe deeply a few times. This calms the mind, reduces tension, and helps you return to your tasks with greater clarity and well-being. Try it!</p>",
+      "title": "Hydrate: Stay Focused All Day!",
+      "excerpt": "Drink water regularly. Proper hydration improves brain function, maintains energy levels, and helps prevent headaches. Keep your water bottle always close at hand.",
+      "content": "<p>Drink water regularly. Proper hydration improves brain function, maintains energy levels, and helps prevent headaches. Keep your water bottle always close at hand.</p>",
       "tags": [
-        "estresse",
+        "hidratação",
         "foco",
-        "respiração"
+        "bem-estar"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr2-es",
+      "id": "rgr_tip_2-es",
       "category": "saude",
       "lang": "es",
-      "title": "Respira Hondo: Alivia el Estrés",
-      "excerpt": "Tómate un minuto para respirar profundamente varias veces. Esto calma la mente, reduce la tensión y te ayuda a retomar tus tareas con mayor claridad y bienestar. ¡Inténtalo!",
-      "content": "<p>Tómate un minuto para respirar profundamente varias veces. Esto calma la mente, reduce la tensión y te ayuda a retomar tus tareas con mayor claridad y bienestar. ¡Inténtalo!</p>",
+      "title": "Hidrátate: ¡Mantén el Enfoque Todo el Día!",
+      "excerpt": "Bebe agua regularmente. Una hidratación adecuada mejora la función cerebral, mantiene los niveles de energía y ayuda a prevenir dolores de cabeza. Ten tu botella siempre cerca.",
+      "content": "<p>Bebe agua regularmente. Una hidratación adecuada mejora la función cerebral, mantiene los niveles de energía y ayuda a prevenir dolores de cabeza. Ten tu botella siempre cerca.</p>",
       "tags": [
-        "estresse",
+        "hidratação",
         "foco",
-        "respiração"
+        "bem-estar"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr3-pt",
+      "id": "rgr_tip_3-pt",
       "category": "saude",
       "lang": "pt",
-      "title": "Hidrate-se Bem: Mantenha o Foco",
-      "excerpt": "Beba água regularmente ao longo do dia. A hidratação adequada é crucial para a função cerebral, mantendo você alerta, focado e prevenindo dores de cabeça. Tenha sua garrafa sempre perto!",
-      "content": "<p>Beba água regularmente ao longo do dia. A hidratação adequada é crucial para a função cerebral, mantendo você alerta, focado e prevenindo dores de cabeça. Tenha sua garrafa sempre perto!</p>",
+      "title": "Postura Correta: Previna Dores e Desconforto!",
+      "excerpt": "Ajuste sua cadeira e monitor para uma postura ergonômica. Mantenha os pés no chão, costas retas e ombros relaxados. Isso previne dores e aumenta seu conforto.",
+      "content": "<p>Ajuste sua cadeira e monitor para uma postura ergonômica. Mantenha os pés no chão, costas retas e ombros relaxados. Isso previne dores e aumenta seu conforto.</p>",
       "tags": [
-        "hidratação",
-        "nutrição",
-        "produtividade"
+        "ergonomia",
+        "postura",
+        "saúde"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr3-en",
+      "id": "rgr_tip_3-en",
       "category": "saude",
       "lang": "en",
-      "title": "Stay Hydrated: Maintain Focus",
-      "excerpt": "Drink water regularly throughout the day. Proper hydration is crucial for brain function, keeping you alert, focused, and preventing headaches. Keep your bottle always close!",
-      "content": "<p>Drink water regularly throughout the day. Proper hydration is crucial for brain function, keeping you alert, focused, and preventing headaches. Keep your bottle always close!</p>",
+      "title": "Correct Posture: Prevent Pain and Discomfort!",
+      "excerpt": "Adjust your chair and monitor for ergonomic posture. Keep feet flat, back straight, and shoulders relaxed. This prevents pain and increases your overall comfort.",
+      "content": "<p>Adjust your chair and monitor for ergonomic posture. Keep feet flat, back straight, and shoulders relaxed. This prevents pain and increases your overall comfort.</p>",
       "tags": [
-        "hidratação",
-        "nutrição",
-        "produtividade"
+        "ergonomia",
+        "postura",
+        "saúde"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     },
     {
-      "id": "rgr3-es",
+      "id": "rgr_tip_3-es",
       "category": "saude",
       "lang": "es",
-      "title": "Hidrátate Bien: Mantén el Enfoque",
-      "excerpt": "Bebe agua regularmente durante el día. La hidratación adecuada es crucial para la función cerebral, manteniéndote alerta, concentrado y previniendo dolores de cabeza. ¡Ten tu botella siempre cerca!",
-      "content": "<p>Bebe agua regularmente durante el día. La hidratación adecuada es crucial para la función cerebral, manteniéndote alerta, concentrado y previniendo dolores de cabeza. ¡Ten tu botella siempre cerca!</p>",
+      "title": "Postura Correcta: ¡Previene Dolores y Malestar!",
+      "excerpt": "Ajusta tu silla y monitor para una postura ergonómica. Mantén los pies en el suelo, la espalda recta y los hombros relajados. Esto previene dolores y aumenta tu confort.",
+      "content": "<p>Ajusta tu silla y monitor para una postura ergonómica. Mantén los pies en el suelo, la espalda recta y los hombros relajados. Esto previene dolores y aumenta tu confort.</p>",
       "tags": [
-        "hidratação",
-        "nutrição",
-        "produtividade"
+        "ergonomia",
+        "postura",
+        "saúde"
       ],
-      "published_at": "2026-03-17T12:42:25.695014",
+      "published_at": "2026-03-19T12:36:25.049038",
       "author": "RGR Saúde (IA)"
     }
   ]
